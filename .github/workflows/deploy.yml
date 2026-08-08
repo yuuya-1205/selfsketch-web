@@ -1,0 +1,69 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Pages へのデプロイに必要な権限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時デプロイは1本に絞る（進行中のものは止めない）
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - uses: actions/configure-pages@v5
+        id: pages
+        with:
+          enablement: true
+
+      # web は /<repo>/、admin は /<repo>/admin/ に配信する
+      - name: Build web
+        run: npm run build -w @selfsketch/web
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+
+      - name: Build admin
+        run: npm run build -w @selfsketch/admin
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}/admin/
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r apps/web/dist/* _site/
+          mkdir -p _site/admin
+          cp -r apps/admin/dist/* _site/admin/
+          # SPA なので未知のパスは index.html に返す（Pages の 404 フォールバック）
+          cp _site/index.html _site/404.html
+          # Jekyll の処理を止める（_ 始まりのファイルが消えるため）
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - uses: actions/deploy-pages@v4
+        id: deployment

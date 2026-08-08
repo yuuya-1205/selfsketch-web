@@ -1,0 +1,103 @@
+name: Preview
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  deployments: write
+
+jobs:
+  # ------------------------------------------------------------------
+  # 外部サービスなしで動くプレビュー。
+  # ビルド成果物を artifact として PR に添付し、リンクをコメントする。
+  # ダウンロードして `npx serve` などで開ける。
+  # ------------------------------------------------------------------
+  artifact:
+    name: build artifact
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build --workspaces --if-present
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site/admin
+          cp -r apps/web/dist/* _site/
+          cp -r apps/admin/dist/* _site/admin/
+          cp _site/index.html _site/404.html
+
+      - uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: preview-${{ github.event.pull_request.number }}
+          path: _site
+          retention-days: 14
+
+      - name: Comment artifact link
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const url = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const marker = '<!-- preview-artifact -->';
+            const body = [
+              marker,
+              '### 📦 プレビュー用ビルド',
+              '',
+              `[Actions の成果物](${url}) から \`preview-${context.issue.number}\` をダウンロードして、`,
+              '解凍したフォルダで `npx serve` すると PR の内容をそのまま確認できます。',
+              '',
+              '外部サービスに繋ぐ場合は、リポジトリの Secrets に',
+              '`CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` を設定すると',
+              '同じワークフローで Cloudflare Pages のプレビュー URL が出ます。',
+            ].join('\n');
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo, issue_number: context.issue.number,
+            });
+            const existing = comments.find((c) => c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
+            }
+
+  # ------------------------------------------------------------------
+  # Cloudflare Pages へのプレビューデプロイ。
+  # Secrets が未設定のあいだはジョブごとスキップされる。
+  # 有効化するには以下を Settings > Secrets and variables > Actions に追加:
+  #   CLOUDFLARE_API_TOKEN  … Cloudflare Pages の編集権限を持つトークン
+  #   CLOUDFLARE_ACCOUNT_ID … Cloudflare のアカウントID
+  # ------------------------------------------------------------------
+  cloudflare:
+    name: Cloudflare Pages preview
+    if: ${{ vars.ENABLE_CLOUDFLARE_PREVIEW == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build -w @selfsketch/web
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy apps/web/dist
+            --project-name=selfsketch-web
+            --branch=${{ github.head_ref }}
