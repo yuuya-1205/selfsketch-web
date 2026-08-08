@@ -8,8 +8,8 @@ description: selfsketch-web の画面を実際に起動して見た目を検証�
 ## dev サーバー起動
 
 ```bash
-npm run dev &        # web   -> http://localhost:5173
-npm run dev:admin &  # admin -> http://localhost:5175
+cd frontend && npm run dev &        # web   -> http://localhost:5173
+cd frontend && npm run dev:admin &  # admin -> http://localhost:5175
 ```
 
 - ポートが使用中だと Vite が自動で繰り上げる（5174 など）。起動ログで実際のポートを確認する

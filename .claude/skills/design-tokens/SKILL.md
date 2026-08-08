@@ -8,7 +8,7 @@ description: selfsketch-web の色・余白・角丸・フォントなどデザ�
 ## 大原則
 
 1. **source of truth は `selfsketch.pen`**（Pencil デザインファイル。リポジトリ外）。
-   実装側の写しが `packages/ui/src/styles/theme.css` の `@theme` ブロック
+   実装側の写しが `frontend/packages/ui/src/styles/theme.css` の `@theme` ブロック
 2. **hex やピクセル値をコンポーネントに直書きしない**。必ず theme.css のトークンを
    Tailwind クラス経由で使う（`bg-paper`, `text-ink`, `border-line-strong`, `rounded-card` など）
 3. トークンを追加・変更したら、**`.pen` 側も更新が必要である旨を必ずユーザーに伝える**。

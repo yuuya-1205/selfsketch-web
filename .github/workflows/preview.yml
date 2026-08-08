@@ -17,13 +17,17 @@ jobs:
   artifact:
     name: build artifact
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v5
         with:
-          node-version-file: .nvmrc
+          node-version-file: frontend/.nvmrc
           cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - run: npm ci
 
@@ -41,7 +45,7 @@ jobs:
         id: upload
         with:
           name: preview-${{ github.event.pull_request.number }}
-          path: _site
+          path: frontend/_site
           retention-days: 14
 
       - name: Comment artifact link
@@ -82,13 +86,17 @@ jobs:
     name: Cloudflare Pages preview
     if: ${{ vars.ENABLE_CLOUDFLARE_PREVIEW == 'true' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v5
         with:
-          node-version-file: .nvmrc
+          node-version-file: frontend/.nvmrc
           cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - run: npm ci
       - run: npm run build -w @selfsketch/web
@@ -98,6 +106,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: >-
-            pages deploy apps/web/dist
+            pages deploy frontend/apps/web/dist
             --project-name=selfsketch-web
             --branch=${{ github.head_ref }}
