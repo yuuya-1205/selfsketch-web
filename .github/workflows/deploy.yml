@@ -56,8 +56,11 @@ jobs:
           cp -r apps/web/dist/* _site/
           mkdir -p _site/admin
           cp -r apps/admin/dist/* _site/admin/
-          # SPA なので未知のパスは index.html に返す（Pages の 404 フォールバック）
+          # SPA なので未知のパスは index.html に返す（Pages の 404 フォールバック）。
+          # Pages は要求されたディレクトリから上へ 404.html を探すため、
+          # admin 配下にも置かないと /admin/xxx が web 側の 404.html に落ちる。
           cp _site/index.html _site/404.html
+          cp _site/admin/index.html _site/admin/404.html
           # Jekyll の処理を止める（_ 始まりのファイルが消えるため）
           touch _site/.nojekyll
 
