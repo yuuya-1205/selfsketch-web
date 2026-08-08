@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SelfSketch</title>
+    <script>
+      /*
+       * GitHub Pages の SPA フォールバック。
+       *
+       * Pages はサブディレクトリの 404.html を見てくれず、
+       * ルート直下の 404.html だけを返す。1つのサイトに web と admin の
+       * 2つの SPA を載せているので、ここでどちらのアプリかを判定して
+       * 該当アプリの index に飛ばす。
+       *
+       * 元のパスは sessionStorage に預けておき、アプリ起動時に
+       * history.replaceState で戻す（main.tsx 側で復元している）。
+       */
+      (function () {
+        var base = "__BASE__";
+        var path = location.pathname;
+        var rest = path.indexOf(base) === 0 ? path.slice(base.length) : "";
+        var isAdmin = rest === "admin" || rest.indexOf("admin/") === 0;
+        try {
+          sessionStorage.setItem(
+            "spa:redirect",
+            path + location.search + location.hash,
+          );
+        } catch (e) {
+          /* プライベートモードなどで使えないときはトップに落ちるだけ */
+        }
+        location.replace(base + (isAdmin ? "admin/" : ""));
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

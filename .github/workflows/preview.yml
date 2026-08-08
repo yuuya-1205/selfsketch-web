@@ -35,8 +35,7 @@ jobs:
           mkdir -p _site/admin
           cp -r apps/web/dist/* _site/
           cp -r apps/admin/dist/* _site/admin/
-          cp _site/index.html _site/404.html
-          cp _site/admin/index.html _site/admin/404.html
+          sed "s|__BASE__|/|" deploy/404.html > _site/404.html
 
       - uses: actions/upload-artifact@v4
         id: upload
