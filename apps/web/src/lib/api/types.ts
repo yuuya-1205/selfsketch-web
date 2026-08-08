@@ -9,7 +9,6 @@ export type HabitSlot = "毎朝" | "起床後" | "昼" | "午後" | "夜" | "就
 export interface Habit {
   id: string;
   title: string;
-  /** 「完了済 · 7:15」「午後 · 10分ほど」など、行の2段目に出る文字列 */
   meta: string;
   done: boolean;
   slot: HabitSlot;
@@ -18,20 +17,17 @@ export interface Habit {
 export interface StreakSummary {
   current: number;
   longest: number;
-  /** 月曜はじまり7日ぶんの達成有無 */
   week: boolean[];
 }
 
 export interface FutureSelfSummary {
   title: string;
   remainingDays: number;
-  /** 0–1 */
   progress: number;
   thumbnailUrl: string | null;
 }
 
 export interface TodayDashboard {
-  /** 表示用に整形済みの日付。タイムゾーン変換はサーバー側の責務 */
   dateLabel: string;
   completedCount: number;
   totalCount: number;
@@ -39,7 +35,188 @@ export interface TodayDashboard {
   streak: StreakSummary;
   future: FutureSelfSummary;
   todayQuote: string;
-  /** 今週の達成率(0–1) × 7日 */
   weekCompletion: number[];
   sketchLogged: boolean;
+}
+
+/* ---- 習慣詳細 ----------------------------------------------------- */
+export interface HabitDetail {
+  id: string;
+  title: string;
+  schedule: string;
+  duration: string;
+  linkedVision: string | null;
+  achievementRate: number;
+  currentStreak: number;
+  longestStreak: number;
+  totalCount: number;
+  startedDaysAgo: number;
+  /** 直近12週 × 7日、0–4 のレベル */
+  heatmap: number[][];
+  notes: { date: string; body: string }[];
+}
+
+/* ---- 軌跡 --------------------------------------------------------- */
+export interface StreakPage {
+  current: number;
+  longest: number;
+  monthlyRate: number;
+  totalRecords: number;
+  totalDays: number;
+  yearHeatmap: number[][];
+  weeklyRates: number[];
+  nextMilestone: { label: string; remaining: number; progress: number };
+  badges: { label: string; glyph: string; earned: boolean }[];
+}
+
+/* ---- ジャーナル ---------------------------------------------------- */
+export interface JournalEntry {
+  id: string;
+  dateLabel: string;
+  timeLabel: string;
+  title: string;
+  excerpt: string;
+  body: string[];
+  moodColor: string;
+  hasImage: boolean;
+  habit: string;
+  mood: string;
+  tags: string[];
+  quote: string;
+  stats: string[];
+}
+
+/* ---- ギャラリー ---------------------------------------------------- */
+export interface GalleryItem {
+  id: string;
+  dateLabel: string;
+  title: string;
+  seed: number;
+}
+
+export interface GalleryMonth {
+  label: string;
+  summary: string;
+  items: GalleryItem[];
+}
+
+/* ---- 未来の自分 ---------------------------------------------------- */
+export interface VisionMilestone {
+  when: string;
+  title: string;
+  reached: boolean;
+}
+
+export interface Vision {
+  id: string;
+  horizon: string;
+  dateLabel: string;
+  quote: string;
+  body: string;
+  progress: number;
+  remainingDays: number;
+  milestones: VisionMilestone[];
+  habits: { title: string; rate: number }[];
+  letter: string;
+  story: string[];
+  steps: { when: string; title: string; reached: boolean }[];
+}
+
+/* ---- インサイト ---------------------------------------------------- */
+export interface InsightsData {
+  kpis: { label: string; value: string; unit: string; delta: string; up: boolean }[];
+  monthlyRecordDays: number[];
+  monthLabels: string[];
+  habitRates: { title: string; rate: number }[];
+  hourly: number[];
+}
+
+export interface MonthlyReport {
+  monthLabel: string;
+  headline: string;
+  summary: string;
+  stats: { label: string; value: string }[];
+  highlights: { date: string; title: string; seed: number }[];
+  findings: string[];
+  suggestions: { title: string; reason: string }[];
+  comparison: { label: string; prev: number; current: number }[];
+}
+
+/* ---- フレンド ------------------------------------------------------ */
+export interface FriendActivity {
+  id: string;
+  initial: string;
+  name: string;
+  action: string;
+  time: string;
+  extra: string | null;
+  cheers: number;
+}
+
+export interface Friend {
+  initial: string;
+  name: string;
+  streakLabel: string;
+}
+
+/* ---- 通知 ---------------------------------------------------------- */
+export interface NotificationItem {
+  id: string;
+  icon: "bell" | "flame" | "heart" | "sparkles" | "users" | "moon";
+  title: string;
+  category: string;
+  time: string;
+  unread: boolean;
+}
+
+export interface NotificationGroup {
+  label: string;
+  items: NotificationItem[];
+}
+
+/* ---- 設定 ---------------------------------------------------------- */
+export interface UsageMeter {
+  label: string;
+  value: string;
+  ratio: number;
+  note: string;
+}
+
+export interface Invoice {
+  date: string;
+  description: string;
+  amount: string;
+  status: "お支払い済み" | "返金";
+}
+
+/* ---- リフレクション ------------------------------------------------ */
+export interface ReflectionEntryPoint {
+  to: string;
+  icon: string;
+  title: string;
+  description: string;
+  lastUsed: string;
+}
+
+export interface ComparisonSide {
+  label: string;
+  dateLabel: string;
+  quote: string;
+  stats: { label: string; value: string }[];
+}
+
+export interface TimelineNode {
+  horizon: string;
+  year: string;
+  title: string;
+  seed: number;
+  isNow: boolean;
+}
+
+export interface BackcastStep {
+  horizon: string;
+  year: string;
+  goal: string;
+  items: string[];
+  primary: boolean;
 }
