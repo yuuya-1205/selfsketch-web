@@ -6,7 +6,12 @@ import { ALL_ADMIN_NAV_ITEMS } from "@/lib/nav";
 
 export function AdminShell() {
   const { pathname } = useLocation();
-  const current = ALL_ADMIN_NAV_ITEMS.find((i) => i.to === pathname);
+  // /users/user_10412 のような詳細ページでも親のナビ項目を拾う
+  const current =
+    ALL_ADMIN_NAV_ITEMS.find((i) => i.to === pathname) ??
+    ALL_ADMIN_NAV_ITEMS.filter((i) => pathname.startsWith(`${i.to}/`)).sort(
+      (a, b) => b.to.length - a.to.length,
+    )[0];
 
   return (
     <div className="flex h-dvh w-full overflow-hidden bg-[#fbf7ef]">
