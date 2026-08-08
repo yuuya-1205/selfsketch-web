@@ -1,3 +1,4 @@
+import { Outlet, useNavigate } from "react-router";
 import { Plus } from "lucide-react";
 import { Badge, Button, Progress, SectionHeading } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
@@ -11,6 +12,7 @@ import { WeekChart } from "./components/WeekChart";
 
 export function TodayPage() {
   usePageMeta("メイン", "今日の自分");
+  const navigate = useNavigate();
 
   const { data, isPending } = useTodayDashboard();
   const toggle = useToggleHabit();
@@ -41,7 +43,12 @@ export function TodayPage() {
           />
         </div>
 
-        <Button icon={<Plus size={15} />}>習慣を追加</Button>
+        <Button
+          icon={<Plus size={15} />}
+          onClick={() => navigate("/today/new")}
+        >
+          習慣を追加
+        </Button>
       </header>
 
       {/* ---- 本体：デスクトップ2カラム / タブレット以下1カラム ------- */}
@@ -79,6 +86,9 @@ export function TodayPage() {
           <WeekChart values={data.weekCompletion} />
         </aside>
       </div>
+
+      {/* /today/new のときに習慣作成モーダルが乗る */}
+      <Outlet />
     </>
   );
 }
