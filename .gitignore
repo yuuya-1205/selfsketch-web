@@ -1,6 +1,17 @@
+# node
 node_modules
 dist
 *.tsbuildinfo
-.DS_Store
-*.local
 .vite
+*.local
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# go
+/backend/server
+
+# misc
+.DS_Store

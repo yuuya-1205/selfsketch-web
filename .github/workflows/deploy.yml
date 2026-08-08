@@ -23,13 +23,17 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v5
         with:
-          node-version-file: .nvmrc
+          node-version-file: frontend/.nvmrc
           cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install
         run: npm ci
@@ -57,14 +61,14 @@ jobs:
           mkdir -p _site/admin
           cp -r apps/admin/dist/* _site/admin/
           # SPA フォールバック。Pages はルート直下の 404.html しか使わないので、
-          # そこで web / admin を振り分ける（deploy/404.html 参照）。
+          # そこで web / admin を振り分ける（frontend/deploy/404.html 参照）。
           sed "s|__BASE__|${{ steps.pages.outputs.base_path }}/|" deploy/404.html > _site/404.html
           # Jekyll の処理を止める（_ 始まりのファイルが消えるため）
           touch _site/.nojekyll
 
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: _site
+          path: frontend/_site
 
       - uses: actions/deploy-pages@v4
         id: deployment

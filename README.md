@@ -1,11 +1,18 @@
 # selfsketch-web
 
-SelfSketch のフロントエンド モノレポ。デザインの出典は Pencil ファイル `selfsketch.pen`。
+SelfSketch のモノレポ。デザインの出典は Pencil ファイル `selfsketch.pen`。
 
 ```
-apps/web     ユーザー向け Web版      (localhost:5173)
-apps/admin   管理コンソール          (localhost:5175)
-packages/ui  デザイントークン + 共通プリミティブ
+frontend/            React + TypeScript + Tailwind v4
+├── apps/web         ユーザー向け Web版      (localhost:5173)
+├── apps/admin       管理コンソール          (localhost:5175)
+└── packages/ui      デザイントークン + 共通プリミティブ
+
+backend/             Go + Gin の API サーバー (localhost:8080)
+
+analysis/            分析基盤
+├── frontend         React + TypeScript + Tailwind (localhost:5177)
+└── backend          Python + FastAPI              (localhost:8000)
 ```
 
 ## デモ
@@ -24,9 +31,12 @@ Cloudflare Pages のプレビュー URL を出したい場合は、リポジト�
 
 ## セットアップ
 
-Node は `.nvmrc` の 22 系を使う（Homebrew の node は icu4c の不整合で動かない環境あり）。
+### frontend
+
+Node は `frontend/.nvmrc` の 22 系を使う（Homebrew の node は icu4c の不整合で動かない環境あり）。
 
 ```bash
+cd frontend
 nvm use
 npm install
 npm run dev        # web   -> http://localhost:5173（使用中なら自動で繰り上がる）
@@ -34,6 +44,18 @@ npm run dev:admin  # admin -> http://localhost:5175
 npm run typecheck
 npm run build
 ```
+
+### backend
+
+```bash
+cd backend
+go run ./cmd/server   # -> http://localhost:8080（GET /healthz, /api/v1/ping）
+```
+
+### analysis
+
+`analysis/README.md` を参照。frontend は `npm run dev`（:5177）、
+backend は `uvicorn app.main:app --reload`（:8000）。
 
 ## 実装済みの画面（Web版 32画面）
 
@@ -79,11 +101,11 @@ npm run build
 
 | 実装 | .pen 上のノード |
 | --- | --- |
-| `packages/ui/src/styles/theme.css` | Web版ボード先頭の Tokens カード |
-| `apps/web` の `Sidebar` | `Web Sidebar`（reusable コンポーネント） |
-| `apps/web` の `AppShell` | `Web Screen Template` |
-| `apps/web` の `AuthLayout` | `Web Auth Template` |
-| `apps/admin` の `AdminSidebar` / `AdminShell` | `Admin Sidebar` / `Admin Screen Template` |
+| `frontend/packages/ui/src/styles/theme.css` | Web版ボード先頭の Tokens カード |
+| `frontend/apps/web` の `Sidebar` | `Web Sidebar`（reusable コンポーネント） |
+| `frontend/apps/web` の `AppShell` | `Web Screen Template` |
+| `frontend/apps/web` の `AuthLayout` | `Web Auth Template` |
+| `frontend/apps/admin` の `AdminSidebar` / `AdminShell` | `Admin Sidebar` / `Admin Screen Template` |
 
 色・余白を変えるときは **必ず `.pen` と両方**を更新すること。値は `theme.css`
 に集約してあるので、hex を直書きしない。
@@ -117,7 +139,7 @@ npm run build
 
 ## データ層
 
-`apps/web/src/lib/api/` が API 境界。いまはモック。
+`frontend/apps/web/src/lib/api/` が API 境界。いまはモック。
 
 - `types.ts` … UI が依存する型。バックエンド実装後は OpenAPI / Protobuf 生成物に差し替える
 - `client.ts` … `useMockQuery` が `initialData` を渡しているので、ページ側にローディング分岐がない。

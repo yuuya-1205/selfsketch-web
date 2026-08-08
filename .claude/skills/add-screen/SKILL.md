@@ -1,6 +1,6 @@
 ---
 name: add-screen
-description: selfsketch-web に新しい画面・ページ・ルート・モーダルを追加するときの手順。「〜画面を作って」「〜ページを追加」「新しいルートを足す」「設定画面のプレースホルダを実装に置き換える」など、web版（apps/web）または管理コンソール（apps/admin)に UI 画面を増やす・置き換える作業では必ずこのスキルに従うこと。
+description: selfsketch-web に新しい画面・ページ・ルート・モーダルを追加するときの手順。「〜画面を作って」「〜ページを追加」「新しいルートを足す」「設定画面のプレースホルダを実装に置き換える」など、web版（frontend/apps/web）または管理コンソール（frontend/apps/admin）に UI 画面を増やす・置き換える作業では必ずこのスキルに従うこと。
 ---
 
 # 画面追加の手順
@@ -8,7 +8,7 @@ description: selfsketch-web に新しい画面・ページ・ルート・モー�
 新しい画面は必ず `.pen` デザイン上のノード（例: `W-Set 4`, `Adm 9`）に対応させる。
 対応ノードが不明な場合は、どのデザインを実装するのかをユーザーに確認してから着手する。
 
-## web版（apps/web）の場合
+## web版（frontend/apps/web）の場合
 
 1. **API モジュール**（データが要る場合）: `src/lib/api/<機能名>.ts` を作る
    - UI が依存する型は `src/lib/api/types.ts` に追加
@@ -17,7 +17,7 @@ description: selfsketch-web に新しい画面・ページ・ルート・モー�
 2. **ページコンポーネント**: `src/features/<機能名>/XxxPage.tsx` を作る
    - 冒頭で `usePageMeta("パンくず(ナビグループ名)", "画面タイトル")` を呼ぶ
    - `@selfsketch/ui` のプリミティブ（Card, PageHeader, StatCard, Badge…）を最大限使う。
-     足りないプリミティブは `packages/ui` に追加して `index.ts` から export する
+     足りないプリミティブは `frontend/packages/ui` に追加して `index.ts` から export する
    - 色は Tailwind のトークンクラス（`bg-paper`, `text-ink`, `border-line` など）のみ。hex 直書き禁止
 3. **ルート登録**: `src/App.tsx` に `<Route>` を追加
    - ログイン後の画面は `<Route element={<AppShell />}>` の中に置く
@@ -27,7 +27,7 @@ description: selfsketch-web に新しい画面・ページ・ルート・モー�
 5. **README 更新**: `README.md` の画面一覧表に「ルート / 画面名 / .pen ノード」の行を追加。
    画面数（見出しの「Web版 32画面」）も更新する
 
-## 管理コンソール（apps/admin）の場合
+## 管理コンソール（frontend/apps/admin）の場合
 
 1. モックデータは `src/lib/api/mock.ts` に追加
 2. ページは `src/pages/XxxPage.tsx` に作る（features 分割はしない）
