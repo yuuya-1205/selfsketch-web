@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import { Plus } from "lucide-react";
 import { Badge, Button, Progress, SectionHeading } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
@@ -69,12 +69,11 @@ export function TodayPage() {
           </SectionHeading>
 
           {data.habits.map((habit) => (
-            <Link key={habit.id} to={`/habits/${habit.id}`} className="contents">
-              <HabitRow
-                habit={habit}
-                onToggle={(done) => toggle.mutate({ id: habit.id, done })}
-              />
-            </Link>
+            <HabitRow
+              key={habit.id}
+              habit={habit}
+              onToggle={(done) => toggle.mutate({ id: habit.id, done })}
+            />
           ))}
 
           <QuickSketchCard logged={data.sketchLogged} />

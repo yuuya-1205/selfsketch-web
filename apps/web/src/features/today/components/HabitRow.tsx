@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { Ellipsis } from "lucide-react";
 import { Badge, CheckCircle, cn } from "@selfsketch/ui";
 import type { Habit } from "@/lib/api/types";
@@ -6,6 +7,13 @@ export interface HabitRowProps {
   habit: Habit;
   onToggle: (done: boolean) => void;
 }
+
+/**
+ * 行全体をリンクにはしない。
+ * チェックボックスやメニューを <a> の中に入れると、押したときに
+ * イベントがリンクまで伝播して意図しない遷移が起きるため、
+ * リンクにするのはタイトル部分だけにしている。
+ */
 
 export function HabitRow({ habit, onToggle }: HabitRowProps) {
   const { title, meta, done, slot } = habit;
@@ -30,14 +38,17 @@ export function HabitRow({ habit, onToggle }: HabitRowProps) {
         <CheckCircle checked={done} />
       </button>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+      <Link
+        to={`/habits/${habit.id}`}
+        className="flex min-w-0 flex-1 flex-col gap-0.5"
+      >
         <span className="truncate text-sm font-semibold text-ink">{title}</span>
         <span
           className={cn("text-[11px]", done ? "text-muted" : "text-brown")}
         >
           {meta}
         </span>
-      </div>
+      </Link>
 
       <Badge tone="track" className="hidden px-2.5 py-1 text-[10px] sm:inline-flex">
         {slot}
