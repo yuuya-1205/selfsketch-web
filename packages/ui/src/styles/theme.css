@@ -1,0 +1,65 @@
+/**
+ * SelfSketch design tokens
+ * Source of truth: selfsketch.pen -> "Web版 (Responsive) - SelfSketch" / "Admin Console (Web)"
+ * 値を変えるときは必ずキャンバス側と揃えること。
+ */
+@theme {
+  /* ---- surface ---------------------------------------------------- */
+  --color-paper: #fdf8ef; /* 画面の地色 */
+  --color-surface: #faf2e3; /* カード・完了済みの行 */
+  --color-track: #f0e4d0; /* プログレスの溝・サムネの下地 */
+  --color-line: #e8d9bf; /* 弱い罫線 */
+  --color-line-strong: #d4b896; /* カードの枠線 */
+
+  /* ---- text ------------------------------------------------------- */
+  --color-ink: #3d2817; /* 主要テキスト・押せるものの主色 */
+  --color-brown: #8b6f47; /* 副次テキスト */
+  --color-muted: #a68960; /* キャプション・プレースホルダ */
+
+  /* ---- navigation (dark) ------------------------------------------ */
+  --color-nav: #3d2817;
+  --color-nav-active: #5c4126;
+  --color-nav-card: #4d3421;
+  --color-nav-fg: #c9b28f;
+  --color-nav-icon: #b79a72;
+  --color-nav-label: #8f7350;
+
+  /* ---- admin only -------------------------------------------------- */
+  --color-admin-nav: #2b1c10;
+  --color-admin-nav-active: #4a3320;
+  --color-ok: #5d7a52;
+  --color-ok-bg: #eef1e8;
+  --color-warn: #b3803a;
+  --color-warn-bg: #f7edda;
+  --color-danger: #a8442f;
+  --color-danger-bg: #f7e6e1;
+
+  /* ---- radius ------------------------------------------------------ */
+  --radius-card: 14px;
+  --radius-control: 11px;
+  --radius-row: 13px;
+
+  /* ---- type -------------------------------------------------------- */
+  /* Inter は日本語グリフを持たないので Noto Sans JP を必ず後段に置く */
+  --font-sans: "Inter", "Noto Sans JP", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+}

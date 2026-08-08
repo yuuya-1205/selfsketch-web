@@ -1,0 +1,16 @@
+{
+  "name": "selfsketch-web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @selfsketch/web",
+    "dev:admin": "npm run dev -w @selfsketch/admin",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}

@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "../../../packages/ui/src/styles/theme.css";
+
+@source "../../../packages/ui/src";
+
+@layer base {
+  body {
+    background-color: #fbf7ef;
+  }
+}
