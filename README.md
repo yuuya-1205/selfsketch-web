@@ -8,6 +8,20 @@ apps/admin   管理コンソール          (localhost:5175)
 packages/ui  デザイントークン + 共通プリミティブ
 ```
 
+## デモ
+
+main にマージされると GitHub Pages に自動デプロイされる。
+
+| | URL |
+| --- | --- |
+| Web版 | https://yuuya-1205.github.io/selfsketch-web/ |
+| 管理コンソール | https://yuuya-1205.github.io/selfsketch-web/admin/ |
+
+PR ごとにビルド成果物が artifact として添付される（`.github/workflows/preview.yml`）。
+Cloudflare Pages のプレビュー URL を出したい場合は、リポジトリ変数
+`ENABLE_CLOUDFLARE_PREVIEW=true` と Secrets `CLOUDFLARE_API_TOKEN` /
+`CLOUDFLARE_ACCOUNT_ID` を設定する。
+
 ## セットアップ
 
 Node は `.nvmrc` の 22 系を使う（Homebrew の node は icu4c の不整合で動かない環境あり）。
