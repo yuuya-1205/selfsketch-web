@@ -10,9 +10,17 @@ import {
   Sunrise,
   type LucideIcon,
 } from "lucide-react";
-import { Button, Card, CardLabel, PageHeader, cn } from "@selfsketch/ui";
+import {
+  Button,
+  Card,
+  CardLabel,
+  PageHeader,
+  Skeleton,
+  SkeletonGroup,
+  cn,
+} from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useReflectionEntries } from "@/lib/api/reflection";
+import { useReflectionEntriesQuery } from "@/lib/api/reflection";
 
 const ICONS: Record<string, LucideIcon> = {
   sunrise: Sunrise,
@@ -28,7 +36,11 @@ const DONE = 4;
 
 export function ReflectionHubPage() {
   usePageMeta("分析・つながり", "リフレクション");
-  const entries = useReflectionEntries();
+  const { data: entries, isLoading } = useReflectionEntriesQuery();
+
+  if (isLoading || !entries) {
+    return <ReflectionHubSkeleton />;
+  }
 
   return (
     <>
@@ -95,5 +107,21 @@ export function ReflectionHubPage() {
         })}
       </ul>
     </>
+  );
+}
+
+function ReflectionHubSkeleton() {
+  return (
+    <SkeletonGroup
+      label="リフレクションを読み込み中"
+      className="flex-1 gap-3.5"
+    >
+      <Skeleton className="h-9 w-48" />
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton key={i} className="h-36 w-full" />
+        ))}
+      </div>
+    </SkeletonGroup>
   );
 }

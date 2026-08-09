@@ -1,4 +1,4 @@
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type {
   BackcastStep,
   ComparisonSide,
@@ -177,6 +177,16 @@ export const CLOSING = {
   tomorrow: "「7時に、机に座るだけでいい。」",
 };
 
-export function useReflectionEntries() {
-  return useMockQuery(["reflection", "entries"], REFLECTION_ENTRIES);
-}
+export const reflectionApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    reflectionEntries: build.query<typeof REFLECTION_ENTRIES, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: REFLECTION_ENTRIES };
+      },
+      providesTags: ["Reflection"],
+    }),
+  }),
+});
+
+export const { useReflectionEntriesQuery } = reflectionApi;
