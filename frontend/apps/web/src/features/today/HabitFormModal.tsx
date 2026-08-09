@@ -12,13 +12,15 @@ import {
   Switch,
   cn,
 } from "@selfsketch/ui";
-import { HABIT_SLOT_OPTIONS } from "@/lib/api/habits";
 
 /** 「今日」の上に重ねて表示する習慣作成モーダル */
+/** 頻度の選択肢。API のデータではなくフォームの選択肢なので画面が持つ */
+const FREQUENCY_OPTIONS = ["毎日", "平日のみ", "週3回", "カスタム"] as const;
+
 export function HabitFormModal() {
   const navigate = useNavigate();
   const close = () => navigate("/today");
-  const [freq, setFreq] = useState<string>(HABIT_SLOT_OPTIONS[0]);
+  const [freq, setFreq] = useState<string>(FREQUENCY_OPTIONS[0]);
   const [linked, setLinked] = useState(true);
 
   return (
@@ -44,7 +46,7 @@ export function HabitFormModal() {
         <div className="flex flex-col gap-1.5">
           <FieldLabel>頻度</FieldLabel>
           <div className="flex gap-2">
-            {HABIT_SLOT_OPTIONS.map((o) => (
+            {FREQUENCY_OPTIONS.map((o) => (
               <button
                 key={o}
                 type="button"

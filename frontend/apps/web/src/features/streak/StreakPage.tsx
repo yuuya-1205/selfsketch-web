@@ -14,13 +14,13 @@ import {
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useStreakQuery } from "@/lib/api/streak";
+import { useStreakOverview } from "@/usecase/streak";
 
 const RANGES = ["週", "月", "年"] as const;
 
 export function StreakPage() {
   usePageMeta("分析・つながり", "軌跡");
-  const { data: streak, isLoading } = useStreakQuery();
+  const { streak, isLoading, earnedBadgeCount } = useStreakOverview();
   const [range, setRange] = useState<(typeof RANGES)[number]>("年");
 
   if (isLoading || !streak) {
@@ -98,7 +98,7 @@ export function StreakPage() {
               次のマイルストーン
             </span>
             <p className="text-[17px] leading-[1.5] font-bold text-paper">
-              {streak.nextMilestone.label}まで あと{" "}
+              {streak.nextMilestone.days}日連続まで あと{" "}
               {streak.nextMilestone.remaining}日
             </p>
             <Progress value={streak.nextMilestone.progress} height={8} inverse />
@@ -109,13 +109,12 @@ export function StreakPage() {
 
           <Card className="flex flex-1 flex-col gap-3 p-4.5">
             <CardLabel>
-              獲得バッジ {streak.badges.filter((b) => b.earned).length} /{" "}
-              {streak.badges.length}
+              獲得バッジ {earnedBadgeCount} / {streak.badges.length}
             </CardLabel>
             <ul className="grid grid-cols-3 gap-2.5">
               {streak.badges.map((b) => (
                 <li
-                  key={b.label}
+                  key={b.days}
                   className={cn(
                     "flex flex-col items-center gap-1.5 rounded-[11px] border px-1 py-3",
                     b.earned
@@ -137,7 +136,7 @@ export function StreakPage() {
                       b.earned ? "text-brown" : "text-muted",
                     )}
                   >
-                    {b.label}
+                    {b.days}日
                   </span>
                 </li>
               ))}

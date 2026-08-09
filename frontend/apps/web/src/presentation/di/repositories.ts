@@ -1,4 +1,6 @@
 import { createContext, use } from "react";
+import type { HabitsRepository } from "@/domain/repository/habitsRepository";
+import type { StreakRepository } from "@/domain/repository/streakRepository";
 import type { TodayRepository } from "@/domain/repository/todayRepository";
 
 /**
@@ -7,6 +9,8 @@ import type { TodayRepository } from "@/domain/repository/todayRepository";
  */
 export interface Repositories {
   today: TodayRepository;
+  habits: HabitsRepository;
+  streak: StreakRepository;
 }
 
 export const RepositoryContext = createContext<Repositories | null>(null);
