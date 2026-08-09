@@ -9,6 +9,7 @@ import { AiMonitoringPage } from "@/pages/AiMonitoringPage";
 import { RevenuePage } from "@/pages/RevenuePage";
 import { DeliveryPage } from "@/pages/DeliveryPage";
 import { AuditPage } from "@/pages/AuditPage";
+import { MembersPage } from "@/pages/MembersPage";
 import { SettingsPage } from "@/pages/SettingsPage";
 
 export function App() {
@@ -26,8 +27,7 @@ export function App() {
         <Route path="/delivery" element={<DeliveryPage />} />
         <Route path="/audit" element={<AuditPage />} />
 
-        {/* 権限・メンバーは監査ログ画面に同居しているので誘導する */}
-        <Route path="/members" element={<Navigate to="/audit" replace />} />
+        <Route path="/members" element={<MembersPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Pending label="ページが見つかりません" />} />
       </Route>
