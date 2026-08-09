@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/yuuya-1205/selfsketch-web/backend/internal/api"
+	"github.com/yuuya-1205/selfsketch-web/backend/internal/adapter/handler"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 		port = "8080"
 	}
 
-	r := api.NewRouter()
+	r := handler.NewRouter()
 	log.Printf("selfsketch backend listening on :%s", port)
 	if err := r.Run(":" + port); err != nil {
 		log.Fatal(err)

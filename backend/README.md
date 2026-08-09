@@ -6,14 +6,14 @@ SelfSketch の API サーバー。Go + [Gin](https://github.com/gin-gonic/gin)�
 go run ./cmd/server        # -> http://localhost:8080
 go build ./...
 go vet ./...
-go test ./...              # internal/api のルーティングテスト（httptest）
+go test ./...              # adapter/handler のルーティングテスト（httptest）
 gofmt -l .                 # 出力が空なら整形済み
 ```
 
 | パス | 役割 |
 | --- | --- |
 | `cmd/server` | エントリポイント（`PORT` 環境変数でポート変更可、既定 8080） |
-| `internal/api` | ルーティング。エンドポイントは `/api/v1` 以下に追加する |
+| `internal/adapter/handler` | Gin ハンドラとルーティング。エンドポイントは `/api/v1` 以下に追加する |
 | `migrations` | golang-migrate の `.sql`。スキーマ設計は `docs/db-design.md` |
 
 ## データベース
