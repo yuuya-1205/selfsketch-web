@@ -1,27 +1,9 @@
-import { createContext, use, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Outlet } from "react-router";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { MobileTabBar } from "./MobileTabBar";
-
-interface PageMeta {
-  crumb: string;
-  title: string;
-}
-
-const PageMetaContext = createContext<{
-  setMeta: (meta: PageMeta) => void;
-} | null>(null);
-
-/**
- * 各ページからトップバーの表示内容を差し込むためのフック。
- * ページ側で `usePageMeta({ crumb: "メイン", title: "今日の自分" })` と呼ぶ。
- */
-export function usePageMetaSetter() {
-  const ctx = use(PageMetaContext);
-  if (!ctx) throw new Error("AppShell の外では使えません");
-  return ctx.setMeta;
-}
+import { PageMetaContext, type PageMeta } from "./pageMetaContext";
 
 /**
  * アプリ全体のシェル。
