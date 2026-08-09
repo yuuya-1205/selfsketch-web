@@ -1,5 +1,5 @@
 import { mockHeatmap } from "@selfsketch/ui";
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type { HabitDetail } from "./types";
 
 const HABIT_DETAIL: HabitDetail = {
@@ -21,8 +21,19 @@ const HABIT_DETAIL: HabitDetail = {
   ],
 };
 
-export function useHabitDetail(_id: string) {
-  return useMockQuery(["habit", _id], HABIT_DETAIL);
-}
+export const habitsApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    habitDetail: build.query<HabitDetail, string>({
+      // id は実 API 化のときにパスへ乗る。モックは1件しかないので今は使わない
+      queryFn: async (id) => {
+        await mockDelay();
+        return { data: { ...HABIT_DETAIL, id } };
+      },
+      providesTags: (_result, _error, id) => [{ type: "Habit", id }],
+    }),
+  }),
+});
+
+export const { useHabitDetailQuery } = habitsApi;
 
 export const HABIT_SLOT_OPTIONS = ["毎日", "平日のみ", "週3回", "カスタム"] as const;

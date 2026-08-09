@@ -8,18 +8,24 @@ import {
   PageHeader,
   Progress,
   Segmented,
+  Skeleton,
+  SkeletonGroup,
   StatCard,
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useStreak } from "@/lib/api/streak";
+import { useStreakQuery } from "@/lib/api/streak";
 
 const RANGES = ["週", "月", "年"] as const;
 
 export function StreakPage() {
   usePageMeta("分析・つながり", "軌跡");
-  const streak = useStreak();
+  const { data: streak, isLoading } = useStreakQuery();
   const [range, setRange] = useState<(typeof RANGES)[number]>("年");
+
+  if (isLoading || !streak) {
+    return <StreakSkeleton />;
+  }
 
   return (
     <>
@@ -143,5 +149,23 @@ export function StreakPage() {
       {/* /streak/milestone のときに祝福モーダルが乗る */}
       <Outlet />
     </>
+  );
+}
+
+function StreakSkeleton() {
+  return (
+    <SkeletonGroup label="軌跡を読み込み中" className="flex-1 gap-3.5">
+      <Skeleton className="h-9 w-56" />
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full" />
+        ))}
+      </div>
+      <Skeleton className="h-60 w-full" />
+      <div className="flex flex-col gap-3.5 xl:flex-row">
+        <Skeleton className="h-44 flex-1" />
+        <Skeleton className="h-44 w-full xl:w-[320px]" />
+      </div>
+    </SkeletonGroup>
   );
 }

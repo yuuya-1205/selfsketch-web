@@ -8,16 +8,22 @@ import {
   CardLabel,
   Heatmap,
   PageHeader,
+  Skeleton,
+  SkeletonGroup,
   StatCard,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useHabitDetail } from "@/lib/api/habits";
+import { useHabitDetailQuery } from "@/lib/api/habits";
 
 export function HabitDetailPage() {
   usePageMeta("メイン / 今日", "習慣の詳細");
   const navigate = useNavigate();
   const { habitId } = useParams();
-  const habit = useHabitDetail(habitId ?? "h1");
+  const { data: habit, isLoading } = useHabitDetailQuery(habitId ?? "h1");
+
+  if (isLoading || !habit) {
+    return <HabitDetailSkeleton />;
+  }
 
   const chips = [
     { icon: Sunrise, label: habit.schedule },
@@ -115,5 +121,21 @@ export function HabitDetailPage() {
         </aside>
       </div>
     </>
+  );
+}
+
+function HabitDetailSkeleton() {
+  return (
+    <SkeletonGroup label="習慣の詳細を読み込み中" className="flex-1 gap-3.5">
+      <Skeleton className="h-9 w-40" />
+      <Skeleton className="h-7 w-64 rounded-full" />
+      <div className="flex flex-1 flex-col gap-3.5 xl:flex-row">
+        <div className="flex flex-1 flex-col gap-3.5">
+          <Skeleton className="h-56 w-full" />
+          <Skeleton className="h-40 w-full" />
+        </div>
+        <Skeleton className="h-72 w-full xl:w-[300px]" />
+      </div>
+    </SkeletonGroup>
   );
 }
