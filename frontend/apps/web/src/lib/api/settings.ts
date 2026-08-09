@@ -12,15 +12,40 @@ export const SETTINGS_NAV = [
 ];
 
 const USAGE: UsageMeter[] = [
-  { label: "AI 未来生成", value: "3 / 5", ratio: 0.6, note: "今月のリセットまで あと 8日" },
-  { label: "保存できる作品", value: "42 / 100", ratio: 0.42, note: "上限まで あと 58点" },
+  {
+    label: "AI 未来生成",
+    value: "3 / 5",
+    ratio: 0.6,
+    note: "今月のリセットまで あと 8日",
+  },
+  {
+    label: "保存できる作品",
+    value: "42 / 100",
+    ratio: 0.42,
+    note: "上限まで あと 58点",
+  },
   { label: "書き出し", value: "0 / 1", ratio: 0, note: "月に1回まで" },
 ];
 
 const INVOICES: Invoice[] = [
-  { date: "2026/04/01", description: "Premium 月額プラン", amount: "¥980", status: "お支払い済み" },
-  { date: "2026/03/01", description: "Premium 月額プラン", amount: "¥980", status: "お支払い済み" },
-  { date: "2026/02/01", description: "Premium 月額プラン", amount: "¥980", status: "返金" },
+  {
+    date: "2026/04/01",
+    description: "Premium 月額プラン",
+    amount: "¥980",
+    status: "お支払い済み",
+  },
+  {
+    date: "2026/03/01",
+    description: "Premium 月額プラン",
+    amount: "¥980",
+    status: "お支払い済み",
+  },
+  {
+    date: "2026/02/01",
+    description: "Premium 月額プラン",
+    amount: "¥980",
+    status: "返金",
+  },
 ];
 
 export function useUsage() {
@@ -36,7 +61,8 @@ export const PREMIUM_PLANS = [
     name: "Free",
     price: "¥0",
     per: "/ ずっと",
-    description: "まずは続けてみるためのプラン。基本の記録機能はすべて使えます。",
+    description:
+      "まずは続けてみるためのプラン。基本の記録機能はすべて使えます。",
     features: [
       "習慣は3つまで",
       "AI未来生成 月5回",

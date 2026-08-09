@@ -124,7 +124,13 @@ export interface Vision {
 
 /* ---- インサイト ---------------------------------------------------- */
 export interface InsightsData {
-  kpis: { label: string; value: string; unit: string; delta: string; up: boolean }[];
+  kpis: {
+    label: string;
+    value: string;
+    unit: string;
+    delta: string;
+    up: boolean;
+  }[];
   monthlyRecordDays: number[];
   monthLabels: string[];
   habitRates: { title: string; rate: number }[];
