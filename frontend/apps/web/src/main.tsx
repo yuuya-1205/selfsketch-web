@@ -4,7 +4,14 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router";
 import { App } from "./App";
 import { store } from "./lib/store";
+import { RepositoryProvider } from "@/presentation/di/RepositoryProvider";
+import { todayRepository } from "@/data/repository/todayRepositoryImpl";
 import "./app.css";
+
+/** 依存の配線はここだけ。画面は useRepositories() 越しにしか触らない */
+const repositories = {
+  today: todayRepository,
+};
 
 /*
  * GitHub Pages の 404 フォールバックから戻ってきた場合、
@@ -19,9 +26,11 @@ if (redirected) {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <App />
-      </BrowserRouter>
+      <RepositoryProvider repositories={repositories}>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <App />
+        </BrowserRouter>
+      </RepositoryProvider>
     </Provider>
   </StrictMode>,
 );
