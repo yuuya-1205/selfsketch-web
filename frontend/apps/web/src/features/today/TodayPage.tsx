@@ -1,8 +1,18 @@
 import { Outlet, useNavigate } from "react-router";
 import { Plus } from "lucide-react";
-import { Badge, Button, Progress, SectionHeading } from "@selfsketch/ui";
+import {
+  Badge,
+  Button,
+  Progress,
+  SectionHeading,
+  Skeleton,
+  SkeletonGroup,
+} from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useTodayDashboard, useToggleHabit } from "@/lib/api/today";
+import {
+  useTodayDashboardQuery,
+  useToggleHabitMutation,
+} from "@/lib/api/today";
 import { HabitRow } from "./components/HabitRow";
 import { QuickSketchCard } from "./components/QuickSketchCard";
 import { StreakCard } from "./components/StreakCard";
@@ -14,10 +24,10 @@ export function TodayPage() {
   usePageMeta("メイン", "今日の自分");
   const navigate = useNavigate();
 
-  const { data, isPending } = useTodayDashboard();
-  const toggle = useToggleHabit();
+  const { data, isLoading } = useTodayDashboardQuery();
+  const [toggleHabit] = useToggleHabitMutation();
 
-  if (isPending || !data) {
+  if (isLoading || !data) {
     return <TodaySkeleton />;
   }
 
@@ -72,7 +82,7 @@ export function TodayPage() {
             <HabitRow
               key={habit.id}
               habit={habit}
-              onToggle={(done) => toggle.mutate({ id: habit.id, done })}
+              onToggle={(done) => void toggleHabit({ id: habit.id, done })}
             />
           ))}
 
@@ -95,13 +105,16 @@ export function TodayPage() {
 
 function TodaySkeleton() {
   return (
-    <div className="flex w-full flex-1 animate-pulse flex-col gap-5 xl:flex-row">
+    <SkeletonGroup
+      label="今日の習慣を読み込み中"
+      className="flex-1 gap-5 xl:flex-row"
+    >
       <div className="flex flex-1 flex-col gap-3">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="h-[62px] w-full rounded-row bg-surface" />
+          <Skeleton key={i} className="h-[62px] w-full rounded-row" />
         ))}
       </div>
-      <div className="h-40 w-full rounded-card bg-surface xl:w-[330px]" />
-    </div>
+      <Skeleton className="h-40 w-full xl:w-[330px]" />
+    </SkeletonGroup>
   );
 }

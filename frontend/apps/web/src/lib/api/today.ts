@@ -1,11 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { baseApi, mockDelay } from "./baseApi";
 import type { TodayDashboard } from "./types";
 
 /* ------------------------------------------------------------------ *
- * モック実装。
- * 実 API ができたら fetchTodayDashboard / toggleHabit の中身だけを
- *   const res = await fetch("/api/v1/today", { credentials: "include" });
- * に置き換える。呼び出し側（フック以降）は変更不要。
+ * モック実装。差し替え手順は baseApi.ts のコメントを参照。
  * ------------------------------------------------------------------ */
 
 const MOCK: TodayDashboard = {
@@ -65,15 +62,13 @@ const MOCK: TodayDashboard = {
   sketchLogged: false,
 };
 
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
 async function fetchTodayDashboard(): Promise<TodayDashboard> {
-  await delay(120);
+  await mockDelay(120);
   return structuredClone(MOCK);
 }
 
 async function toggleHabit(id: string, done: boolean): Promise<void> {
-  await delay(80);
+  await mockDelay();
   const habit = MOCK.habits.find((h) => h.id === id);
   if (!habit) return;
   habit.done = done;
@@ -83,41 +78,41 @@ async function toggleHabit(id: string, done: boolean): Promise<void> {
 
 /* ------------------------------------------------------------------ */
 
-export const todayQueryKey = ["today"] as const;
+export const todayApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    todayDashboard: build.query<TodayDashboard, void>({
+      queryFn: async () => ({ data: await fetchTodayDashboard() }),
+      providesTags: ["Today"],
+    }),
 
-export function useTodayDashboard() {
-  return useQuery({
-    queryKey: todayQueryKey,
-    queryFn: fetchTodayDashboard,
-  });
-}
-
-export function useToggleHabit() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, done }: { id: string; done: boolean }) =>
-      toggleHabit(id, done),
-    // チェックの反応は即座に返す（楽観更新）
-    onMutate: async ({ id, done }) => {
-      await qc.cancelQueries({ queryKey: todayQueryKey });
-      const prev = qc.getQueryData<TodayDashboard>(todayQueryKey);
-      if (prev) {
-        const habits = prev.habits.map((h) =>
-          h.id === id ? { ...h, done } : h,
+    toggleHabit: build.mutation<void, { id: string; done: boolean }>({
+      queryFn: async ({ id, done }) => {
+        await toggleHabit(id, done);
+        return { data: undefined };
+      },
+      // チェックの反応は即座に返す（楽観更新）。失敗したら巻き戻す
+      onQueryStarted: async ({ id, done }, { dispatch, queryFulfilled }) => {
+        const patch = dispatch(
+          todayApi.util.updateQueryData(
+            "todayDashboard",
+            undefined,
+            (draft) => {
+              const habit = draft.habits.find((h) => h.id === id);
+              if (!habit) return;
+              habit.done = done;
+              draft.completedCount = draft.habits.filter((h) => h.done).length;
+            },
+          ),
         );
-        qc.setQueryData<TodayDashboard>(todayQueryKey, {
-          ...prev,
-          habits,
-          completedCount: habits.filter((h) => h.done).length,
-        });
-      }
-      return { prev };
-    },
-    onError: (_e, _v, ctx) => {
-      if (ctx?.prev) qc.setQueryData(todayQueryKey, ctx.prev);
-    },
-    onSettled: () => {
-      void qc.invalidateQueries({ queryKey: todayQueryKey });
-    },
-  });
-}
+        try {
+          await queryFulfilled;
+        } catch {
+          patch.undo();
+        }
+      },
+      invalidatesTags: ["Today"],
+    }),
+  }),
+});
+
+export const { useTodayDashboardQuery, useToggleHabitMutation } = todayApi;
