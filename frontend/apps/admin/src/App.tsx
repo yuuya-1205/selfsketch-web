@@ -43,7 +43,8 @@ function Pending({ label }: { label: string }) {
       <div className="flex max-w-md flex-col gap-2">
         <p className="text-base font-bold text-ink">{label}</p>
         <p className="text-xs leading-relaxed text-brown">
-          未実装。デザインは selfsketch.pen の「Admin Console (Web)」にあります。
+          未実装。デザインは selfsketch.pen の「Admin Console
+          (Web)」にあります。
         </p>
       </div>
     </Card>
