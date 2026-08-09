@@ -1,0 +1,8 @@
+# 開発・CI 用の依存。本番インストール（requirements.txt）には含めない。
+-r requirements.txt
+
+pytest>=8.3
+# fastapi.testclient (starlette TestClient) が内部で使う HTTP クライアント。
+# httpx でも動くが starlette が DeprecationWarning を出すため httpx2 を使う。
+httpx2>=0.29
+ruff>=0.9

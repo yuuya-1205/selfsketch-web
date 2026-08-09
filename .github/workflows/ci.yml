@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   frontend:
-    name: frontend (typecheck & build)
+    name: frontend (lint, typecheck, test & build)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -28,14 +28,23 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
       - name: Typecheck
-        run: npm run typecheck --workspaces --if-present
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test:run
 
       - name: Build
-        run: npm run build --workspaces --if-present
+        run: npm run build
 
   backend:
-    name: backend (go build & vet)
+    name: backend (build, vet & test)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -54,8 +63,14 @@ jobs:
       - name: Vet
         run: go vet ./...
 
+      - name: Test
+        run: go test ./...
+
+      - name: Format check
+        run: test -z "$(gofmt -l .)" || { gofmt -l .; exit 1; }
+
   analysis-frontend:
-    name: analysis/frontend (typecheck & build)
+    name: analysis/frontend (lint, typecheck, test & build)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -72,14 +87,23 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Test
+        run: npm run test:run
 
       - name: Build
         run: npm run build
 
   analysis-backend:
-    name: analysis/backend (import check)
+    name: analysis/backend (lint & test)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -91,11 +115,18 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-          cache-dependency-path: analysis/backend/requirements.txt
+          cache-dependency-path: |
+            analysis/backend/requirements.txt
+            analysis/backend/requirements-dev.txt
 
       - name: Install
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
 
-      # テスト未導入のため、まずはアプリが import できることだけ保証する
-      - name: Import check
-        run: python -c "import app.main"
+      - name: Lint
+        run: ruff check .
+
+      - name: Format check
+        run: ruff format --check .
+
+      - name: Test
+        run: python -m pytest
