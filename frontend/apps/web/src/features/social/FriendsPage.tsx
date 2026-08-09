@@ -6,16 +6,22 @@ import {
   CardLabel,
   PageHeader,
   SectionHeading,
+  Skeleton,
+  SkeletonGroup,
   Thumb,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useFriendFeed, useFriends } from "@/lib/api/social";
+import { useFriendFeedQuery, useFriendsQuery } from "@/lib/api/social";
 
 export function FriendsPage() {
   usePageMeta("分析・つながり", "フレンド");
   const navigate = useNavigate();
-  const feed = useFriendFeed();
-  const friends = useFriends();
+  const { data: feed, isLoading: feedLoading } = useFriendFeedQuery();
+  const { data: friends, isLoading: friendsLoading } = useFriendsQuery();
+
+  if (feedLoading || friendsLoading || !feed || !friends) {
+    return <FriendsSkeleton />;
+  }
 
   return (
     <>
@@ -133,5 +139,21 @@ export function FriendsPage() {
       {/* /friends/share でシェアモーダルが乗る */}
       <Outlet />
     </>
+  );
+}
+
+function FriendsSkeleton() {
+  return (
+    <SkeletonGroup label="フレンドを読み込み中" className="flex-1 gap-4.5">
+      <Skeleton className="h-9 w-40" />
+      <div className="flex flex-1 flex-col gap-4.5 xl:flex-row">
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full" />
+          ))}
+        </div>
+        <Skeleton className="h-72 w-full xl:w-[320px]" />
+      </div>
+    </SkeletonGroup>
   );
 }

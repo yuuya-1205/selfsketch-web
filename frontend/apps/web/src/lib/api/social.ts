@@ -1,4 +1,4 @@
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type { Friend, FriendActivity } from "./types";
 
 const FEED: FriendActivity[] = [
@@ -56,10 +56,24 @@ export const SHARE_OPTIONS = [
   { label: "フレンド数", enabled: false },
 ];
 
-export function useFriendFeed() {
-  return useMockQuery(["social", "feed"], FEED);
-}
+export const socialApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    friendFeed: build.query<typeof FEED, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: FEED };
+      },
+      providesTags: [{ type: "Social", id: "feed" }],
+    }),
 
-export function useFriends() {
-  return useMockQuery(["social", "friends"], FRIENDS);
-}
+    friends: build.query<typeof FRIENDS, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: FRIENDS };
+      },
+      providesTags: [{ type: "Social", id: "friends" }],
+    }),
+  }),
+});
+
+export const { useFriendFeedQuery, useFriendsQuery } = socialApi;
