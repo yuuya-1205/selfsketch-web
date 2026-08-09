@@ -120,6 +120,6 @@ ruff check . && ruff format --check . && python -m pytest
 ## 未実装（触るときは要相談）
 
 認証、実 API、i18n、画像アセット（`Thumb` が暖色パレットで代替中）、
-Web の設定タブ 3 種（プライバシー / データと書き出し / ヘルプ）、Admin の設定・権限画面。
+Web の設定タブ 3 種（プライバシー / データと書き出し / ヘルプ）。
 
 API の設計方針と決定待ちの論点は `docs/api-contract.md` に整理してある。

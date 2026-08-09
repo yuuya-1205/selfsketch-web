@@ -35,7 +35,7 @@ description: selfsketch-web に新しい画面・ページ・ルート・モー�
 4. ナビは `src/lib/nav.ts` の `ADMIN_NAV_GROUPS`（`.pen` の "Admin Sidebar" と 1:1）
 5. README の管理コンソール表を更新
 6. **個人データの扱い**: 記録本文・作品画像は既定でマスクし、開示リクエスト経由で
-   閲覧する導線にする（`.pen` の「A5. 設計メモ」の方針。`ModerationPage` が手本）
+   閲覧する導線にする（`.pen` の「A6. 設計メモ」の方針。`ModerationPage` が手本）
 
 ## 仕上げ（共通）
 
