@@ -15,21 +15,26 @@ import {
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { JOURNAL_FILTERS, useJournalEntriesQuery } from "@/lib/api/journal";
+import { JOURNAL_FILTERS } from "@/presentation/constants/journalFilters";
+import { useJournal } from "@/usecase/journal";
+import {
+  MOOD_COLOR,
+  MOOD_LABEL,
+  journalDateLabel,
+  journalStatLabels,
+  journalTimestampLabel,
+} from "@/presentation/format/journal";
 
 export function JournalPage() {
   usePageMeta("メイン", "ジャーナル");
   const navigate = useNavigate();
   const { entryId } = useParams();
-  const { data: entries, isLoading } = useJournalEntriesQuery();
+  const { entries, entry, isLoading } = useJournal(entryId);
   const [filter, setFilter] = useState<string>(JOURNAL_FILTERS[0]);
 
-  if (isLoading || !entries) {
+  if (isLoading || !entries || !entry) {
     return <JournalSkeleton />;
   }
-
-  // 詳細ペインは一覧と同じキャッシュから引く（追加のリクエストは出さない）
-  const entry = entries.find((e) => e.id === entryId) ?? entries[0];
 
   return (
     <>
@@ -77,10 +82,10 @@ export function JournalPage() {
                 <span className="flex items-center gap-2">
                   <span
                     className="size-2 shrink-0 rounded-full"
-                    style={{ backgroundColor: e.moodColor }}
+                    style={{ backgroundColor: MOOD_COLOR[e.mood] }}
                   />
                   <span className="text-[11px] font-semibold text-muted">
-                    {e.dateLabel}
+                    {journalDateLabel(e.writtenAt)}
                   </span>
                   <span className="h-px flex-1" />
                   {e.hasImage && (
@@ -104,7 +109,7 @@ export function JournalPage() {
           <div className="flex items-start gap-2.5">
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <span className="text-[11px] font-semibold tracking-[1px] text-muted">
-                {entry.timeLabel}
+                {journalTimestampLabel(entry.writtenAt)}
               </span>
               <h2 className="text-2xl font-bold text-ink">{entry.title}</h2>
             </div>
@@ -124,11 +129,11 @@ export function JournalPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Badge tone="solid">{entry.habit}</Badge>
-            <Badge className="bg-paper">{entry.mood}</Badge>
+            <Badge tone="solid">{entry.habitTitle}</Badge>
+            <Badge className="bg-paper">気分: {MOOD_LABEL[entry.mood]}</Badge>
             {entry.tags.map((t) => (
               <Badge key={t} className="bg-paper">
-                {t}
+                #{t}
               </Badge>
             ))}
           </div>
@@ -152,7 +157,7 @@ export function JournalPage() {
               </span>
               <Card className="flex flex-col gap-2 p-3.5">
                 <CardLabel>この日の記録</CardLabel>
-                {entry.stats.map((s) => (
+                {journalStatLabels(entry.stats).map((s) => (
                   <span key={s} className="text-xs font-medium text-ink">
                     · {s}
                   </span>

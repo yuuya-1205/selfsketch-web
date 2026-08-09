@@ -9,14 +9,14 @@ import {
   Thumb,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useGalleryGridQuery } from "@/lib/api/gallery";
+import { useGalleryGrid } from "@/usecase/gallery";
 
 const VIEWS = ["タイムライン", "グリッド"] as const;
 
 export function GalleryGridPage() {
   usePageMeta("メイン", "ギャラリー");
   const navigate = useNavigate();
-  const { data: items, isLoading } = useGalleryGridQuery();
+  const { items, isLoading } = useGalleryGrid();
 
   if (isLoading || !items) {
     return <GalleryGridSkeleton />;
