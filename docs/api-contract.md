@@ -139,8 +139,12 @@ GET                    /api/v1/me/subscription        プラン・請求履歴
 
 1. **認証方式**（案 A / B / C） — 他の全ての前提
 2. **バックエンドのホスティング先** — GitHub Pages は静的配信のみなので API は別が必要。
-   Cloud Run / Fly.io / Render など。DB も併せて決める必要がある
-3. **データベース** — 現在まったく選定されていない（`backend/go.mod` に DB ドライバなし）
+   Cloud Run / Fly.io / Render など。マネージド MySQL の有無も選定条件に入る
+3. ~~**データベース**~~ — **MySQL に決定**（2026-08-09）。アクセスは `database/sql` +
+   `go-sql-driver/mysql` に手書き SQL、マイグレーションは golang-migrate の `.sql`。
+   バックエンドの構成はクリーンアーキテクチャ（`domain` / `usecase` / `adapter` / `infra`）とし、
+   リポジトリ実装を差し替えれば sqlc や ORM へ移行できる形にする。
+   詳細は `.claude/skills/backend-conventions`
 4. **画像ストレージ** — ギャラリーとスケッチの実画像をどこに置くか（S3 / R2 / Cloud Storage）
 5. **将来ネイティブアプリを出す予定があるか** — 認証方式の判断材料
 6. **`analysis/` の位置づけ** — 本体 API と DB を共有するのか、別系統のデータ基盤にするのか。
