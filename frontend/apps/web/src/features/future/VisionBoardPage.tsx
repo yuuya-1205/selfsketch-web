@@ -14,13 +14,20 @@ import {
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { HORIZONS, useVisionQuery } from "@/lib/api/future";
+import { useVision } from "@/usecase/future";
+import type { Horizon } from "@/domain/model/vision";
+import {
+  HORIZONS,
+  HORIZON_LABEL,
+  milestoneMonthLabel,
+  visionTargetLabel,
+} from "@/presentation/format/vision";
 
 export function VisionBoardPage() {
   usePageMeta("メイン", "未来の自分");
   const navigate = useNavigate();
-  const { data: vision, isLoading } = useVisionQuery(undefined);
-  const [horizon, setHorizon] = useState<(typeof HORIZONS)[number]>("1年");
+  const { vision, isLoading } = useVision();
+  const [horizon, setHorizon] = useState<Horizon>("1_year");
 
   if (isLoading || !vision) {
     return <VisionSkeleton label="ビジョンボードを読み込み中" />;
@@ -33,9 +40,13 @@ export function VisionBoardPage() {
         actions={
           <>
             <Segmented
-              options={HORIZONS}
-              value={horizon}
-              onChange={setHorizon}
+              options={HORIZONS.map((h) => HORIZON_LABEL[h])}
+              value={HORIZON_LABEL[horizon]}
+              onChange={(label) =>
+                setHorizon(
+                  HORIZONS.find((h) => HORIZON_LABEL[h] === label) ?? horizon,
+                )
+              }
             />
             <Button variant="outline" icon={<Sparkles size={15} />}>
               AIで描き直す
@@ -52,7 +63,8 @@ export function VisionBoardPage() {
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           <span className="text-[11px] font-bold tracking-[2px] text-nav-icon">
-            1 YEAR FROM NOW · {vision.dateLabel}
+            {HORIZON_LABEL[vision.horizon].toUpperCase()} FROM NOW ·{" "}
+            {visionTargetLabel(vision.targetDate)}
           </span>
           <p className="text-[26px] leading-[1.7] font-bold text-paper">
             {vision.quote}
@@ -102,7 +114,7 @@ export function VisionBoardPage() {
                 )}
               />
               <span className="w-8 shrink-0 text-[11px] font-bold text-muted">
-                {m.when}
+                {milestoneMonthLabel(m.date)}
               </span>
               <span
                 className={cn(

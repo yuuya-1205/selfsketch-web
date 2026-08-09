@@ -1,20 +1,24 @@
-import { baseApi, mockDelay } from "./baseApi";
-import type { Vision } from "./types";
+import { baseApi, mockDelay } from "@/lib/api/baseApi";
+import type { VisionDto } from "@/data/dto/vision";
 
-const VISION: Vision = {
+/* モック。差し替え手順は baseApi.ts のコメントを参照 */
+const MOCK: VisionDto = {
   id: "v-1y",
-  horizon: "1年",
-  dateLabel: "2027年4月",
+  horizon: "1_year",
+  targetDate: "2027-04-01T00:00:00Z",
   quote:
     "「毎朝の5分スケッチを312日続けたあなた。ノート3冊分の線が、迷いのない一本になっている。」",
   body: "はじめての作品集を、自分の手で綴じ終えた日。人に見せるのが怖くなくなっている。",
   progress: 0.34,
-  remainingDays: 312,
   milestones: [
-    { when: "6月", title: "スケッチ100枚", reached: true },
-    { when: "9月", title: "展示に1枚出す", reached: false },
-    { when: "12月", title: "作品集の構成を決める", reached: false },
-    { when: "4月", title: "作品集を綴じる", reached: false },
+    { date: "2026-06-01T00:00:00Z", title: "スケッチ100枚", reached: true },
+    { date: "2026-09-01T00:00:00Z", title: "展示に1枚出す", reached: false },
+    {
+      date: "2026-12-01T00:00:00Z",
+      title: "作品集の構成を決める",
+      reached: false,
+    },
+    { date: "2027-04-01T00:00:00Z", title: "作品集を綴じる", reached: false },
   ],
   habits: [
     { title: "5分スケッチ", rate: 0.86 },
@@ -28,23 +32,21 @@ const VISION: Vision = {
     "作品集を綴じた夜、いちばん気に入った一枚は、上手い絵ではなく「続けられなかった週のあと、また描き始めた日の絵」だった。",
   ],
   steps: [
-    { when: "いま", title: "毎朝5分の線を残す", reached: true },
-    { when: "3か月後", title: "100枚たまる", reached: false },
-    { when: "6か月後", title: "得意な題材が見つかる", reached: false },
-    { when: "9か月後", title: "展示に1枚出す", reached: false },
-    { when: "1年後", title: "作品集を綴じる", reached: false },
+    { offsetMonths: 0, title: "毎朝5分の線を残す", reached: true },
+    { offsetMonths: 3, title: "100枚たまる", reached: false },
+    { offsetMonths: 6, title: "得意な題材が見つかる", reached: false },
+    { offsetMonths: 9, title: "展示に1枚出す", reached: false },
+    { offsetMonths: 12, title: "作品集を綴じる", reached: false },
   ],
 };
 
-export const HORIZONS = ["6か月", "1年", "3年", "10年"] as const;
-
-export const futureApi = baseApi.injectEndpoints({
+export const futureDataSource = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    // id 未指定は「いま表示中のビジョン」。モックは1件しかない
-    vision: build.query<Vision, string | undefined>({
+    vision: build.query<VisionDto, string | undefined>({
+      // id 未指定は「いま表示中のビジョン」。モックは1件しかない
       queryFn: async (id) => {
         await mockDelay();
-        return { data: id ? { ...VISION, id } : VISION };
+        return { data: id ? { ...MOCK, id } : MOCK };
       },
       providesTags: (_result, _error, id) => [
         { type: "Vision", id: id ?? "current" },
@@ -52,5 +54,3 @@ export const futureApi = baseApi.injectEndpoints({
     }),
   }),
 });
-
-export const { useVisionQuery } = futureApi;

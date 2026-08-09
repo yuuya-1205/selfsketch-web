@@ -1,5 +1,7 @@
 import { createContext, use } from "react";
+import type { FutureRepository } from "@/domain/repository/futureRepository";
 import type { GalleryRepository } from "@/domain/repository/galleryRepository";
+import type { InsightsRepository } from "@/domain/repository/insightsRepository";
 import type { HabitsRepository } from "@/domain/repository/habitsRepository";
 import type { JournalRepository } from "@/domain/repository/journalRepository";
 import type { StreakRepository } from "@/domain/repository/streakRepository";
@@ -15,6 +17,8 @@ export interface Repositories {
   streak: StreakRepository;
   journal: JournalRepository;
   gallery: GalleryRepository;
+  future: FutureRepository;
+  insights: InsightsRepository;
 }
 
 export const RepositoryContext = createContext<Repositories | null>(null);
