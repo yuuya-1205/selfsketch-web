@@ -9,9 +9,6 @@ deploy
 # 下記は導入前に書かれ整形結果と差分が出るファイル。
 # 別コミットで `npx prettier --write <file>` して 1 行ずつ消していく想定。
 # （まとめて整形すると差分が約 1,250 行になりレビュー不能なため段階導入）
-apps/admin/src/App.tsx
-apps/admin/src/lib/api/mock.ts
-apps/admin/src/pages/AuditPage.tsx
 apps/admin/src/pages/DeliveryPage.tsx
 apps/admin/src/pages/ModerationPage.tsx
 apps/admin/src/pages/OverviewPage.tsx

@@ -9,6 +9,8 @@ import { AiMonitoringPage } from "@/pages/AiMonitoringPage";
 import { RevenuePage } from "@/pages/RevenuePage";
 import { DeliveryPage } from "@/pages/DeliveryPage";
 import { AuditPage } from "@/pages/AuditPage";
+import { MembersPage } from "@/pages/MembersPage";
+import { SettingsPage } from "@/pages/SettingsPage";
 
 export function App() {
   return (
@@ -25,9 +27,8 @@ export function App() {
         <Route path="/delivery" element={<DeliveryPage />} />
         <Route path="/audit" element={<AuditPage />} />
 
-        {/* 権限・メンバーは監査ログ画面に同居しているので誘導する */}
-        <Route path="/members" element={<Navigate to="/audit" replace />} />
-        <Route path="/settings" element={<Pending label="設定" />} />
+        <Route path="/members" element={<MembersPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Pending label="ページが見つかりません" />} />
       </Route>
     </Routes>
@@ -43,7 +44,8 @@ function Pending({ label }: { label: string }) {
       <div className="flex max-w-md flex-col gap-2">
         <p className="text-base font-bold text-ink">{label}</p>
         <p className="text-xs leading-relaxed text-brown">
-          未実装。デザインは selfsketch.pen の「Admin Console (Web)」にあります。
+          未実装。デザインは selfsketch.pen の「Admin Console
+          (Web)」にあります。
         </p>
       </div>
     </Card>
