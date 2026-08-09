@@ -7,16 +7,22 @@ import {
   CardLabel,
   PageHeader,
   Ring,
+  Skeleton,
+  SkeletonGroup,
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useVision } from "@/lib/api/future";
+import { useVisionQuery } from "@/lib/api/future";
 
 export function VisionDetailPage() {
   usePageMeta("メイン / 未来の自分", "1年後の自分");
   const navigate = useNavigate();
   const { visionId } = useParams();
-  const vision = useVision(visionId);
+  const { data: vision, isLoading } = useVisionQuery(visionId);
+
+  if (isLoading || !vision) {
+    return <VisionDetailSkeleton />;
+  }
 
   return (
     <>
@@ -103,5 +109,18 @@ export function VisionDetailPage() {
         </aside>
       </div>
     </>
+  );
+}
+
+function VisionDetailSkeleton() {
+  return (
+    <SkeletonGroup label="ビジョンを読み込み中" className="flex-1 gap-3.5">
+      <Skeleton className="h-5 w-44" />
+      <Skeleton className="h-9 w-64" />
+      <div className="flex flex-1 flex-col gap-3.5 xl:flex-row">
+        <Skeleton className="min-h-80 flex-1" />
+        <Skeleton className="h-80 w-full xl:w-[320px]" />
+      </div>
+    </SkeletonGroup>
   );
 }

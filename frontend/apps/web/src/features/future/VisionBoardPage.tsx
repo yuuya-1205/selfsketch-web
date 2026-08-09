@@ -9,16 +9,22 @@ import {
   PageHeader,
   Progress,
   Segmented,
+  Skeleton,
+  SkeletonGroup,
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { HORIZONS, useVision } from "@/lib/api/future";
+import { HORIZONS, useVisionQuery } from "@/lib/api/future";
 
 export function VisionBoardPage() {
   usePageMeta("メイン", "未来の自分");
   const navigate = useNavigate();
-  const vision = useVision();
+  const { data: vision, isLoading } = useVisionQuery(undefined);
   const [horizon, setHorizon] = useState<(typeof HORIZONS)[number]>("1年");
+
+  if (isLoading || !vision) {
+    return <VisionSkeleton label="ビジョンボードを読み込み中" />;
+  }
 
   return (
     <>
@@ -136,5 +142,17 @@ export function VisionBoardPage() {
         </Card>
       </div>
     </>
+  );
+}
+
+function VisionSkeleton({ label }: { label: string }) {
+  return (
+    <SkeletonGroup label={label} className="flex-1 gap-3.5">
+      <Skeleton className="h-9 w-48" />
+      <div className="flex flex-1 flex-col gap-3.5 xl:flex-row">
+        <Skeleton className="min-h-72 flex-1" />
+        <Skeleton className="h-72 w-full xl:w-[320px]" />
+      </div>
+    </SkeletonGroup>
   );
 }
