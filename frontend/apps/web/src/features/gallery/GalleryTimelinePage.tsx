@@ -9,14 +9,19 @@ import {
   Thumb,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useGalleryMonthsQuery } from "@/lib/api/gallery";
+import { useGalleryTimeline } from "@/usecase/gallery";
+import {
+  galleryDayLabel,
+  galleryMonthLabel,
+  gallerySummaryLabel,
+} from "@/presentation/format/gallery";
 
 const VIEWS = ["タイムライン", "グリッド"] as const;
 
 export function GalleryTimelinePage() {
   usePageMeta("メイン", "ギャラリー");
   const navigate = useNavigate();
-  const { data: months, isLoading } = useGalleryMonthsQuery();
+  const { months, isLoading } = useGalleryTimeline();
 
   if (isLoading || !months) {
     return <GallerySkeleton label="タイムラインを読み込み中" />;
@@ -40,11 +45,16 @@ export function GalleryTimelinePage() {
 
       <div className="flex flex-col gap-4.5">
         {months.map((m) => (
-          <section key={m.label} className="flex flex-col gap-2.5">
+          <section
+            key={m.month.toISOString()}
+            className="flex flex-col gap-2.5"
+          >
             <div className="flex items-center gap-2.5">
-              <h3 className="text-[15px] font-bold text-ink">{m.label}</h3>
+              <h3 className="text-[15px] font-bold text-ink">
+                {galleryMonthLabel(m.month)}
+              </h3>
               <span className="text-[11px] font-medium text-muted">
-                {m.summary}
+                {gallerySummaryLabel(m.count, m.note)}
               </span>
               <span className="h-px flex-1 bg-line" />
             </div>
@@ -56,7 +66,7 @@ export function GalleryTimelinePage() {
                     className="flex h-37 items-end p-2.5 transition-transform hover:scale-[1.02]"
                   >
                     <span className="rounded-full bg-ink/80 px-2.5 py-1 text-[10px] font-semibold text-paper">
-                      {item.dateLabel}
+                      {galleryDayLabel(item.createdAt)}
                     </span>
                   </Thumb>
                 </li>

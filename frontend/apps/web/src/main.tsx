@@ -8,6 +8,8 @@ import { RepositoryProvider } from "@/presentation/di/RepositoryProvider";
 import { todayRepository } from "@/data/repository/todayRepositoryImpl";
 import { habitsRepository } from "@/data/repository/habitsRepositoryImpl";
 import { streakRepository } from "@/data/repository/streakRepositoryImpl";
+import { journalRepository } from "@/data/repository/journalRepositoryImpl";
+import { galleryRepository } from "@/data/repository/galleryRepositoryImpl";
 import "./app.css";
 
 /** 依存の配線はここだけ。画面は useRepositories() 越しにしか触らない */
@@ -15,6 +17,8 @@ const repositories = {
   today: todayRepository,
   habits: habitsRepository,
   streak: streakRepository,
+  journal: journalRepository,
+  gallery: galleryRepository,
 };
 
 /*

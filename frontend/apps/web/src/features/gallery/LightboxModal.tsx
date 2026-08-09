@@ -1,7 +1,8 @@
 import { useNavigate, useParams } from "react-router";
 import { ChevronLeft, ChevronRight, Download, X } from "lucide-react";
 import { Button, Modal, Thumb } from "@selfsketch/ui";
-import { useGalleryGridQuery } from "@/lib/api/gallery";
+import { useGalleryItem } from "@/usecase/gallery";
+import { galleryDayLabel } from "@/presentation/format/gallery";
 
 const META = [
   { key: "習慣", value: "5分スケッチ" },
@@ -13,11 +14,7 @@ export function LightboxModal() {
   const navigate = useNavigate();
   const { itemId } = useParams();
   // グリッド画面の上に乗るので、同じキャッシュから該当作品だけ取り出す
-  const { item } = useGalleryGridQuery(undefined, {
-    selectFromResult: ({ data }) => ({
-      item: data?.find((i) => i.id === itemId) ?? data?.[0],
-    }),
-  });
+  const item = useGalleryItem(itemId);
   const close = () => navigate("/gallery/grid");
 
   if (!item) return null;
@@ -38,7 +35,7 @@ export function LightboxModal() {
         <aside className="flex w-full shrink-0 flex-col gap-3.5 border-l border-line bg-paper p-5.5 md:w-[300px]">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold tracking-[1.1px] text-muted">
-              2026年{item.dateLabel}
+              {item.createdAt.getFullYear()}年{galleryDayLabel(item.createdAt)}
             </span>
             <span className="h-px flex-1" />
             <button type="button" aria-label="閉じる" onClick={close}>
