@@ -102,6 +102,17 @@ main へは merge commit で入るため、**リバートの粒度 = PR とコ�
 - web の各ページは冒頭で `usePageMeta(パンくず, タイトル)` を呼び、トップバーと `document.title` を更新する
 - モーダルはネストルート（`<Route path="new" element={<HabitFormModal />} />`）+ `<Outlet />` で出す
 
+### 状態管理（frontend/apps/web/src/lib/store/）
+
+- クライアント状態は Redux Toolkit の slice。`store/uiSlice.ts` が手本
+- `useDispatch` / `useSelector` を直接使わない。**必ず `store/hooks.ts` の
+  `useAppDispatch` / `useAppSelector`** を使う（型が付く）
+- セレクタは `createSlice` の `selectors` に置き、slice から名前付き export する。
+  コンポーネント側で `state.ui.xxx` と辿らない
+- ストアは `createStore()` で毎回作れる。テストでは必ずこれで新しいストアを作り、
+  `<Provider store={store}>` で包む（`usePageMeta.test.tsx` が手本）
+- **サーバーから来るデータは slice に置かない**。データ層（下記）に持たせる
+
 ### データ層（frontend/apps/web/src/lib/api/）
 
 - いまは全てモック。`useMockQuery` が `initialData` を渡すのでページ側にローディング分岐はない
