@@ -1,12 +1,11 @@
 import { Bell, Menu, Search } from "lucide-react";
 import { Avatar, IconButton } from "@selfsketch/ui";
+import { useAppSelector } from "@/lib/store/hooks";
+import { selectPageMeta } from "@/lib/store/uiSlice";
 
-export interface TopbarProps {
-  crumb: string;
-  title: string;
-}
+export function Topbar() {
+  const { crumb, title } = useAppSelector(selectPageMeta);
 
-export function Topbar({ crumb, title }: TopbarProps) {
   return (
     <header className="flex h-16 w-full shrink-0 items-center gap-4 border-b border-line bg-paper px-4 md:px-7">
       <IconButton label="メニューを開く" size={34} className="md:hidden">

@@ -1,0 +1,26 @@
+import { describe, expect, it } from "vitest";
+import { createStore } from "./index";
+import { pageMetaSet, selectPageMeta } from "./uiSlice";
+
+describe("uiSlice", () => {
+  it("初期状態では空のページメタを返す", () => {
+    const store = createStore();
+    expect(selectPageMeta(store.getState())).toEqual({ crumb: "", title: "" });
+  });
+
+  it("pageMetaSet でパンくずとタイトルを差し替える", () => {
+    const store = createStore();
+    store.dispatch(pageMetaSet({ crumb: "その他", title: "設定 — 一般" }));
+    expect(selectPageMeta(store.getState())).toEqual({
+      crumb: "その他",
+      title: "設定 — 一般",
+    });
+  });
+
+  it("createStore はストアごとに独立している", () => {
+    const a = createStore();
+    const b = createStore();
+    a.dispatch(pageMetaSet({ crumb: "メイン", title: "今日の自分" }));
+    expect(selectPageMeta(b.getState())).toEqual({ crumb: "", title: "" });
+  });
+});

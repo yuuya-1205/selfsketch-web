@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { usePageMetaSetter } from "@/components/layout/pageMetaContext";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { pageMetaSet } from "@/lib/store/uiSlice";
 
 /** ページのパンくず・タイトルをトップバーへ反映する */
 export function usePageMeta(crumb: string, title: string) {
-  const setMeta = usePageMetaSetter();
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    setMeta({ crumb, title });
+    dispatch(pageMetaSet({ crumb, title }));
     document.title = title ? `${title} · SelfSketch` : "SelfSketch";
-  }, [crumb, title, setMeta]);
+  }, [crumb, title, dispatch]);
 }
