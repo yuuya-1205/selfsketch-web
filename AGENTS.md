@@ -131,6 +131,7 @@ main へは merge commit で入るため、**リバートの粒度 = PR とコ�
 | スキル | 用途 |
 | --- | --- |
 | `split-work` | PR とコミットの分割（着手前と commit / PR 作成前に必ず読む） |
+| `arch` | frontend のレイヤ構成・Repository（データが絡む実装の前に読む） |
 | `add-screen` | web / admin に新しい画面（ルート）を追加する |
 | `design-tokens` | 色・余白・角丸などトークンの追加・変更、`.pen` との同期 |
 | `verify-ui` | dev サーバー起動とスクリーンショットによる画面検証 |
