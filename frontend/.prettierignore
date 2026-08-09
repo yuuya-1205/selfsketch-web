@@ -34,7 +34,6 @@ apps/web/src/features/reflection/ClosingPage.tsx
 apps/web/src/features/reflection/DailyReflectionPage.tsx
 apps/web/src/features/settings/AccountSettingsPage.tsx
 apps/web/src/features/settings/GeneralSettingsPage.tsx
-apps/web/src/features/settings/SettingsPlaceholderPage.tsx
 apps/web/src/features/social/FriendsPage.tsx
 apps/web/src/features/social/ShareModal.tsx
 apps/web/src/features/streak/MilestoneModal.tsx
@@ -45,8 +44,6 @@ apps/web/src/features/today/components/StreakCard.tsx
 apps/web/src/lib/api/habits.ts
 apps/web/src/lib/api/insights.ts
 apps/web/src/lib/api/reflection.ts
-apps/web/src/lib/api/settings.ts
-apps/web/src/lib/api/types.ts
 apps/web/src/pages/PlaceholderPage.tsx
 packages/ui/src/components/Form.tsx
 packages/ui/src/components/IconButton.tsx
