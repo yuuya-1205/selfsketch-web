@@ -44,6 +44,7 @@ import { GeneralSettingsPage } from "@/features/settings/GeneralSettingsPage";
 import { AccountSettingsPage } from "@/features/settings/AccountSettingsPage";
 import { SubscriptionPage } from "@/features/settings/SubscriptionPage";
 import { PrivacySettingsPage } from "@/features/settings/PrivacySettingsPage";
+import { DataSettingsPage } from "@/features/settings/DataSettingsPage";
 import { SettingsPlaceholderPage } from "@/features/settings/SettingsPlaceholderPage";
 import { PremiumPage } from "@/features/premium/PremiumPage";
 
@@ -104,10 +105,7 @@ export function App() {
         <Route path="/settings/account" element={<AccountSettingsPage />} />
         <Route path="/settings/subscription" element={<SubscriptionPage />} />
         <Route path="/settings/privacy" element={<PrivacySettingsPage />} />
-        <Route
-          path="/settings/data"
-          element={<SettingsPlaceholderPage title="データと書き出し" />}
-        />
+        <Route path="/settings/data" element={<DataSettingsPage />} />
         <Route
           path="/settings/help"
           element={<SettingsPlaceholderPage title="ヘルプ" />}
