@@ -665,15 +665,17 @@ export const CAMPAIGNS = [
 
 export const MEMBERS = [
   {
-    name: "田中 / tanaka@selfsketch.jp",
+    name: "田中 誠",
+    email: "tanaka@selfsketch.jp",
     role: "Owner",
     mfa: "有効",
-    lastLogin: "2分前",
+    lastLogin: "3分前",
     status: "有効",
     tone: "ok" as Tone,
   },
   {
-    name: "佐藤 / sato@selfsketch.jp",
+    name: "佐藤 あや",
+    email: "sato@selfsketch.jp",
     role: "Admin",
     mfa: "有効",
     lastLogin: "1時間前",
@@ -681,15 +683,26 @@ export const MEMBERS = [
     tone: "ok" as Tone,
   },
   {
-    name: "鈴木 / suzuki@selfsketch.jp",
-    role: "Support",
+    name: "鈴木 健",
+    email: "suzuki@selfsketch.jp",
+    role: "Moderator",
     mfa: "有効",
     lastLogin: "今日 09:12",
     status: "有効",
     tone: "ok" as Tone,
   },
   {
-    name: "高橋 / takahashi@selfsketch.jp",
+    name: "高橋 由紀",
+    email: "takahashi@selfsketch.jp",
+    role: "Moderator",
+    mfa: "有効",
+    lastLogin: "昨日 18:40",
+    status: "有効",
+    tone: "ok" as Tone,
+  },
+  {
+    name: "伊藤 直",
+    email: "ito@selfsketch.jp",
     role: "Analyst",
     mfa: "未設定",
     lastLogin: "3日前",
@@ -697,10 +710,11 @@ export const MEMBERS = [
     tone: "warn" as Tone,
   },
   {
-    name: "外部委託 / cs-partner@example.com",
+    name: "外部委託 渡辺",
+    email: "cs-partner@example.com",
     role: "Support",
     mfa: "有効",
-    lastLogin: "2週間前",
+    lastLogin: "12日前",
     status: "期限切れ間近",
     tone: "warn" as Tone,
   },
@@ -793,5 +807,124 @@ export const AUDIT_LOGS = [
     ip: "—",
     result: "成功",
     tone: "ok" as Tone,
+  },
+];
+
+/* ---- A5 (Adm 9) サービス設定 ---------------------------------------- */
+
+export const SERVICE_SETTINGS = [
+  { label: "サービス表示名", value: "SelfSketch" },
+  { label: "既定タイムゾーン", value: "(GMT+9) Asia/Tokyo" },
+  { label: "既定言語", value: "日本語" },
+  { label: "問い合わせの返信元", value: "support@selfsketch.jp" },
+];
+
+export const OPERATION_THRESHOLDS = [
+  { label: "審査キューの目標応答", value: "4時間以内" },
+  { label: "自動非表示にする通報数", value: "3件" },
+  { label: "AI 失敗率のアラート", value: "5% を10分継続" },
+];
+
+export const FEATURE_FLAGS = [
+  {
+    key: "century",
+    label: "100年ライフ",
+    note: null as string | null,
+    on: true,
+  },
+  {
+    key: "backcast",
+    label: "逆算プラン",
+    note: null as string | null,
+    on: true,
+  },
+  {
+    key: "friends",
+    label: "フレンド機能",
+    note: null as string | null,
+    on: true,
+  },
+  {
+    key: "bulkExport",
+    label: "Web版からの一括書き出し",
+    note: "Premium のみ。負荷が高いので夜間だけ有効にしています",
+    on: false,
+  },
+];
+
+export const INTEGRATIONS = [
+  {
+    name: "Stripe",
+    meta: "課金・サブスクリプション",
+    status: "接続中",
+    tone: "ok" as Tone,
+  },
+  {
+    name: "SendGrid",
+    meta: "通知メールの送信",
+    status: "接続中",
+    tone: "ok" as Tone,
+  },
+  {
+    name: "Slack",
+    meta: "#selfsketch-alerts へ通知",
+    status: "要設定",
+    tone: "warn" as Tone,
+  },
+];
+
+export const RETENTION_SETTINGS = [
+  { label: "監査ログ", value: "3年" },
+  { label: "削除済みアカウント", value: "30日" },
+];
+
+/* ---- A5 (Adm 10) 権限・メンバー ------------------------------------- */
+
+export const MEMBER_INVITES = [
+  { email: "nakamura@selfsketch.jp", role: "Moderator", expiresIn: "あと 5日" },
+  { email: "kobayashi@partner.co.jp", role: "Analyst", expiresIn: "あと 2日" },
+];
+
+/** ROLE_MATRIX の各ロールで許可されている操作数（分母は全 14 操作） */
+export const ROLE_PERMISSIONS = [
+  {
+    role: "Owner",
+    description: "請求・メンバー管理を含むすべての操作。譲渡は Owner のみ。",
+    allowed: "全権限",
+  },
+  {
+    role: "Admin",
+    description: "設定変更と全画面の閲覧。Owner の変更と請求はできない。",
+    allowed: "12 / 14",
+  },
+  {
+    role: "Moderator",
+    description: "通報対応と非表示・凍結。売上と個人情報は見られない。",
+    allowed: "6 / 14",
+  },
+  {
+    role: "Analyst",
+    description: "集計とダッシュボードの閲覧のみ。書き込み操作は不可。",
+    allowed: "3 / 14",
+  },
+  {
+    role: "Support",
+    description: "問い合わせ対応。ユーザー検索と履歴の閲覧まで。",
+    allowed: "4 / 14",
+  },
+];
+
+export const ACCESS_POLICIES = [
+  {
+    key: "sso",
+    label: "SSO を必須にする",
+    note: "Google Workspace 経由のみ許可",
+    on: true,
+  },
+  {
+    key: "ipAllowlist",
+    label: "IP アドレス制限",
+    note: "社内 2件 / VPN 1件 を許可中",
+    on: true,
   },
 ];

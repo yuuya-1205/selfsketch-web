@@ -46,12 +46,14 @@ export function AuditPage() {
       <div className="flex shrink-0 flex-col gap-3.5 xl:h-70 xl:flex-row">
         <DataTable columns={MEMBER_COLUMNS} className="min-w-0 flex-1">
           {MEMBERS.map((m) => (
-            <Row key={m.name}>
+            <Row key={m.email}>
               <Cell className="flex items-center gap-2.25">
                 <span className="grid size-6.5 shrink-0 place-items-center rounded-full bg-line text-[11px] font-bold text-ink">
                   {m.name[0]}
                 </span>
-                <span className="min-w-0 truncate">{m.name}</span>
+                <span className="min-w-0 truncate">
+                  {m.name} / {m.email}
+                </span>
               </Cell>
               <Cell width={100}>
                 <Pill tone={m.role === "Owner" ? "solid" : "track"}>
