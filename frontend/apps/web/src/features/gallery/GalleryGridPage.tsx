@@ -1,15 +1,26 @@
 import { Link, Outlet, useNavigate } from "react-router";
 import { Upload } from "lucide-react";
-import { Button, PageHeader, Segmented, Thumb } from "@selfsketch/ui";
+import {
+  Button,
+  PageHeader,
+  Segmented,
+  Skeleton,
+  SkeletonGroup,
+  Thumb,
+} from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useGalleryGrid } from "@/lib/api/gallery";
+import { useGalleryGridQuery } from "@/lib/api/gallery";
 
 const VIEWS = ["タイムライン", "グリッド"] as const;
 
 export function GalleryGridPage() {
   usePageMeta("メイン", "ギャラリー");
   const navigate = useNavigate();
-  const items = useGalleryGrid();
+  const { data: items, isLoading } = useGalleryGridQuery();
+
+  if (isLoading || !items) {
+    return <GalleryGridSkeleton />;
+  }
 
   return (
     <>
@@ -43,5 +54,18 @@ export function GalleryGridPage() {
       {/* /gallery/grid/:itemId でライトボックスが乗る */}
       <Outlet />
     </>
+  );
+}
+
+function GalleryGridSkeleton() {
+  return (
+    <SkeletonGroup label="作品一覧を読み込み中" className="gap-4.5">
+      <Skeleton className="h-9 w-52" />
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {Array.from({ length: 18 }).map((_, i) => (
+          <Skeleton key={i} className="aspect-square w-full" />
+        ))}
+      </div>
+    </SkeletonGroup>
   );
 }

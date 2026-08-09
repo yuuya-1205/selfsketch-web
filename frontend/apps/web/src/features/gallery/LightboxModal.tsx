@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router";
 import { ChevronLeft, ChevronRight, Download, X } from "lucide-react";
 import { Button, Modal, Thumb } from "@selfsketch/ui";
-import { useGalleryItem } from "@/lib/api/gallery";
+import { useGalleryGridQuery } from "@/lib/api/gallery";
 
 const META = [
   { key: "習慣", value: "5分スケッチ" },
@@ -12,8 +12,15 @@ const META = [
 export function LightboxModal() {
   const navigate = useNavigate();
   const { itemId } = useParams();
-  const item = useGalleryItem(itemId);
+  // グリッド画面の上に乗るので、同じキャッシュから該当作品だけ取り出す
+  const { item } = useGalleryGridQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      item: data?.find((i) => i.id === itemId) ?? data?.[0],
+    }),
+  });
   const close = () => navigate("/gallery/grid");
+
+  if (!item) return null;
 
   return (
     <Modal

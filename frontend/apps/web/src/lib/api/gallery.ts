@@ -1,4 +1,4 @@
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type { GalleryItem, GalleryMonth } from "./types";
 
 const MONTHS: GalleryMonth[] = [
@@ -41,15 +41,27 @@ const GRID: GalleryItem[] = Array.from({ length: 24 }, (_, i) => ({
   seed: i * 3 + 3,
 }));
 
-export function useGalleryMonths() {
-  return useMockQuery(["gallery", "timeline"], MONTHS);
-}
+export const galleryApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    galleryMonths: build.query<GalleryMonth[], void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: MONTHS };
+      },
+      providesTags: ["Gallery"],
+    }),
 
-export function useGalleryGrid() {
-  return useMockQuery(["gallery", "grid"], GRID);
-}
+    galleryGrid: build.query<GalleryItem[], void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: GRID };
+      },
+      providesTags: (result) => [
+        "Gallery",
+        ...(result ?? []).map((i) => ({ type: "Gallery" as const, id: i.id })),
+      ],
+    }),
+  }),
+});
 
-export function useGalleryItem(id: string | undefined) {
-  const items = useGalleryGrid();
-  return items.find((i) => i.id === id) ?? items[0];
-}
+export const { useGalleryMonthsQuery, useGalleryGridQuery } = galleryApi;
