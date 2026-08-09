@@ -44,3 +44,8 @@ README.md の「Pencil → Tailwind の対応」表に従う。要点:
 - `padding: [14,16]` → `py-3.5 px-4`（4px = 1 単位）
 - `stroke` + `strokeAlignment:"inner"` → `border border-line` + `box-border`
 - アートボードの固定高さ（`height: 900` など）は実装に持ち込まず `h-dvh`
+
+## コミットの分け方
+
+トークンの変更は影響範囲が広いので、**`theme.css` の変更と、それを使う画面側の変更は
+必ず別コミットにする**（`split-work` スキル）。トークンだけ戻したいケースが必ず出る。
