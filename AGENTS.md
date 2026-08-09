@@ -146,6 +146,10 @@ main へは merge commit で入るため、**リバートの粒度 = PR とコ�
 | `add-screen` | web / admin に新しい画面（ルート）を追加する |
 | `design-tokens` | 色・余白・角丸などトークンの追加・変更、`.pen` との同期 |
 | `verify-ui` | dev サーバー起動とスクリーンショットによる画面検証 |
+| `backend-conventions` | backend のレイヤ構成・依存の向き・API レスポンス規約（Go を触る前に読む） |
+| `add-endpoint` | backend に API エンドポイント / リソースを追加する |
+| `backend-testing` | Go のテスト（httptest・テーブル駆動・フェイク）の書き方 |
+| `verify-api` | サーバー起動と curl による API 検証、frontend からの疎通 |
 
 ### 読んだことを報告する — 必須
 
