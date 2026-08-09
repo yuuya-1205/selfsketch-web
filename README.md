@@ -57,7 +57,7 @@ go run ./cmd/server   # -> http://localhost:8080（GET /healthz, /api/v1/ping）
 `analysis/README.md` を参照。frontend は `npm run dev`（:5177）、
 backend は `uvicorn app.main:app --reload`（:8000）。
 
-## 実装済みの画面（Web版 32画面）
+## 実装済みの画面（Web版 35画面）
 
 | ルート | 画面 | .pen 上のノード |
 | --- | --- | --- |
@@ -85,6 +85,9 @@ backend は `uvicorn app.main:app --reload`（:8000）。
 | `/settings` | 一般設定 | W-Set 1 |
 | `/settings/account` | アカウント | W-Set 2 |
 | `/settings/subscription` | サブスクリプション | W-Set 3 |
+| `/settings/privacy` | プライバシー | W-Set 4 |
+| `/settings/data` | データと書き出し | W-Set 5 |
+| `/settings/help` | ヘルプ | W-Set 6 |
 | `/premium` | Premium アップグレード | W-Premium 1 |
 | `/reflection` | リフレクション ハブ | W-Rf 1 |
 | `/reflection/daily` | 今日のリフレクション | W-Rf 2 |
@@ -95,7 +98,8 @@ backend は `uvicorn app.main:app --reload`（:8000）。
 | `/reflection/vision` | ビジョンボード | W-Rf 7 |
 | `/reflection/closing` | 一日の締めくくり | W-Rf 8 |
 
-`/settings/privacy` `/settings/data` `/settings/help` はデザイン未確定のためプレースホルダ。
+設定タブ 7 種（一般 / アカウント / 通知 / プライバシー / サブスクリプション /
+データと書き出し / ヘルプ）はすべて実装済み。
 
 ## デザインとの対応
 
