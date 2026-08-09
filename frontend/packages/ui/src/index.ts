@@ -17,6 +17,7 @@ export { Chip } from "./components/Chip";
 export { StatCard, type StatCardProps } from "./components/StatCard";
 export { PageHeader, BackLink } from "./components/PageHeader";
 export { Thumb } from "./components/Thumb";
+export { Skeleton, SkeletonGroup } from "./components/Skeleton";
 export {
   Field,
   FieldLabel,
