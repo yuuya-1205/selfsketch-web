@@ -6,15 +6,20 @@ SelfSketch の API サーバー。Go + [Gin](https://github.com/gin-gonic/gin)�
 go run ./cmd/server        # -> http://localhost:8080
 go build ./...
 go vet ./...
-go test ./...              # internal/api のルーティングテスト（httptest）
+go test ./...              # adapter/handler のルーティングテスト（httptest）
 gofmt -l .                 # 出力が空なら整形済み
 ```
 
 | パス | 役割 |
 | --- | --- |
-| `cmd/server` | エントリポイント（`PORT` 環境変数でポート変更可、既定 8080） |
-| `internal/api` | ルーティング。エンドポイントは `/api/v1` 以下に追加する |
+| `cmd/server` | エントリポイント。依存の配線（DI）はここだけで行う |
+| `internal/domain` | エンティティ・リポジトリ interface・ドメインエラー。サードパーティに依存しない |
+| `internal/adapter/handler` | Gin ハンドラとルーティング。エンドポイントは `/api/v1` 以下に追加する |
+| `internal/infra/config` | 環境変数の読み取り（`PORT` / `MYSQL_DSN`） |
+| `internal/infra/mysql` | `*sql.DB` の生成と接続設定。SQL は書かない |
 | `migrations` | golang-migrate の `.sql`。スキーマ設計は `docs/db-design.md` |
+
+レイヤ構成と依存の向きは `.claude/skills/backend-conventions` を参照。
 
 ## データベース
 
@@ -34,6 +39,12 @@ selfsketch:password@tcp(127.0.0.1:3306)/selfsketch?parseTime=true&loc=UTC&charse
 | `loc=UTC` | 受け取った時刻がローカルタイムとして解釈され、日付がずれる |
 | `charset=utf8mb4` | 絵文字を含む本文が壊れる |
 | `time_zone='+00:00'` | セッションの TZ がサーバ設定のままになる（`%27%2B00%3A00%27` と URL エンコードする） |
+
+`parseTime` と `loc` は落としてもエラーにならず日付が静かにずれるため、**起動時に検証して弾く**
+（`internal/infra/mysql` の `ValidateDSN`）。
+
+**`MYSQL_DSN` が未設定のときは DB なしで起動する。** `/healthz` を叩くだけのために
+MySQL を立てなくてよいようにしてある。DB を使うエンドポイントを実装する時点で必須に切り替える。
 
 ### マイグレーション
 
