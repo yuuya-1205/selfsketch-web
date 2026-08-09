@@ -181,6 +181,70 @@ export interface NotificationGroup {
 }
 
 /* ---- 設定 ---------------------------------------------------------- */
+
+/** 公開範囲を選ぶ設定の選択肢。`.pen` W-Set 4 のセレクトと 1:1 */
+export type Visibility = "全体に公開" | "フレンドのみ" | "自分だけ";
+
+export interface PrivacySettings {
+  profile: Visibility;
+  gallery: Visibility;
+  /** 連続日数をフレンドのタイムラインに出す */
+  shareStreak: boolean;
+  /** 共有されるのは日付と気分だけで、本文は常に非公開 */
+  shareJournal: boolean;
+  acceptFriendRequests: boolean;
+  discoverable: boolean;
+  /** 生成した未来の自分を匿名化してモデル調整に使う */
+  aiTraining: boolean;
+  anonymousStats: boolean;
+  blockedUsers: number;
+  mutedKeywords: number;
+}
+
+export type ExportStatus = "準備完了" | "作成中" | "期限切れ";
+
+export interface ExportRecord {
+  date: string;
+  target: string;
+  status: ExportStatus;
+  /** 期限切れなど、ダウンロードできないときは null */
+  downloadUrl: string | null;
+}
+
+export interface StorageMeter {
+  label: string;
+  used: string;
+  ratio: number;
+}
+
+export interface DataSettings {
+  history: ExportRecord[];
+  storage: StorageMeter[];
+  /** 書き出しは月に1回まで。使い切っていると false */
+  canRequestExport: boolean;
+  nextExportAvailableAt: string;
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface HelpLink {
+  label: string;
+  href: string;
+}
+
+export interface HelpSettings {
+  faqs: FaqItem[];
+  links: HelpLink[];
+  /** 問い合わせの一次返信の目安 */
+  responseTime: string;
+  version: string;
+  updatedAt: string;
+  supportId: string;
+}
+
 export interface UsageMeter {
   label: string;
   value: string;
