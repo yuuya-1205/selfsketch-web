@@ -50,11 +50,14 @@ export function DataSettingsPage() {
 
       <SettingsGroup title="書き出しの履歴">
         {data.history.map((h) => (
-          <div key={h.date} className="flex items-center gap-3">
+          <div
+            key={h.date}
+            className="flex flex-wrap items-center gap-x-3 gap-y-1"
+          >
             <span className="w-24 shrink-0 text-xs font-semibold text-brown">
               {h.date}
             </span>
-            <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ink">
+            <span className="min-w-40 flex-1 truncate text-[13px] font-medium text-ink">
               {h.target}
             </span>
             <Badge tone={STATUS_TONE[h.status]}>{h.status}</Badge>
