@@ -1,5 +1,5 @@
 import { mockHeatmap } from "@selfsketch/ui";
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type { StreakPage } from "./types";
 
 const STREAK: StreakPage = {
@@ -21,6 +21,16 @@ const STREAK: StreakPage = {
   ],
 };
 
-export function useStreak() {
-  return useMockQuery(["streak"], STREAK);
-}
+export const streakApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    streak: build.query<StreakPage, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: STREAK };
+      },
+      providesTags: ["Streak"],
+    }),
+  }),
+});
+
+export const { useStreakQuery } = streakApi;
