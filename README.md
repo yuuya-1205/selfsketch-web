@@ -57,6 +57,19 @@ go run ./cmd/server   # -> http://localhost:8080（GET /healthz, /api/v1/ping）
 `analysis/README.md` を参照。frontend は `npm run dev`（:5177）、
 backend は `uvicorn app.main:app --reload`（:8000）。
 
+## 開発フロー
+
+main へは merge commit で入るので、**リバートできる粒度 = PR とコミットの粒度**になる。
+
+- **1 PR = 1 スタック × 1 目的**。frontend / backend / analysis をまたぐ PR は作らない
+- **1 コミット = 単体でビルドが通り、単体で `git revert` できる最小単位**。
+  画面は 1 枚 1 コミット、自動整形と依存更新は必ず単独コミット
+- ブランチ `<type>/<主題>`、コミット `<type>: <日本語の要約>`（`feat` / `fix` /
+  `refactor` / `chore` / `docs` / `style`）
+- main に直接コミットしない
+
+詳細は `.claude/skills/split-work/SKILL.md` と `AGENTS.md` を参照。
+
 ## 実装済みの画面（Web版 32画面）
 
 | ルート | 画面 | .pen 上のノード |
