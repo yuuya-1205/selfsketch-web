@@ -1,0 +1,56 @@
+node_modules
+dist
+*.tsbuildinfo
+package-lock.json
+deploy
+
+# --- 未整形ファイルのバックログ ---------------------------------------------
+# Prettier 導入時点で既に整形済みだったファイルだけを CI の対象にしている。
+# 下記は導入前に書かれ整形結果と差分が出るファイル。
+# 別コミットで `npx prettier --write <file>` して 1 行ずつ消していく想定。
+# （まとめて整形すると差分が約 1,250 行になりレビュー不能なため段階導入）
+apps/admin/src/App.tsx
+apps/admin/src/lib/api/mock.ts
+apps/admin/src/pages/AuditPage.tsx
+apps/admin/src/pages/DeliveryPage.tsx
+apps/admin/src/pages/ModerationPage.tsx
+apps/admin/src/pages/OverviewPage.tsx
+apps/admin/src/pages/RevenuePage.tsx
+apps/admin/src/pages/UserDetailPage.tsx
+apps/web/src/features/future/VisionBoardPage.tsx
+apps/web/src/features/future/VisionDetailPage.tsx
+apps/web/src/features/gallery/LightboxModal.tsx
+apps/web/src/features/insights/InsightsPage.tsx
+apps/web/src/features/insights/MonthlyReportPage.tsx
+apps/web/src/features/journal/JournalEditorPage.tsx
+apps/web/src/features/journal/JournalPage.tsx
+apps/web/src/features/notifications/NotificationsPage.tsx
+apps/web/src/features/onboarding/FirstHabitPage.tsx
+apps/web/src/features/onboarding/FutureSelfPage.tsx
+apps/web/src/features/onboarding/GoalPage.tsx
+apps/web/src/features/onboarding/WelcomePage.tsx
+apps/web/src/features/reflection/CenturyPage.tsx
+apps/web/src/features/reflection/ClosingPage.tsx
+apps/web/src/features/reflection/DailyReflectionPage.tsx
+apps/web/src/features/settings/AccountSettingsPage.tsx
+apps/web/src/features/settings/GeneralSettingsPage.tsx
+apps/web/src/features/settings/SettingsPlaceholderPage.tsx
+apps/web/src/features/social/FriendsPage.tsx
+apps/web/src/features/social/ShareModal.tsx
+apps/web/src/features/streak/MilestoneModal.tsx
+apps/web/src/features/streak/StreakPage.tsx
+apps/web/src/features/today/HabitDetailPage.tsx
+apps/web/src/features/today/components/HabitRow.tsx
+apps/web/src/features/today/components/StreakCard.tsx
+apps/web/src/lib/api/habits.ts
+apps/web/src/lib/api/insights.ts
+apps/web/src/lib/api/reflection.ts
+apps/web/src/lib/api/settings.ts
+apps/web/src/lib/api/types.ts
+apps/web/src/pages/PlaceholderPage.tsx
+packages/ui/src/components/Form.tsx
+packages/ui/src/components/IconButton.tsx
+packages/ui/src/components/Modal.tsx
+packages/ui/src/components/StatCard.tsx
+packages/ui/src/components/Thumb.tsx
+packages/ui/src/components/charts.tsx

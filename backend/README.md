@@ -6,6 +6,8 @@ SelfSketch の API サーバー。Go + [Gin](https://github.com/gin-gonic/gin)�
 go run ./cmd/server        # -> http://localhost:8080
 go build ./...
 go vet ./...
+go test ./...              # internal/api のルーティングテスト（httptest）
+gofmt -l .                 # 出力が空なら整形済み
 ```
 
 | パス | 役割 |

@@ -1,4 +1,6 @@
 export { cn } from "./lib/cn";
+export { thumbColor } from "./lib/thumbColor";
+export { mockHeatmap } from "./lib/mockHeatmap";
 
 export { Button, type ButtonProps } from "./components/Button";
 export { Card, CardLabel, type CardProps } from "./components/Card";
@@ -14,7 +16,7 @@ export { Tabs } from "./components/Tabs";
 export { Chip } from "./components/Chip";
 export { StatCard, type StatCardProps } from "./components/StatCard";
 export { PageHeader, BackLink } from "./components/PageHeader";
-export { Thumb, thumbColor } from "./components/Thumb";
+export { Thumb } from "./components/Thumb";
 export {
   Field,
   FieldLabel,
@@ -27,7 +29,6 @@ export {
 export {
   BarChart,
   Heatmap,
-  mockHeatmap,
   Ring,
   MeterRow,
   type BarChartProps,

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { usePageMetaSetter } from "@/components/layout/AppShell";
+import { usePageMetaSetter } from "@/components/layout/pageMetaContext";
 
 /** ページのパンくず・タイトルをトップバーへ反映する */
 export function usePageMeta(crumb: string, title: string) {

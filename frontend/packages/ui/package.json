@@ -10,7 +10,11 @@
     "./styles/theme.css": "./src/styles/theme.css"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --max-warnings 0",
+    "lint:fix": "eslint src --fix",
+    "test": "vitest --root ../.. --passWithNoTests packages/ui/src",
+    "test:run": "vitest run --root ../.. --passWithNoTests packages/ui/src"
   },
   "dependencies": {
     "clsx": "^2.1.1",

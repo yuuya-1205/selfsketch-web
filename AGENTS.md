@@ -35,22 +35,37 @@ npm run dev          # web   -> http://localhost:5173（使用中なら自動繰
 npm run dev:admin    # admin -> http://localhost:5175
 npm run typecheck    # 全 workspace の tsc --noEmit
 npm run build        # 全 workspace のビルド（web/admin は tsc -b && vite build）
+npm run lint         # ESLint（--max-warnings 0。警告も CI で落ちる）
+npm run format:check # Prettier（.prettierignore のバックログは対象外。後述）
+npm run test:run     # Vitest（watch なし）
 
 # backend（cd backend で実行）
 go run ./cmd/server  # -> http://localhost:8080
-go build ./... && go vet ./...
+go build ./... && go vet ./... && go test ./...
+gofmt -l .           # 出力が空なら整形済み
 
 # analysis/frontend（cd analysis/frontend で実行）
 npm install && npm run dev   # -> http://localhost:5177（/api は :8000 へプロキシ）
+npm run lint && npm run format:check && npm run test:run
 
 # analysis/backend（cd analysis/backend で実行）
-pip install -r requirements.txt
+pip install -r requirements-dev.txt   # 本番は requirements.txt のみ
 uvicorn app.main:app --reload   # -> http://localhost:8000
+ruff check . && ruff format --check . && python -m pytest
 ```
 
-- テスト・lint は未導入。**フロント変更後は必ず該当ディレクトリで `npm run typecheck`、
-  Go 変更後は `go build ./... && go vet ./...` を通すこと**（CI と同じチェック）
-- CI（`.github/workflows/ci.yml`）は frontend / backend / analysis-frontend / analysis-backend の 4 ジョブ
+- **変更後は必ず該当ディレクトリで上記のチェックを通すこと**（CI と同じ内容）
+- CI（`.github/workflows/ci.yml`）は frontend / backend / analysis-frontend / analysis-backend の 4 ジョブ。
+  各ジョブが lint → format → typecheck → test → build を順に実行する
+
+### 品質ツールの注意点
+
+- **Prettier は段階導入**。`frontend/.prettierignore` の「バックログ」欄に挙げた 45 ファイルは
+  導入前に書かれたもので整形対象外にしてある。触るときは 1 行消して
+  `npx prettier --write <file>` し、整形コミットを分けること
+- **TypeScript は 6 系で動いている**。`package.json` の宣言は `^7.0.2` だが、
+  typescript-eslint が TS 7（ネイティブ移植版、JS コンパイラ API を持たない）に未対応のため
+  実際には 6.0.3 が解決される。`docs/quality-tooling.md` 参照
 - main へのマージで frontend が GitHub Pages に自動デプロイ（`deploy.yml`）。web は `/<repo>/`、admin は `/<repo>/admin/` 配信で、`BASE_PATH` 環境変数がビルド時に注入される。backend / analysis のデプロイ先は未定
 
 ## 重要な規約
@@ -104,4 +119,7 @@ uvicorn app.main:app --reload   # -> http://localhost:8000
 
 ## 未実装（触るときは要相談）
 
-認証、実 API、i18n、テスト、画像アセット（`Thumb` が暖色パレットで代替中）、Admin の設定画面。
+認証、実 API、i18n、画像アセット（`Thumb` が暖色パレットで代替中）、
+Web の設定タブ 3 種（プライバシー / データと書き出し / ヘルプ）、Admin の設定・権限画面。
+
+API の設計方針と決定待ちの論点は `docs/api-contract.md` に整理してある。

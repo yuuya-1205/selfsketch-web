@@ -7,7 +7,11 @@
     "dev": "vite --port 5175",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --max-warnings 0",
+    "lint:fix": "eslint src --fix",
+    "test": "vitest --root ../.. --passWithNoTests apps/admin/src",
+    "test:run": "vitest run --root ../.. --passWithNoTests apps/admin/src"
   },
   "dependencies": {
     "clsx": "^2.1.1",
