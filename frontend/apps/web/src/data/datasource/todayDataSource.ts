@@ -1,59 +1,69 @@
-import { baseApi, mockDelay } from "./baseApi";
-import type { TodayDashboard } from "./types";
+import { baseApi, mockDelay } from "@/lib/api/baseApi";
+import type { TodayDashboardDto } from "@/data/dto/today";
 
 /* ------------------------------------------------------------------ *
- * モック実装。差し替え手順は baseApi.ts のコメントを参照。
+ * モック。差し替え手順は baseApi.ts のコメントを参照。
+ * 値はサーバが返す形（RFC 3339 / UTC）で持つ。
  * ------------------------------------------------------------------ */
 
-const MOCK: TodayDashboard = {
-  dateLabel: "4月22日(火)",
-  completedCount: 3,
-  totalCount: 5,
+const MOCK: TodayDashboardDto = {
+  date: "2026-04-21T15:00:00Z",
   habits: [
     {
       id: "h1",
       title: "5分スケッチ",
-      meta: "完了済 · 7:15",
       done: true,
-      slot: "毎朝",
+      slot: "morning",
+      completedAt: "2026-04-21T22:15:00Z",
+      estimatedMinutes: 5,
+      estimateIsApproximate: false,
     },
     {
       id: "h2",
       title: "朝のストレッチ",
-      meta: "完了済 · 8:02",
       done: true,
-      slot: "起床後",
+      slot: "after_wake",
+      completedAt: "2026-04-21T23:02:00Z",
+      estimatedMinutes: 5,
+      estimateIsApproximate: false,
     },
     {
       id: "h3",
       title: "1日1ページ読書",
-      meta: "完了済 · 12:40",
       done: true,
-      slot: "昼",
+      slot: "noon",
+      completedAt: "2026-04-22T03:40:00Z",
+      estimatedMinutes: 10,
+      estimateIsApproximate: false,
     },
     {
       id: "h4",
       title: "好きな絵を1枚見る",
-      meta: "午後 · 10分ほど",
       done: false,
-      slot: "午後",
+      slot: "afternoon",
+      completedAt: null,
+      estimatedMinutes: 10,
+      estimateIsApproximate: true,
     },
     {
       id: "h5",
       title: "夜のリフレクション",
-      meta: "就寝前 · 3分",
       done: false,
-      slot: "夜",
+      slot: "before_sleep",
+      completedAt: null,
+      estimatedMinutes: 3,
+      estimateIsApproximate: false,
     },
   ],
   streak: {
     current: 12,
     longest: 21,
     week: [true, true, true, true, false, false, false],
+    weekStartsOn: "monday",
   },
   future: {
     title: "1年後の自分",
-    remainingDays: 312,
+    targetDate: "2027-02-27T15:00:00Z",
     progress: 0.34,
     thumbnailUrl: null,
   },
@@ -62,7 +72,7 @@ const MOCK: TodayDashboard = {
   sketchLogged: false,
 };
 
-async function fetchTodayDashboard(): Promise<TodayDashboard> {
+async function fetchTodayDashboard(): Promise<TodayDashboardDto> {
   await mockDelay(120);
   return structuredClone(MOCK);
 }
@@ -72,15 +82,14 @@ async function toggleHabit(id: string, done: boolean): Promise<void> {
   const habit = MOCK.habits.find((h) => h.id === id);
   if (!habit) return;
   habit.done = done;
-  habit.meta = done ? "完了済 · たった今" : habit.slot + " · 未完了";
-  MOCK.completedCount = MOCK.habits.filter((h) => h.done).length;
+  habit.completedAt = done ? new Date().toISOString() : null;
 }
 
 /* ------------------------------------------------------------------ */
 
-export const todayApi = baseApi.injectEndpoints({
+export const todayDataSource = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    todayDashboard: build.query<TodayDashboard, void>({
+    todayDashboard: build.query<TodayDashboardDto, void>({
       queryFn: async () => ({ data: await fetchTodayDashboard() }),
       providesTags: ["Today"],
     }),
@@ -93,14 +102,14 @@ export const todayApi = baseApi.injectEndpoints({
       // チェックの反応は即座に返す（楽観更新）。失敗したら巻き戻す
       onQueryStarted: async ({ id, done }, { dispatch, queryFulfilled }) => {
         const patch = dispatch(
-          todayApi.util.updateQueryData(
+          todayDataSource.util.updateQueryData(
             "todayDashboard",
             undefined,
             (draft) => {
               const habit = draft.habits.find((h) => h.id === id);
               if (!habit) return;
               habit.done = done;
-              draft.completedCount = draft.habits.filter((h) => h.done).length;
+              habit.completedAt = done ? new Date().toISOString() : null;
             },
           ),
         );
@@ -114,5 +123,3 @@ export const todayApi = baseApi.injectEndpoints({
     }),
   }),
 });
-
-export const { useTodayDashboardQuery, useToggleHabitMutation } = todayApi;

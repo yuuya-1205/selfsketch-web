@@ -1,0 +1,24 @@
+import { createContext, use } from "react";
+import type { TodayRepository } from "@/domain/repository/todayRepository";
+
+/**
+ * 画面が使える Repository の一覧。機能を移すたびにここへ足す。
+ * 型は domain の interface で持つので、presentation は実装を知らない。
+ */
+export interface Repositories {
+  today: TodayRepository;
+}
+
+export const RepositoryContext = createContext<Repositories | null>(null);
+
+/**
+ * Repository は必ずこれ経由で取る。直接 import するとテストで
+ * フェイクに差し替えられなくなる。
+ */
+export function useRepositories(): Repositories {
+  const repositories = use(RepositoryContext);
+  if (!repositories) {
+    throw new Error("RepositoryProvider の外では使えません");
+  }
+  return repositories;
+}

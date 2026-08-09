@@ -1,4 +1,5 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
  * API 境界。いまは中身がモックなので baseQuery は空で、各 endpoint が
@@ -16,7 +17,9 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
  */
 export const baseApi = createApi({
   reducerPath: "api",
-  baseQuery: fakeBaseQuery<string>(),
+  // エラー型は実 API と同じにしておく。fetchBaseQuery に差し替えたときに
+  // data/mapper/error.ts の toDomainError をそのまま使えるようにするため
+  baseQuery: fakeBaseQuery<FetchBaseQueryError>(),
   // 再取得の単位。invalidatesTags / providesTags で使う
   tagTypes: [
     "Today",

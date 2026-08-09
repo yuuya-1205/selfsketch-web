@@ -1,7 +1,8 @@
 import { Link } from "react-router";
 import { Ellipsis } from "lucide-react";
 import { Badge, CheckCircle, cn } from "@selfsketch/ui";
-import type { Habit } from "@/lib/api/types";
+import type { Habit } from "@/domain/model/today";
+import { SLOT_LABEL, habitMetaLabel } from "@/presentation/format/today";
 
 export interface HabitRowProps {
   habit: Habit;
@@ -16,7 +17,8 @@ export interface HabitRowProps {
  */
 
 export function HabitRow({ habit, onToggle }: HabitRowProps) {
-  const { title, meta, done, slot } = habit;
+  const { title, done, slot } = habit;
+  const meta = habitMetaLabel(habit);
 
   return (
     <div
@@ -50,8 +52,11 @@ export function HabitRow({ habit, onToggle }: HabitRowProps) {
         </span>
       </Link>
 
-      <Badge tone="track" className="hidden px-2.5 py-1 text-[10px] sm:inline-flex">
-        {slot}
+      <Badge
+        tone="track"
+        className="hidden px-2.5 py-1 text-[10px] sm:inline-flex"
+      >
+        {SLOT_LABEL[slot]}
       </Badge>
 
       <button

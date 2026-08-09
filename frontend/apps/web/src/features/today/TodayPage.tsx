@@ -9,10 +9,8 @@ import {
   SkeletonGroup,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import {
-  useTodayDashboardQuery,
-  useToggleHabitMutation,
-} from "@/lib/api/today";
+import { useTodayDashboard, useToggleHabit } from "@/usecase/today";
+import { dateLabel } from "@/presentation/format/today";
 import { HabitRow } from "./components/HabitRow";
 import { QuickSketchCard } from "./components/QuickSketchCard";
 import { StreakCard } from "./components/StreakCard";
@@ -24,14 +22,13 @@ export function TodayPage() {
   usePageMeta("メイン", "今日の自分");
   const navigate = useNavigate();
 
-  const { data, isLoading } = useTodayDashboardQuery();
-  const [toggleHabit] = useToggleHabitMutation();
+  const { dashboard, isLoading, completedCount, totalCount, completionRate } =
+    useTodayDashboard();
+  const toggleHabit = useToggleHabit();
 
-  if (isLoading || !data) {
+  if (isLoading || !dashboard) {
     return <TodaySkeleton />;
   }
-
-  const ratio = data.totalCount ? data.completedCount / data.totalCount : 0;
 
   return (
     <>
@@ -40,14 +37,14 @@ export function TodayPage() {
         <div className="flex flex-1 flex-col gap-2">
           <div className="flex items-center gap-2.5">
             <h2 className="text-[26px] leading-none font-bold text-ink">
-              {data.dateLabel}
+              {dateLabel(dashboard.date)}
             </h2>
             <Badge>
-              {data.completedCount} / {data.totalCount} 完了
+              {completedCount} / {totalCount} 完了
             </Badge>
           </div>
           <Progress
-            value={ratio}
+            value={completionRate}
             label="今日の達成率"
             className="max-w-[520px]"
           />
@@ -78,22 +75,22 @@ export function TodayPage() {
             今日の習慣
           </SectionHeading>
 
-          {data.habits.map((habit) => (
+          {dashboard.habits.map((habit) => (
             <HabitRow
               key={habit.id}
               habit={habit}
-              onToggle={(done) => void toggleHabit({ id: habit.id, done })}
+              onToggle={(done) => void toggleHabit(habit.id, done)}
             />
           ))}
 
-          <QuickSketchCard logged={data.sketchLogged} />
+          <QuickSketchCard logged={dashboard.sketchLogged} />
         </section>
 
         <aside className="flex w-full shrink-0 flex-col gap-3 xl:w-[330px]">
-          <StreakCard streak={data.streak} />
-          <FutureSelfCard future={data.future} />
-          <MoodCard quote={data.todayQuote} />
-          <WeekChart values={data.weekCompletion} />
+          <StreakCard streak={dashboard.streak} />
+          <FutureSelfCard future={dashboard.future} asOf={dashboard.date} />
+          <MoodCard quote={dashboard.todayQuote} />
+          <WeekChart values={dashboard.weekCompletion} />
         </aside>
       </div>
 

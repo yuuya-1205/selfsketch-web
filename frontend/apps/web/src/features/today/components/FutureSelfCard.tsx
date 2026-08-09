@@ -1,9 +1,19 @@
 import { Link } from "react-router";
 import { ChevronRight, Moon } from "lucide-react";
 import { Card } from "@selfsketch/ui";
-import type { FutureSelfSummary } from "@/lib/api/types";
+import { remainingDays, type FutureSelfSummary } from "@/domain/model/today";
 
-export function FutureSelfCard({ future }: { future: FutureSelfSummary }) {
+export function FutureSelfCard({
+  future,
+  asOf,
+}: {
+  future: FutureSelfSummary;
+  /** 残り日数の基準日。ダッシュボードの日付を渡す */
+  asOf: Date;
+}) {
+  // 相対日数はサーバから受け取らずクライアントで出す（api-contract の方針）
+  const days = remainingDays(future, asOf);
+
   return (
     <Card tone="surface" className="p-0">
       <Link
@@ -25,8 +35,7 @@ export function FutureSelfCard({ future }: { future: FutureSelfSummary }) {
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="text-[13px] font-bold text-ink">{future.title}</span>
           <span className="text-[11px] text-brown">
-            あと {future.remainingDays}日 · 進捗{" "}
-            {Math.round(future.progress * 100)}%
+            あと {days}日 · 進捗 {Math.round(future.progress * 100)}%
           </span>
         </span>
 
