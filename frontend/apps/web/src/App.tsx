@@ -45,7 +45,7 @@ import { AccountSettingsPage } from "@/features/settings/AccountSettingsPage";
 import { SubscriptionPage } from "@/features/settings/SubscriptionPage";
 import { PrivacySettingsPage } from "@/features/settings/PrivacySettingsPage";
 import { DataSettingsPage } from "@/features/settings/DataSettingsPage";
-import { SettingsPlaceholderPage } from "@/features/settings/SettingsPlaceholderPage";
+import { HelpSettingsPage } from "@/features/settings/HelpSettingsPage";
 import { PremiumPage } from "@/features/premium/PremiumPage";
 
 /* リフレクション */
@@ -106,10 +106,7 @@ export function App() {
         <Route path="/settings/subscription" element={<SubscriptionPage />} />
         <Route path="/settings/privacy" element={<PrivacySettingsPage />} />
         <Route path="/settings/data" element={<DataSettingsPage />} />
-        <Route
-          path="/settings/help"
-          element={<SettingsPlaceholderPage title="ヘルプ" />}
-        />
+        <Route path="/settings/help" element={<HelpSettingsPage />} />
 
         <Route path="/premium" element={<PremiumPage />} />
 

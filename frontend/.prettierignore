@@ -34,7 +34,6 @@ apps/web/src/features/reflection/ClosingPage.tsx
 apps/web/src/features/reflection/DailyReflectionPage.tsx
 apps/web/src/features/settings/AccountSettingsPage.tsx
 apps/web/src/features/settings/GeneralSettingsPage.tsx
-apps/web/src/features/settings/SettingsPlaceholderPage.tsx
 apps/web/src/features/social/FriendsPage.tsx
 apps/web/src/features/social/ShareModal.tsx
 apps/web/src/features/streak/MilestoneModal.tsx
