@@ -12,13 +12,17 @@ import {
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useVisionQuery } from "@/lib/api/future";
+import { useVision } from "@/usecase/future";
+import {
+  stepWhenLabel,
+  visionTargetLabel,
+} from "@/presentation/format/vision";
 
 export function VisionDetailPage() {
   usePageMeta("メイン / 未来の自分", "1年後の自分");
   const navigate = useNavigate();
   const { visionId } = useParams();
-  const { data: vision, isLoading } = useVisionQuery(visionId);
+  const { vision, isLoading, remainingDays } = useVision(visionId);
 
   if (isLoading || !vision) {
     return <VisionDetailSkeleton />;
@@ -32,7 +36,7 @@ export function VisionDetailPage() {
 
       <PageHeader
         title="作品集をつくる自分"
-        description={`${vision.dateLabel} · 残り ${vision.remainingDays}日 · 進捗 ${Math.round(vision.progress * 100)}%`}
+        description={`${visionTargetLabel(vision.targetDate)} · 残り ${remainingDays}日 · 進捗 ${Math.round(vision.progress * 100)}%`}
         actions={
           <>
             <Button variant="outline">編集</Button>
@@ -66,7 +70,7 @@ export function VisionDetailPage() {
                 {Math.round(vision.progress * 100)}%
               </span>
               <span className="text-[10px] font-medium text-nav-icon">
-                {vision.remainingDays}日 / 365日
+                {remainingDays}日 / 365日
               </span>
             </Ring>
           </Card>
@@ -75,7 +79,7 @@ export function VisionDetailPage() {
             <CardLabel>逆算プラン</CardLabel>
             <ol className="flex flex-col">
               {vision.steps.map((s, i) => (
-                <li key={s.when} className="flex gap-3">
+                <li key={s.offsetMonths} className="flex gap-3">
                   <div className="flex w-3.5 shrink-0 flex-col items-center">
                     <span
                       className={cn(
@@ -89,7 +93,7 @@ export function VisionDetailPage() {
                   </div>
                   <div className="flex flex-col gap-0.5 pb-3">
                     <span className="text-[10px] font-bold tracking-[1px] text-muted">
-                      {s.when}
+                      {stepWhenLabel(s.offsetMonths)}
                     </span>
                     <span
                       className={cn(

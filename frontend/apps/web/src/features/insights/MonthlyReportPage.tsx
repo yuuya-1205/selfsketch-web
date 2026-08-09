@@ -10,12 +10,19 @@ import {
   Thumb,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useMonthlyReportQuery } from "@/lib/api/insights";
+import { useMonthlyReport } from "@/usecase/insights";
+import {
+  KPI_LABEL,
+  reportStatLabel,
+  reportStatValue,
+  reportTitle,
+} from "@/presentation/format/insights";
+import { galleryDayLabel } from "@/presentation/format/gallery";
 
 export function MonthlyReportPage() {
   usePageMeta("分析・つながり", "月次レポート");
   const navigate = useNavigate();
-  const { data: r, isLoading } = useMonthlyReportQuery();
+  const { report: r, isLoading } = useMonthlyReport();
 
   if (isLoading || !r) {
     return <MonthlyReportSkeleton />;
@@ -24,7 +31,7 @@ export function MonthlyReportPage() {
   return (
     <>
       <PageHeader
-        title={r.monthLabel}
+        title={reportTitle(r.month)}
         description="毎月1日に自動生成されます · 前回: 3月レポート"
         actions={
           <>
@@ -50,13 +57,13 @@ export function MonthlyReportPage() {
         <div className="flex shrink-0 gap-2.5">
           {r.stats.map((s) => (
             <div
-              key={s.label}
+              key={s.key}
               className="flex flex-col items-center gap-1 rounded-xl bg-nav-card px-4.5 py-3.5"
             >
               <span className="text-[10px] font-semibold tracking-[1px] text-nav-icon">
-                {s.label}
+                {reportStatLabel(s)}
               </span>
-              <span className="text-xl font-bold text-paper">{s.value}</span>
+              <span className="text-xl font-bold text-paper">{reportStatValue(s)}</span>
             </div>
           ))}
         </div>
@@ -70,13 +77,13 @@ export function MonthlyReportPage() {
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {r.highlights.map((h) => (
               <li
-                key={h.date}
+                key={h.title}
                 className="flex flex-col overflow-hidden rounded-[13px] border border-line-strong"
               >
                 <Thumb seed={h.seed} className="h-30 rounded-none border-0" />
                 <div className="flex flex-col gap-1 bg-paper p-3">
                   <span className="text-[10px] font-bold tracking-[1px] text-muted">
-                    {h.date}
+                    {galleryDayLabel(h.date)}
                   </span>
                   <span className="text-[13px] font-bold text-ink">
                     {h.title}
@@ -125,9 +132,9 @@ export function MonthlyReportPage() {
           <Card className="flex flex-1 flex-col gap-3 p-4.5">
             <CardLabel>先月との比較</CardLabel>
             {r.comparison.map((c) => (
-              <div key={c.label} className="flex flex-col gap-1.5">
+              <div key={c.key} className="flex flex-col gap-1.5">
                 <span className="text-[11px] font-semibold text-ink">
-                  {c.label}
+                  {KPI_LABEL[c.key]}
                 </span>
                 <span className="h-1.75 w-full overflow-hidden rounded-full bg-track">
                   <span

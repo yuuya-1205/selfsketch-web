@@ -17,18 +17,25 @@ import {
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useInsightsQuery } from "@/lib/api/insights";
+import { useInsights } from "@/usecase/insights";
+import { isImproving } from "@/domain/model/insights";
+import {
+  KPI_LABEL,
+  kpiDeltaLabel,
+  kpiUnitLabel,
+  monthShortLabel,
+} from "@/presentation/format/insights";
 
 export function InsightsPage() {
   usePageMeta("分析・つながり", "インサイト");
   const navigate = useNavigate();
-  const { data, isLoading } = useInsightsQuery();
+  const { insights: data, isLoading } = useInsights();
 
   if (isLoading || !data) {
     return <InsightsSkeleton />;
   }
 
-  const maxDays = Math.max(...data.monthlyRecordDays);
+  const maxDays = Math.max(...data.monthly.map((m) => m.days));
   const maxHour = Math.max(...data.hourly);
 
   return (
@@ -57,24 +64,28 @@ export function InsightsPage() {
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {data.kpis.map((k) => (
-          <Card key={k.label} className="flex flex-col gap-1 p-4">
+          <Card key={k.key} className="flex flex-col gap-1 p-4">
             <span className="text-[11px] font-bold tracking-[1.1px] text-muted">
-              {k.label}
+              {KPI_LABEL[k.key]}
             </span>
             <span className="flex items-end gap-1">
               <span className="text-[28px] leading-none font-bold text-ink">
                 {k.value}
               </span>
-              <span className="text-xs font-semibold text-brown">{k.unit}</span>
+              <span className="text-xs font-semibold text-brown">{kpiUnitLabel(k)}</span>
             </span>
             <span
               className={cn(
                 "flex items-center gap-1 text-[11px] font-semibold",
-                k.up ? "text-brown" : "text-muted",
+                isImproving(k) ? "text-brown" : "text-muted",
               )}
             >
-              {k.up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-              {k.delta}
+              {isImproving(k) ? (
+                <TrendingUp size={12} />
+              ) : (
+                <TrendingDown size={12} />
+              )}
+              {kpiDeltaLabel(k)}
             </span>
           </Card>
         ))}
@@ -90,10 +101,10 @@ export function InsightsPage() {
             </span>
           </div>
           <BarChart
-            values={data.monthlyRecordDays.map((v) => v / maxDays)}
-            valueLabels={data.monthlyRecordDays.map(String)}
-            labels={data.monthLabels}
-            highlight={data.monthlyRecordDays.length - 1}
+            values={data.monthly.map((m) => m.days / maxDays)}
+            valueLabels={data.monthly.map((m) => String(m.days))}
+            labels={data.monthly.map((m) => monthShortLabel(m.month))}
+            highlight={data.monthly.length - 1}
             height={200}
           />
         </Card>
