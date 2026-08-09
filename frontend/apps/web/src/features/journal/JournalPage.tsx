@@ -9,23 +9,27 @@ import {
   Chip,
   IconButton,
   PageHeader,
+  Skeleton,
+  SkeletonGroup,
   Thumb,
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import {
-  JOURNAL_FILTERS,
-  useJournalEntries,
-  useJournalEntry,
-} from "@/lib/api/journal";
+import { JOURNAL_FILTERS, useJournalEntriesQuery } from "@/lib/api/journal";
 
 export function JournalPage() {
   usePageMeta("メイン", "ジャーナル");
   const navigate = useNavigate();
   const { entryId } = useParams();
-  const entries = useJournalEntries();
-  const entry = useJournalEntry(entryId);
+  const { data: entries, isLoading } = useJournalEntriesQuery();
   const [filter, setFilter] = useState<string>(JOURNAL_FILTERS[0]);
+
+  if (isLoading || !entries) {
+    return <JournalSkeleton />;
+  }
+
+  // 詳細ペインは一覧と同じキャッシュから引く（追加のリクエストは出さない）
+  const entry = entries.find((e) => e.id === entryId) ?? entries[0];
 
   return (
     <>
@@ -159,5 +163,21 @@ export function JournalPage() {
         </Card>
       </div>
     </>
+  );
+}
+
+function JournalSkeleton() {
+  return (
+    <SkeletonGroup label="ジャーナルを読み込み中" className="flex-1 gap-4.5">
+      <Skeleton className="h-9 w-52" />
+      <div className="flex flex-1 flex-col gap-4.5 lg:flex-row">
+        <div className="flex w-full shrink-0 flex-col gap-2.5 lg:w-[360px]">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-24 w-full" />
+          ))}
+        </div>
+        <Skeleton className="min-h-80 flex-1" />
+      </div>
+    </SkeletonGroup>
   );
 }
