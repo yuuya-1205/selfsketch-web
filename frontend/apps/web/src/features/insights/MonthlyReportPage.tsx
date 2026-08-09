@@ -5,15 +5,21 @@ import {
   Card,
   CardLabel,
   PageHeader,
+  Skeleton,
+  SkeletonGroup,
   Thumb,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useMonthlyReport } from "@/lib/api/insights";
+import { useMonthlyReportQuery } from "@/lib/api/insights";
 
 export function MonthlyReportPage() {
   usePageMeta("分析・つながり", "月次レポート");
   const navigate = useNavigate();
-  const r = useMonthlyReport();
+  const { data: r, isLoading } = useMonthlyReportQuery();
+
+  if (isLoading || !r) {
+    return <MonthlyReportSkeleton />;
+  }
 
   return (
     <>
@@ -154,5 +160,20 @@ export function MonthlyReportPage() {
         </aside>
       </div>
     </>
+  );
+}
+
+function MonthlyReportSkeleton() {
+  return (
+    <SkeletonGroup label="月次レポートを読み込み中" className="flex-1 gap-3.5">
+      <Skeleton className="h-9 w-40" />
+      <Skeleton className="h-32 w-full" />
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full" />
+        ))}
+      </div>
+      <Skeleton className="h-56 w-full" />
+    </SkeletonGroup>
   );
 }

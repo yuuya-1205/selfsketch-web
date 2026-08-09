@@ -1,4 +1,4 @@
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type { InsightsData, MonthlyReport } from "./types";
 
 const INSIGHTS: InsightsData = {
@@ -58,10 +58,24 @@ const REPORT: MonthlyReport = {
   ],
 };
 
-export function useInsights() {
-  return useMockQuery(["insights"], INSIGHTS);
-}
+export const insightsApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    insights: build.query<InsightsData, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: INSIGHTS };
+      },
+      providesTags: ["Insights"],
+    }),
 
-export function useMonthlyReport() {
-  return useMockQuery(["insights", "monthly"], REPORT);
-}
+    monthlyReport: build.query<MonthlyReport, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: REPORT };
+      },
+      providesTags: [{ type: "Insights", id: "monthly" }],
+    }),
+  }),
+});
+
+export const { useInsightsQuery, useMonthlyReportQuery } = insightsApi;
