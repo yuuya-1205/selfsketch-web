@@ -39,3 +39,20 @@ export function habitMetaLabel(habit: Habit): string {
   const suffix = habit.estimateIsApproximate ? "ほど" : "";
   return `${slot} · ${habit.estimatedMinutes}分${suffix}`;
 }
+
+/** 「毎朝 7:00」。予定時刻が無ければ時間帯だけ */
+export function scheduleLabel(
+  slot: HabitSlot,
+  scheduledTime: string | null,
+): string {
+  const label = SLOT_LABEL[slot];
+  if (!scheduledTime) return label;
+  // "07:00" -> "7:00"（先頭のゼロは落とす）
+  return `${label} ${scheduledTime.replace(/^0/, "")}`;
+}
+
+/** 「4/22 (火)」 */
+export function shortDateLabel(date: Date): string {
+  const weekday = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
+  return `${date.getMonth() + 1}/${date.getDate()} (${weekday})`;
+}

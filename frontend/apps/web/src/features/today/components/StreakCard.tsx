@@ -1,12 +1,13 @@
 import { Flame } from "lucide-react";
 import { Card, cn } from "@selfsketch/ui";
 import type { StreakSummary } from "@/domain/model/today";
+import { daysToBest } from "@/domain/model/streak";
 
 const FROM_MONDAY = ["月", "火", "水", "木", "金", "土", "日"];
 const FROM_SUNDAY = ["日", "月", "火", "水", "木", "金", "土"];
 
 export function StreakCard({ streak }: { streak: StreakSummary }) {
-  const toBest = Math.max(streak.longest - streak.current, 0);
+  const toBest = daysToBest(streak);
   const days = streak.weekStartsOn === "sunday" ? FROM_SUNDAY : FROM_MONDAY;
 
   return (

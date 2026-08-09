@@ -13,23 +13,32 @@ import {
   StatCard,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useHabitDetailQuery } from "@/lib/api/habits";
+import { useHabitDetail } from "@/usecase/habits";
+import {
+  scheduleLabel,
+  shortDateLabel,
+} from "@/presentation/format/today";
 
 export function HabitDetailPage() {
   usePageMeta("メイン / 今日", "習慣の詳細");
   const navigate = useNavigate();
   const { habitId } = useParams();
-  const { data: habit, isLoading } = useHabitDetailQuery(habitId ?? "h1");
+  const { habit, isLoading, daysSinceStart } = useHabitDetail(habitId ?? "h1");
 
   if (isLoading || !habit) {
     return <HabitDetailSkeleton />;
   }
 
   const chips = [
-    { icon: Sunrise, label: habit.schedule },
-    { icon: Timer, label: habit.duration },
+    { icon: Sunrise, label: scheduleLabel(habit.slot, habit.scheduledTime) },
+    { icon: Timer, label: `${habit.durationMinutes}分` },
     ...(habit.linkedVision
-      ? [{ icon: Moon, label: habit.linkedVision }]
+      ? [
+          {
+            icon: Moon,
+            label: `${habit.linkedVision.title}に紐づけ済み`,
+          },
+        ]
       : []),
   ];
 
@@ -77,11 +86,11 @@ export function HabitDetailPage() {
             </h3>
             {habit.notes.map((n) => (
               <div
-                key={n.date}
+                key={n.date.toISOString()}
                 className="flex items-center gap-3.5 rounded-[11px] border border-line bg-paper px-3.5 py-3"
               >
                 <span className="shrink-0 text-[11px] font-bold text-muted">
-                  {n.date}
+                  {shortDateLabel(n.date)}
                 </span>
                 <span className="text-[13px] text-ink">{n.body}</span>
               </div>
@@ -106,7 +115,7 @@ export function HabitDetailPage() {
             label="累計"
             value={String(habit.totalCount)}
             unit="回"
-            caption={`開始から ${habit.startedDaysAgo}日`}
+            caption={`開始から ${daysSinceStart}日`}
           />
 
           <Card tone="surface" className="mt-auto flex flex-col gap-2.5 p-4">
