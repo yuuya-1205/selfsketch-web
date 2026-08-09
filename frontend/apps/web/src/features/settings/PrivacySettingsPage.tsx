@@ -2,8 +2,16 @@ import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { SelectDisplay, Switch } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { usePrivacySettings } from "@/lib/api/settings";
-import { SettingsGroup, SettingsLayout, SettingsRow } from "./SettingsLayout";
+import { usePrivacySettingsQuery } from "@/lib/api/settings";
+import type { PrivacySettings } from "@/lib/api/types";
+import {
+  SettingsGroup,
+  SettingsLayout,
+  SettingsPaneSkeleton,
+  SettingsRow,
+} from "./SettingsLayout";
+
+const SUBTITLE = "プライバシー · 公開範囲とデータの扱い";
 
 type ToggleKey =
   | "shareStreak"
@@ -15,7 +23,17 @@ type ToggleKey =
 
 export function PrivacySettingsPage() {
   usePageMeta("その他", "設定 — プライバシー");
-  const privacy = usePrivacySettings();
+  const { data: privacy, isLoading } = usePrivacySettingsQuery();
+
+  if (isLoading || !privacy) {
+    return <SettingsPaneSkeleton subtitle={SUBTITLE} />;
+  }
+
+  // トグルの初期値をサーバー値から作るので、データが揃ってから中身をマウントする
+  return <PrivacySettingsForm privacy={privacy} />;
+}
+
+function PrivacySettingsForm({ privacy }: { privacy: PrivacySettings }) {
   const [flags, setFlags] = useState({
     shareStreak: privacy.shareStreak,
     shareJournal: privacy.shareJournal,
@@ -33,7 +51,7 @@ export function PrivacySettingsPage() {
   );
 
   return (
-    <SettingsLayout subtitle="プライバシー · 公開範囲とデータの扱い">
+    <SettingsLayout subtitle={SUBTITLE}>
       <SettingsGroup title="公開範囲">
         <SettingsRow
           label="プロフィール"

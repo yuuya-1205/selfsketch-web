@@ -2,13 +2,22 @@ import { useState } from "react";
 import { Bug, ChevronDown, ChevronRight } from "lucide-react";
 import { Button, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useHelpSettings } from "@/lib/api/settings";
-import { SettingsGroup, SettingsLayout, SettingsRow } from "./SettingsLayout";
+import { useHelpSettingsQuery } from "@/lib/api/settings";
+import {
+  SettingsGroup,
+  SettingsLayout,
+  SettingsPaneSkeleton,
+  SettingsRow,
+} from "./SettingsLayout";
 
 export function HelpSettingsPage() {
   usePageMeta("その他", "設定 — ヘルプ");
-  const help = useHelpSettings();
+  const { data: help, isLoading } = useHelpSettingsQuery();
   const [openFaq, setOpenFaq] = useState<string | null>(null);
+
+  if (isLoading || !help) {
+    return <SettingsPaneSkeleton subtitle="ヘルプ · 使い方と問い合わせ" />;
+  }
 
   return (
     <SettingsLayout subtitle="ヘルプ · 使い方と問い合わせ">

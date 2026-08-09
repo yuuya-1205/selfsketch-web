@@ -1,4 +1,4 @@
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type { NotificationGroup } from "./types";
 
 const GROUPS: NotificationGroup[] = [
@@ -84,6 +84,16 @@ export const NOTIFICATION_CHANNELS = [
   { label: "週次サマリー", enabled: false },
 ];
 
-export function useNotifications() {
-  return useMockQuery(["notifications"], GROUPS);
-}
+export const notificationsApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    notifications: build.query<typeof GROUPS, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: GROUPS };
+      },
+      providesTags: ["Notification"],
+    }),
+  }),
+});
+
+export const { useNotificationsQuery } = notificationsApi;

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { NavLink } from "react-router";
-import { Card, CardLabel, cn } from "@selfsketch/ui";
+import { Card, CardLabel, Skeleton, SkeletonGroup, cn } from "@selfsketch/ui";
 import { SETTINGS_NAV } from "@/lib/api/settings";
 
 export function SettingsLayout({
@@ -78,5 +78,22 @@ export function SettingsRow({
       </span>
       {control}
     </div>
+  );
+}
+
+/**
+ * 設定タブ共通の読み込み中表示。
+ * 左のタブナビは即座に出したいので SettingsLayout ごと使い、
+ * 右のパネルだけをプレースホルダに差し替える。
+ */
+export function SettingsPaneSkeleton({ subtitle }: { subtitle: string }) {
+  return (
+    <SettingsLayout subtitle={subtitle}>
+      <SkeletonGroup label="設定を読み込み中" className="gap-3.5">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} className="h-40 w-full" />
+        ))}
+      </SkeletonGroup>
+    </SettingsLayout>
   );
 }

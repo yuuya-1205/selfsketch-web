@@ -17,12 +17,14 @@ import {
   PageHeader,
   Switch,
   cn,
+  Skeleton,
+  SkeletonGroup,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
 import {
   NOTIFICATION_CHANNELS,
   NOTIFICATION_FILTERS,
-  useNotifications,
+  useNotificationsQuery,
 } from "@/lib/api/notifications";
 
 const ICONS: Record<string, LucideIcon> = {
@@ -36,9 +38,13 @@ const ICONS: Record<string, LucideIcon> = {
 
 export function NotificationsPage() {
   usePageMeta("その他", "通知");
-  const groups = useNotifications();
+  const { data: groups, isLoading } = useNotificationsQuery();
   const [filter, setFilter] = useState<string>(NOTIFICATION_FILTERS[0]);
   const [channels, setChannels] = useState(NOTIFICATION_CHANNELS);
+
+  if (isLoading || !groups) {
+    return <NotificationsSkeleton />;
+  }
 
   const unread = groups
     .flatMap((g) => g.items)
@@ -164,5 +170,21 @@ export function NotificationsPage() {
         </aside>
       </div>
     </>
+  );
+}
+
+function NotificationsSkeleton() {
+  return (
+    <SkeletonGroup label="通知を読み込み中" className="flex-1 gap-4">
+      <Skeleton className="h-9 w-32" />
+      <div className="flex flex-1 flex-col gap-4 xl:flex-row">
+        <div className="flex min-w-0 flex-1 flex-col gap-2.5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-16 w-full" />
+          ))}
+        </div>
+        <Skeleton className="h-80 w-full xl:w-[320px]" />
+      </div>
+    </SkeletonGroup>
   );
 }

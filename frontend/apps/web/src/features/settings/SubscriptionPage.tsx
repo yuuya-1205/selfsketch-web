@@ -1,14 +1,20 @@
 import { useNavigate } from "react-router";
 import { Badge, Button, Card, CardLabel, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useInvoices, useUsage } from "@/lib/api/settings";
-import { SettingsLayout } from "./SettingsLayout";
+import { useInvoicesQuery, useUsageQuery } from "@/lib/api/settings";
+import { SettingsLayout, SettingsPaneSkeleton } from "./SettingsLayout";
 
 export function SubscriptionPage() {
   usePageMeta("その他", "設定 — サブスクリプション");
   const navigate = useNavigate();
-  const usage = useUsage();
-  const invoices = useInvoices();
+  const { data: usage, isLoading: usageLoading } = useUsageQuery();
+  const { data: invoices, isLoading: invoicesLoading } = useInvoicesQuery();
+
+  if (usageLoading || invoicesLoading || !usage || !invoices) {
+    return (
+      <SettingsPaneSkeleton subtitle="サブスクリプション · プランと請求" />
+    );
+  }
 
   return (
     <SettingsLayout subtitle="サブスクリプション · プランと請求">
