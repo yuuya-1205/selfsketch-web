@@ -1,4 +1,4 @@
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type { JournalEntry } from "./types";
 
 const ENTRIES: JournalEntry[] = [
@@ -101,11 +101,19 @@ export const JOURNAL_FILTERS = [
   "習慣別",
 ] as const;
 
-export function useJournalEntries() {
-  return useMockQuery(["journal"], ENTRIES);
-}
+export const journalApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    journalEntries: build.query<JournalEntry[], void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: ENTRIES };
+      },
+      providesTags: (result) => [
+        "Journal",
+        ...(result ?? []).map((e) => ({ type: "Journal" as const, id: e.id })),
+      ],
+    }),
+  }),
+});
 
-export function useJournalEntry(id: string | undefined) {
-  const entries = useJournalEntries();
-  return entries.find((e) => e.id === id) ?? entries[0];
-}
+export const { useJournalEntriesQuery } = journalApi;

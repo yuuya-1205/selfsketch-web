@@ -1,15 +1,26 @@
 import { useNavigate } from "react-router";
 import { Upload } from "lucide-react";
-import { Button, PageHeader, Segmented, Thumb } from "@selfsketch/ui";
+import {
+  Button,
+  PageHeader,
+  Segmented,
+  Skeleton,
+  SkeletonGroup,
+  Thumb,
+} from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useGalleryMonths } from "@/lib/api/gallery";
+import { useGalleryMonthsQuery } from "@/lib/api/gallery";
 
 const VIEWS = ["タイムライン", "グリッド"] as const;
 
 export function GalleryTimelinePage() {
   usePageMeta("メイン", "ギャラリー");
   const navigate = useNavigate();
-  const months = useGalleryMonths();
+  const { data: months, isLoading } = useGalleryMonthsQuery();
+
+  if (isLoading || !months) {
+    return <GallerySkeleton label="タイムラインを読み込み中" />;
+  }
 
   return (
     <>
@@ -55,5 +66,23 @@ export function GalleryTimelinePage() {
         ))}
       </div>
     </>
+  );
+}
+
+function GallerySkeleton({ label }: { label: string }) {
+  return (
+    <SkeletonGroup label={label} className="gap-4.5">
+      <Skeleton className="h-9 w-60" />
+      {Array.from({ length: 2 }).map((_, i) => (
+        <div key={i} className="flex flex-col gap-2.5">
+          <Skeleton className="h-5 w-32" />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, j) => (
+              <Skeleton key={j} className="aspect-square w-full" />
+            ))}
+          </div>
+        </div>
+      ))}
+    </SkeletonGroup>
   );
 }

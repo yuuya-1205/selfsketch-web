@@ -1,4 +1,4 @@
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type { Vision } from "./types";
 
 const VISION: Vision = {
@@ -38,6 +38,19 @@ const VISION: Vision = {
 
 export const HORIZONS = ["6か月", "1年", "3年", "10年"] as const;
 
-export function useVision(_id?: string) {
-  return useMockQuery(["vision", _id ?? "current"], VISION);
-}
+export const futureApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    // id 未指定は「いま表示中のビジョン」。モックは1件しかない
+    vision: build.query<Vision, string | undefined>({
+      queryFn: async (id) => {
+        await mockDelay();
+        return { data: id ? { ...VISION, id } : VISION };
+      },
+      providesTags: (_result, _error, id) => [
+        { type: "Vision", id: id ?? "current" },
+      ],
+    }),
+  }),
+});
+
+export const { useVisionQuery } = futureApi;

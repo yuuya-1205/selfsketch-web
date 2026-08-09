@@ -12,15 +12,21 @@ import {
   Card,
   MeterRow,
   PageHeader,
+  Skeleton,
+  SkeletonGroup,
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useInsights } from "@/lib/api/insights";
+import { useInsightsQuery } from "@/lib/api/insights";
 
 export function InsightsPage() {
   usePageMeta("分析・つながり", "インサイト");
   const navigate = useNavigate();
-  const data = useInsights();
+  const { data, isLoading } = useInsightsQuery();
+
+  if (isLoading || !data) {
+    return <InsightsSkeleton />;
+  }
 
   const maxDays = Math.max(...data.monthlyRecordDays);
   const maxHour = Math.max(...data.hourly);
@@ -126,5 +132,23 @@ export function InsightsPage() {
         </div>
       </div>
     </>
+  );
+}
+
+function InsightsSkeleton() {
+  return (
+    <SkeletonGroup label="インサイトを読み込み中" className="flex-1 gap-3.5">
+      <Skeleton className="h-9 w-52" />
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full" />
+        ))}
+      </div>
+      <Skeleton className="h-64 w-full" />
+      <div className="flex flex-col gap-3.5 xl:flex-row">
+        <Skeleton className="h-52 flex-1" />
+        <Skeleton className="h-52 flex-1" />
+      </div>
+    </SkeletonGroup>
   );
 }
