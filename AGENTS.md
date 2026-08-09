@@ -70,6 +70,23 @@ ruff check . && ruff format --check . && python -m pytest
 
 ## 重要な規約
 
+### Git 運用（PR とコミットの分割）— 必須
+
+main へは merge commit で入るため、**リバートの粒度 = PR とコミットの粒度**になる。
+巨大な 1 コミットは「一部だけ戻す」ができないので、必ず割る。詳細な手順は
+`.claude/skills/split-work` を参照（実装着手前と commit / PR 作成前に必ず読むこと）。
+
+- **1 PR = 1 スタック × 1 目的**。`frontend` / `backend` / `analysis/frontend` /
+  `analysis/backend` をまたぐ PR は作らない（CI が 4 ジョブ独立しているのと同じ切り方）。
+  やむを得ずまたぐ場合は PR 本文に理由を明記する
+- **1 コミット = 単体でビルドが通り、単体で revert できる最小単位**。
+  画面は 1 枚 1 コミット。共通コンポーネント / トークンの変更は利用側と別コミット。
+  自動整形（`prettier --write` / `gofmt` / `ruff format`）と依存更新は必ず単独コミット
+- **着手前に分割計画を出してユーザーに確認する**。実装後にまとめて割るのは禁止
+- ブランチは `<type>/<主題>`、コミットは `<type>: <日本語の要約>`（Conventional Commits）。
+  type は `feat` / `fix` / `refactor` / `chore` / `docs` / `style`
+- main へ直接コミットしない
+
 ### デザイントークン
 
 - 色・角丸・フォントは `frontend/packages/ui/src/styles/theme.css` に集約。**コンポーネントに hex を直書きしない**
@@ -113,6 +130,7 @@ ruff check . && ruff format --check . && python -m pytest
 
 | スキル | 用途 |
 | --- | --- |
+| `split-work` | PR とコミットの分割（着手前と commit / PR 作成前に必ず読む） |
 | `add-screen` | web / admin に新しい画面（ルート）を追加する |
 | `design-tokens` | 色・余白・角丸などトークンの追加・変更、`.pen` との同期 |
 | `verify-ui` | dev サーバー起動とスクリーンショットによる画面検証 |

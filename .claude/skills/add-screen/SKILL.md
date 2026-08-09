@@ -39,6 +39,8 @@ description: selfsketch-web に新しい画面・ページ・ルート・モー�
 
 ## 仕上げ（共通）
 
+- **着手前に `split-work` スキルで PR / コミットの分割計画を立てる。画面は 1 枚 1 コミット、
+  共通コンポーネント（`packages/ui`）の追加は利用側の画面と別コミットにする**
 - `npm run typecheck` を通す（strict + noUnusedLocals なので未使用 import で落ちる）
 - レスポンシブ確認: xl / md / モバイル幅の3段階（詳細は `verify-ui` スキル）
 - 可能なら `verify-ui` スキルの手順でスクリーンショットを撮って確認する
