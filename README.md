@@ -45,6 +45,16 @@ npm run typecheck
 npm run build
 ```
 
+ビルド成果物を確認するときは preview を起動する。
+
+```bash
+npm run preview -w @selfsketch/web -- --host 127.0.0.1 --port 4173
+npm run preview -w @selfsketch/admin -- --host 127.0.0.1 --port 4175
+```
+
+- web: <http://127.0.0.1:4173/>
+- admin: <http://127.0.0.1:4175/>
+
 ### backend
 
 ```bash
