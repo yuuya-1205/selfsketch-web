@@ -1,4 +1,4 @@
-import { useMockQuery } from "./client";
+import { baseApi, mockDelay } from "./baseApi";
 import type {
   DataSettings,
   HelpSettings,
@@ -152,25 +152,57 @@ const HELP: HelpSettings = {
   supportId: "SS-8F2K-4N71",
 };
 
-export function usePrivacySettings() {
-  return useMockQuery(["settings", "privacy"], PRIVACY);
-}
+export const settingsApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    privacySettings: build.query<PrivacySettings, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: PRIVACY };
+      },
+      providesTags: [{ type: "Settings", id: "privacy" }],
+    }),
 
-export function useDataSettings() {
-  return useMockQuery(["settings", "data"], DATA);
-}
+    dataSettings: build.query<DataSettings, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: DATA };
+      },
+      providesTags: [{ type: "Settings", id: "data" }],
+    }),
 
-export function useHelpSettings() {
-  return useMockQuery(["settings", "help"], HELP);
-}
+    helpSettings: build.query<HelpSettings, void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: HELP };
+      },
+      providesTags: [{ type: "Settings", id: "help" }],
+    }),
 
-export function useUsage() {
-  return useMockQuery(["settings", "usage"], USAGE);
-}
+    usage: build.query<UsageMeter[], void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: USAGE };
+      },
+      providesTags: [{ type: "Settings", id: "usage" }],
+    }),
 
-export function useInvoices() {
-  return useMockQuery(["settings", "invoices"], INVOICES);
-}
+    invoices: build.query<Invoice[], void>({
+      queryFn: async () => {
+        await mockDelay();
+        return { data: INVOICES };
+      },
+      providesTags: [{ type: "Settings", id: "invoices" }],
+    }),
+  }),
+});
+
+export const {
+  usePrivacySettingsQuery,
+  useDataSettingsQuery,
+  useHelpSettingsQuery,
+  useUsageQuery,
+  useInvoicesQuery,
+} = settingsApi;
 
 export const PREMIUM_PLANS = [
   {

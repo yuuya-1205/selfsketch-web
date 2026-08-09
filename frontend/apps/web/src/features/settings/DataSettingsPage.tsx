@@ -3,10 +3,15 @@ import { usePageMeta } from "@/lib/usePageMeta";
 import {
   EXPORT_FORMATS,
   EXPORT_TARGETS,
-  useDataSettings,
+  useDataSettingsQuery,
 } from "@/lib/api/settings";
 import type { ExportStatus } from "@/lib/api/types";
-import { SettingsGroup, SettingsLayout, SettingsRow } from "./SettingsLayout";
+import {
+  SettingsGroup,
+  SettingsLayout,
+  SettingsPaneSkeleton,
+  SettingsRow,
+} from "./SettingsLayout";
 
 const STATUS_TONE: Record<ExportStatus, "ok" | "warn" | "track"> = {
   準備完了: "ok",
@@ -16,7 +21,13 @@ const STATUS_TONE: Record<ExportStatus, "ok" | "warn" | "track"> = {
 
 export function DataSettingsPage() {
   usePageMeta("その他", "設定 — データと書き出し");
-  const data = useDataSettings();
+  const { data, isLoading } = useDataSettingsQuery();
+
+  if (isLoading || !data) {
+    return (
+      <SettingsPaneSkeleton subtitle="データと書き出し · バックアップと削除" />
+    );
+  }
 
   return (
     <SettingsLayout subtitle="データと書き出し · バックアップと削除">
