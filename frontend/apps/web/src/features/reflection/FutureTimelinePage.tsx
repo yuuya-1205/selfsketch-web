@@ -1,6 +1,6 @@
 import { Button, Card, PageHeader, Thumb, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { TIMELINE_NODES } from "@/lib/api/reflection";
+import { TIMELINE_NODES } from "@/presentation/constants/reflectionContent";
 
 export function FutureTimelinePage() {
   usePageMeta("分析・つながり", "未来タイムライン");

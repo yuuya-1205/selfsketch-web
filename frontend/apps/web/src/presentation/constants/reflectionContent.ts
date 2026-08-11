@@ -1,55 +1,34 @@
-import { baseApi, mockDelay } from "./baseApi";
-import type {
-  BackcastStep,
-  ComparisonSide,
-  ReflectionEntryPoint,
-  TimelineNode,
-} from "./types";
+/*
+ * リフレクション各画面の固定値。
+ *
+ * まだ API の設計が無く、`.pen` のカンプの文言をそのまま持っている下書きなので
+ * presentation に置いている。サーバから引くようになったら domain / data へ移す
+ * （入口の一覧だけは ReflectionEntry として移行済み）。
+ */
 
-export const REFLECTION_ENTRIES: ReflectionEntryPoint[] = [
-  {
-    to: "/reflection/daily",
-    icon: "sunrise",
-    title: "今日のリフレクション",
-    description: "3つの問いに答えて、1日を締めくくる",
-    lastUsed: "昨日 22:14",
-  },
-  {
-    to: "/reflection/compare",
-    icon: "git-compare",
-    title: "6か月前の自分と比べる",
-    description: "記録・作品・言葉の変化を並べて見る",
-    lastUsed: "3日前",
-  },
-  {
-    to: "/reflection/timeline",
-    icon: "milestone",
-    title: "未来タイムライン",
-    description: "1年 / 3年 / 10年の自分を一本の線で見る",
-    lastUsed: "先週",
-  },
-  {
-    to: "/reflection/century",
-    icon: "infinity",
-    title: "100年ライフ",
-    description: "人生を100マスにして、いまの位置を確かめる",
-    lastUsed: "未実施",
-  },
-  {
-    to: "/reflection/backcast",
-    icon: "route",
-    title: "逆算プラン",
-    description: "10年後から今日までを逆算して分解する",
-    lastUsed: "2週間前",
-  },
-  {
-    to: "/reflection/vision",
-    icon: "layout-grid",
-    title: "ビジョンボード",
-    description: "なりたい姿を1枚のボードにまとめる",
-    lastUsed: "先月",
-  },
-];
+export interface ComparisonSide {
+  label: string;
+  dateLabel: string;
+  quote: string;
+  stats: { label: string; value: string }[];
+}
+
+export interface TimelineNode {
+  horizon: string;
+  year: string;
+  title: string;
+  /** サムネイルの色を決める種 */
+  seed: number;
+  isNow: boolean;
+}
+
+export interface BackcastStep {
+  horizon: string;
+  year: string;
+  goal: string;
+  items: string[];
+  primary: boolean;
+}
 
 export const DAILY_QUESTIONS = [
   {
@@ -100,12 +79,48 @@ export const COMPARISON_DELTAS = [
 ];
 
 export const TIMELINE_NODES: TimelineNode[] = [
-  { horizon: "いま", year: "2026", title: "5分スケッチを14日継続", seed: 0, isNow: true },
-  { horizon: "6か月", year: "2026.10", title: "100枚たまり、得意が見える", seed: 1, isNow: false },
-  { horizon: "1年", year: "2027.04", title: "作品集を綴じる", seed: 2, isNow: false },
-  { horizon: "3年", year: "2029", title: "展示に出す側になる", seed: 3, isNow: false },
-  { horizon: "5年", year: "2031", title: "教える立場になる", seed: 4, isNow: false },
-  { horizon: "10年", year: "2036", title: "自分の線が仕事になる", seed: 5, isNow: false },
+  {
+    horizon: "いま",
+    year: "2026",
+    title: "5分スケッチを14日継続",
+    seed: 0,
+    isNow: true,
+  },
+  {
+    horizon: "6か月",
+    year: "2026.10",
+    title: "100枚たまり、得意が見える",
+    seed: 1,
+    isNow: false,
+  },
+  {
+    horizon: "1年",
+    year: "2027.04",
+    title: "作品集を綴じる",
+    seed: 2,
+    isNow: false,
+  },
+  {
+    horizon: "3年",
+    year: "2029",
+    title: "展示に出す側になる",
+    seed: 3,
+    isNow: false,
+  },
+  {
+    horizon: "5年",
+    year: "2031",
+    title: "教える立場になる",
+    seed: 4,
+    isNow: false,
+  },
+  {
+    horizon: "10年",
+    year: "2036",
+    title: "自分の線が仕事になる",
+    seed: 5,
+    isNow: false,
+  },
 ];
 
 export const BACKCAST_STEPS: BackcastStep[] = [
@@ -176,17 +191,3 @@ export const CLOSING = {
   ],
   tomorrow: "「7時に、机に座るだけでいい。」",
 };
-
-export const reflectionApi = baseApi.injectEndpoints({
-  endpoints: (build) => ({
-    reflectionEntries: build.query<typeof REFLECTION_ENTRIES, void>({
-      queryFn: async () => {
-        await mockDelay();
-        return { data: REFLECTION_ENTRIES };
-      },
-      providesTags: ["Reflection"],
-    }),
-  }),
-});
-
-export const { useReflectionEntriesQuery } = reflectionApi;

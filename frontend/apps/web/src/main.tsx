@@ -17,6 +17,7 @@ import { notificationsRepository } from "@/data/repository/notificationsReposito
 import { socialRepository } from "@/data/repository/socialRepositoryImpl";
 import { settingsRepository } from "@/data/repository/settingsRepositoryImpl";
 import { billingRepository } from "@/data/repository/billingRepositoryImpl";
+import { reflectionRepository } from "@/data/repository/reflectionRepositoryImpl";
 import "./app.css";
 
 /** 依存の配線はここだけ。画面は useRepositories() 越しにしか触らない */
@@ -33,6 +34,7 @@ const repositories = {
   social: socialRepository,
   settings: settingsRepository,
   billing: billingRepository,
+  reflection: reflectionRepository,
 };
 
 /*

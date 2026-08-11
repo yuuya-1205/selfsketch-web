@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Card, CardLabel, PageHeader, Segmented, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { COMPARISON, COMPARISON_DELTAS } from "@/lib/api/reflection";
+import {
+  COMPARISON,
+  COMPARISON_DELTAS,
+} from "@/presentation/constants/reflectionContent";
 
 const RANGES = ["1か月", "3か月", "6か月", "1年"] as const;
 

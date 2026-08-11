@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Card, CardLabel, Textarea, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { DAILY_QUESTIONS } from "@/lib/api/reflection";
+import { DAILY_QUESTIONS } from "@/presentation/constants/reflectionContent";
 
 const TIPS = [
   "「よかった」より「意外だった」を探す",

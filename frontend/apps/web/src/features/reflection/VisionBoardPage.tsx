@@ -1,6 +1,6 @@
 import { Button, Card, CardLabel, PageHeader, Thumb, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { VISION_BOARD } from "@/lib/api/reflection";
+import { VISION_BOARD } from "@/presentation/constants/reflectionContent";
 
 export function ReflectionVisionBoardPage() {
   usePageMeta("分析・つながり", "ビジョンボード");

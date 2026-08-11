@@ -1,15 +1,5 @@
 import { Link } from "react-router";
-import {
-  ArrowRight,
-  GitCompare,
-  Infinity as InfinityIcon,
-  LayoutGrid,
-  Milestone,
-  PenLine,
-  Route,
-  Sunrise,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowRight, PenLine } from "lucide-react";
 import {
   Button,
   Card,
@@ -20,23 +10,20 @@ import {
   cn,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useReflectionEntriesQuery } from "@/lib/api/reflection";
-
-const ICONS: Record<string, LucideIcon> = {
-  sunrise: Sunrise,
-  "git-compare": GitCompare,
-  milestone: Milestone,
-  infinity: InfinityIcon,
-  route: Route,
-  "layout-grid": LayoutGrid,
-};
+import { useReflectionEntries } from "@/usecase/reflection";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
+import { REFLECTION_META } from "@/presentation/constants/reflection";
+import { lastUsedLabel } from "@/presentation/format/reflection";
 
 const DAYS = ["月", "火", "水", "木", "金", "土", "日"];
 const DONE = 4;
 
 export function ReflectionHubPage() {
   usePageMeta("分析・つながり", "リフレクション");
-  const { data: entries, isLoading } = useReflectionEntriesQuery();
+  const now = new Date();
+  const { entries, isLoading, error, retry } = useReflectionEntries();
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !entries) {
     return <ReflectionHubSkeleton />;
@@ -79,23 +66,24 @@ export function ReflectionHubPage() {
 
       <ul className="grid flex-1 grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
         {entries.map((e) => {
-          const Icon = ICONS[e.icon] ?? Sunrise;
+          const meta = REFLECTION_META[e.kind];
+          const Icon = meta.icon;
           return (
-            <li key={e.to} className="flex">
-              <Link to={e.to} className="flex flex-1">
+            <li key={e.kind} className="flex">
+              <Link to={meta.to} className="flex flex-1">
                 <Card className="flex flex-1 flex-col gap-2.5 p-5 transition-colors hover:bg-surface">
                   <span className="grid size-9.5 place-items-center rounded-[11px] bg-surface">
                     <Icon size={18} className="text-ink" />
                   </span>
                   <span className="text-base font-bold text-ink">
-                    {e.title}
+                    {meta.title}
                   </span>
                   <span className="text-xs leading-[1.8] text-brown">
-                    {e.description}
+                    {meta.description}
                   </span>
                   <span className="mt-auto flex items-center gap-2 pt-2">
                     <span className="text-[11px] font-medium text-muted">
-                      最終: {e.lastUsed}
+                      最終: {lastUsedLabel(e.lastUsedAt, now)}
                     </span>
                     <span className="h-px flex-1" />
                     <ArrowRight size={15} className="text-ink" />
