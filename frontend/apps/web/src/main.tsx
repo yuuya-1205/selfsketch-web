@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router";
 import { App } from "./App";
 import { store } from "./lib/store";
 import { RepositoryProvider } from "@/presentation/di/RepositoryProvider";
+import { authRepository } from "@/data/repository/authRepositoryImpl";
 import { todayRepository } from "@/data/repository/todayRepositoryImpl";
 import { habitsRepository } from "@/data/repository/habitsRepositoryImpl";
 import { streakRepository } from "@/data/repository/streakRepositoryImpl";
@@ -16,6 +17,7 @@ import "./app.css";
 
 /** 依存の配線はここだけ。画面は useRepositories() 越しにしか触らない */
 const repositories = {
+  auth: authRepository,
   today: todayRepository,
   habits: habitsRepository,
   streak: streakRepository,

@@ -22,3 +22,27 @@ export function domainError(
 ): DomainError {
   return { code, detail };
 }
+
+/**
+ * Repository の書き込みが失敗したときに throw する例外。
+ * data 層が RTK Query のエラーをこれに包み直すので、上の層は
+ * `error.domainError.code` だけを見れば分岐できる。
+ */
+export class DomainErrorException extends Error {
+  readonly domainError: DomainError;
+
+  constructor(error: DomainError) {
+    super(error.detail);
+    this.name = "DomainErrorException";
+    this.domainError = error;
+  }
+}
+
+/** unknown な throw から DomainError を取り出す。取れなければ unknown 扱い */
+export function asDomainError(error: unknown): DomainError {
+  if (error instanceof DomainErrorException) return error.domainError;
+  return domainError(
+    "unknown",
+    error instanceof Error ? error.message : String(error),
+  );
+}

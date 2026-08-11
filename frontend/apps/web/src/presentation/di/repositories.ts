@@ -1,4 +1,5 @@
 import { createContext, use } from "react";
+import type { AuthRepository } from "@/domain/repository/authRepository";
 import type { FutureRepository } from "@/domain/repository/futureRepository";
 import type { GalleryRepository } from "@/domain/repository/galleryRepository";
 import type { InsightsRepository } from "@/domain/repository/insightsRepository";
@@ -12,6 +13,7 @@ import type { TodayRepository } from "@/domain/repository/todayRepository";
  * 型は domain の interface で持つので、presentation は実装を知らない。
  */
 export interface Repositories {
+  auth: AuthRepository;
   today: TodayRepository;
   habits: HabitsRepository;
   streak: StreakRepository;
