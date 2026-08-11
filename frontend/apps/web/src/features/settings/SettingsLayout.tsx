@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { NavLink } from "react-router";
 import { Card, CardLabel, Skeleton, SkeletonGroup, cn } from "@selfsketch/ui";
-import { SETTINGS_NAV } from "@/lib/api/settings";
+import { SETTINGS_NAV } from "@/presentation/constants/settings";
 
 export function SettingsLayout({
   subtitle,

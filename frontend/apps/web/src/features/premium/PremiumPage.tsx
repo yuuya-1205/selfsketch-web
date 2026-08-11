@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Check, CreditCard, RefreshCw, ShieldCheck } from "lucide-react";
 import { Badge, Button, Card, Segmented, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { PREMIUM_PLANS } from "@/lib/api/settings";
+import { PREMIUM_PLANS } from "@/presentation/constants/premium";
+import { formatMoney } from "@/presentation/format/money";
 
 const CYCLES = ["月額", "年額 (2か月分お得)"] as const;
 
@@ -62,7 +63,7 @@ export function PremiumPage() {
                   plan.primary ? "text-paper" : "text-ink",
                 )}
               >
-                {plan.price}
+                {formatMoney(plan.price)}
               </span>
               <span
                 className={cn(
