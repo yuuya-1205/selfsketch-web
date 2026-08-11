@@ -4,6 +4,7 @@ import { PlaceholderPage } from "@/pages/PlaceholderPage";
 
 /* 認証（未ログイン） */
 import { LoginPage } from "@/features/auth/LoginPage";
+import { SignUpPage } from "@/features/auth/SignUpPage";
 
 /* オンボーディング（未ログイン） */
 import { WelcomePage } from "@/features/onboarding/WelcomePage";
@@ -66,6 +67,7 @@ export function App() {
     <Routes>
       {/* ---- 未ログイン（サイドナビなし） ---- */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
       <Route path="/welcome" element={<WelcomePage />} />
       <Route path="/onboarding/goal" element={<GoalPage />} />
       <Route path="/onboarding/future" element={<FutureSelfPage />} />
