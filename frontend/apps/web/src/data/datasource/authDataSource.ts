@@ -10,6 +10,7 @@ import type { SessionDto, UserDto } from "@/data/dto/auth";
  *   POST  /api/v1/auth/login    -> SessionDto
  *   POST  /api/v1/auth/refresh  -> SessionDto
  *   POST  /api/v1/auth/logout   -> 204
+ *   POST  /api/v1/auth/password-reset -> 202
  *   PATCH /api/v1/me            -> UserDto（オンボーディング完了の記録）
  * トークンをどこに保管するかもここだけの関心事で、Repository より上の層は
  * SessionDto しか知らない。
@@ -274,6 +275,14 @@ export const authDataSource = baseApi.injectEndpoints({
       onQueryStarted: async (_arg, { dispatch, queryFulfilled }) => {
         await queryFulfilled;
         dispatch(baseApi.util.resetApiState());
+      },
+    }),
+
+    requestPasswordReset: build.mutation<void, { email: string }>({
+      // 登録済みかどうかで応答を変えない。変えるとアカウントの存在が分かってしまう
+      queryFn: async () => {
+        await mockDelay(240);
+        return { data: undefined };
       },
     }),
 

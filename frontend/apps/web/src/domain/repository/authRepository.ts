@@ -9,4 +9,9 @@ export interface AuthRepository {
   useLogout(): () => Promise<void>;
   /** オンボーディングを終えたことを記録する */
   useCompleteOnboarding(): () => Promise<Session>;
+  /**
+   * 再設定リンクの送信を頼む。
+   * 登録の有無で結果を変えない（変えるとアカウントの存在が分かってしまう）。
+   */
+  useRequestPasswordReset(): (email: string) => Promise<void>;
 }

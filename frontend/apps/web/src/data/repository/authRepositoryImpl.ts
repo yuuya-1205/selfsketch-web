@@ -71,6 +71,13 @@ export const authRepository: AuthRepository = {
     };
   },
 
+  useRequestPasswordReset() {
+    const [request] = authDataSource.useRequestPasswordResetMutation();
+    return async (email) => {
+      await request({ email }).unwrap();
+    };
+  },
+
   useCompleteOnboarding() {
     const [complete] = authDataSource.useCompleteOnboardingMutation();
     return async () => toSession(await withDomainError(complete().unwrap()));
