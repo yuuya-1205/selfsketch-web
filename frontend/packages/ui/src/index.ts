@@ -25,6 +25,7 @@ export {
   Textarea,
   SelectDisplay,
   Switch,
+  Checkbox,
   RadioDot,
 } from "./components/Form";
 export {

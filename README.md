@@ -80,10 +80,12 @@ main へは merge commit で入るので、**リバートできる粒度 = PR �
 
 詳細は `.claude/skills/split-work/SKILL.md` と `AGENTS.md` を参照。
 
-## 実装済みの画面（Web版 35画面）
+## 実装済みの画面（Web版 37画面）
 
 | ルート | 画面 | .pen 上のノード |
 | --- | --- | --- |
+| `/login` | ログイン | W-Auth 1 |
+| `/signup` | 新規登録 | W-Auth 2 |
 | `/welcome` | ようこそ | W-Onb 1 |
 | `/onboarding/goal` | なりたい自分 | W-Onb 2 |
 | `/onboarding/future` | AI 未来の自分 | W-Onb 3 |
@@ -192,7 +194,22 @@ main へは merge commit で入るので、**リバートできる粒度 = PR �
 個人データの扱いは `.pen` の「A6. 設計メモ」に従う。記録本文・作品画像は
 **既定でマスク**し、通報対応時のみ開示リクエスト経由で閲覧する導線にしている。
 
+## 認証
+
+`/login` と `/signup` は動くが、**中身はフロントエンド内のモック**。
+アカウントとセッションは `localStorage` に持っていて、バックエンドの
+認証 API はまだ無い（方式は JWT に決定済み。`docs/api-contract.md` §3）。
+
+- 未ログインで `/today` などを開くと `/login` に飛び、ログイン後に元のページへ戻る
+- 登録直後はオンボーディング（`/onboarding/*`）へ入り、完了するとアカウントに記録される
+- 新規登録で訊くのはメール・パスワード・規約同意だけ（`.pen` の W-Auth 2 に合わせた）。
+  表示名はメールのローカル部から作られ、`/settings/account` で変えられる
+- デモ用のアカウント: `yuki@example.com` / `selfsketch`
+- 実 API に差し替えるのは `apps/web/src/data/datasource/authDataSource.ts` だけ。
+  対応するエンドポイントは同ファイル冒頭のコメントに書いてある
+
 ## 未実装
 
-- 認証、実 API、i18n
+- 認証のバックエンド（現状はフロント内モック。上記参照）、実 API、i18n
+- パスワード再設定（`.pen` の W-Auth 3。ログイン画面の「パスワードを忘れた方」も未設置）
 - 画像アセット（作品サムネイルは `Thumb` が暖色パレットで代替中）
