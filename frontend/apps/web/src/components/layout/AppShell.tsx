@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { MobileTabBar } from "./MobileTabBar";
+import { MobileDrawer } from "./MobileDrawer";
 
 /**
  * アプリ全体のシェル。
@@ -22,6 +23,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
         </main>
         <MobileTabBar />
       </div>
+      <MobileDrawer />
     </div>
   );
 }
