@@ -5,21 +5,24 @@ import { toGalleryItem, toGalleryMonth } from "@/data/mapper/gallery";
 
 export const galleryRepository: GalleryRepository = {
   useMonths() {
-    const { data, isLoading, error } =
+    const { data, isLoading, error, refetch } =
       galleryDataSource.useGalleryMonthsQuery();
     return {
       data: data?.map(toGalleryMonth),
       isLoading,
       error: toDomainError(error),
+      retry: refetch,
     };
   },
 
   useGrid() {
-    const { data, isLoading, error } = galleryDataSource.useGalleryGridQuery();
+    const { data, isLoading, error, refetch } =
+      galleryDataSource.useGalleryGridQuery();
     return {
       data: data?.map(toGalleryItem),
       isLoading,
       error: toDomainError(error),
+      retry: refetch,
     };
   },
 

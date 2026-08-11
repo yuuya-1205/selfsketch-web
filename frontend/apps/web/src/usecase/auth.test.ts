@@ -23,7 +23,12 @@ const SESSION: Session = {
 /** フェイクは RepositoryResult を返すだけの素のオブジェクト（arch スキル） */
 function fakeAuth(overrides: Partial<AuthRepository> = {}): AuthRepository {
   return {
-    useSession: () => ({ data: null, isLoading: false, error: null }),
+    useSession: () => ({
+      data: null,
+      isLoading: false,
+      error: null,
+      retry: () => {},
+    }),
     useSignUp: () => async () => SESSION,
     useLogin: () => async () => SESSION,
     useLogout: () => async () => {},
@@ -62,6 +67,7 @@ describe("useAuth", () => {
             data: undefined,
             isLoading: false,
             error: null,
+            retry: () => {},
           }),
         }),
       ),
@@ -78,6 +84,7 @@ describe("useAuth", () => {
             data: SESSION,
             isLoading: false,
             error: null,
+            retry: () => {},
           }),
         }),
       ),
