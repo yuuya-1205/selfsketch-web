@@ -5,6 +5,8 @@ import { PlaceholderPage } from "@/pages/PlaceholderPage";
 /* 認証（未ログイン） */
 import { LoginPage } from "@/features/auth/LoginPage";
 import { SignUpPage } from "@/features/auth/SignUpPage";
+import { RequireAuth } from "@/features/auth/RequireAuth";
+import { RequireGuest } from "@/features/auth/RequireGuest";
 
 /* オンボーディング（未ログイン） */
 import { WelcomePage } from "@/features/onboarding/WelcomePage";
@@ -65,73 +67,83 @@ import { ClosingPage } from "@/features/reflection/ClosingPage";
 export function App() {
   return (
     <Routes>
-      {/* ---- 未ログイン（サイドナビなし） ---- */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignUpPage />} />
-      <Route path="/welcome" element={<WelcomePage />} />
-      <Route path="/onboarding/goal" element={<GoalPage />} />
-      <Route path="/onboarding/future" element={<FutureSelfPage />} />
-      <Route path="/onboarding/first-habit" element={<FirstHabitPage />} />
+      {/* ---- 未ログイン専用（ログイン済みなら「今日」へ送る） ---- */}
+      <Route element={<RequireGuest />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/welcome" element={<WelcomePage />} />
+      </Route>
+
+      {/* ---- オンボーディング（登録直後。サイドナビなし） ---- */}
+      <Route element={<RequireAuth redirectTo="/welcome" />}>
+        <Route path="/onboarding/goal" element={<GoalPage />} />
+        <Route path="/onboarding/future" element={<FutureSelfPage />} />
+        <Route path="/onboarding/first-habit" element={<FirstHabitPage />} />
+      </Route>
 
       {/* ---- ログイン後（アプリシェル） ---- */}
-      <Route element={<AppShell />}>
-        <Route index element={<Navigate to="/today" replace />} />
+      <Route element={<RequireAuth />}>
+        <Route element={<AppShell />}>
+          <Route index element={<Navigate to="/today" replace />} />
 
-        <Route path="/today" element={<TodayPage />}>
-          <Route path="new" element={<HabitFormModal />} />
+          <Route path="/today" element={<TodayPage />}>
+            <Route path="new" element={<HabitFormModal />} />
+          </Route>
+          <Route path="/habits/:habitId" element={<HabitDetailPage />} />
+
+          <Route path="/streak" element={<StreakPage />}>
+            <Route path="milestone" element={<MilestoneModal />} />
+          </Route>
+
+          <Route path="/journal" element={<JournalPage />} />
+          <Route path="/journal/new" element={<JournalEditorPage />} />
+          <Route path="/journal/:entryId" element={<JournalPage />} />
+
+          <Route path="/gallery" element={<GalleryTimelinePage />} />
+          <Route path="/gallery/grid" element={<GalleryGridPage />}>
+            <Route path=":itemId" element={<LightboxModal />} />
+          </Route>
+
+          <Route path="/future" element={<VisionBoardPage />} />
+          <Route path="/future/:visionId" element={<VisionDetailPage />} />
+
+          <Route path="/insights" element={<InsightsPage />} />
+          <Route path="/insights/monthly" element={<MonthlyReportPage />} />
+
+          <Route path="/friends" element={<FriendsPage />}>
+            <Route path="share" element={<ShareModal />} />
+          </Route>
+
+          <Route path="/notifications" element={<NotificationsPage />} />
+
+          <Route path="/settings" element={<GeneralSettingsPage />} />
+          <Route path="/settings/account" element={<AccountSettingsPage />} />
+          <Route path="/settings/subscription" element={<SubscriptionPage />} />
+          <Route path="/settings/privacy" element={<PrivacySettingsPage />} />
+          <Route path="/settings/data" element={<DataSettingsPage />} />
+          <Route path="/settings/help" element={<HelpSettingsPage />} />
+
+          <Route path="/premium" element={<PremiumPage />} />
+
+          <Route path="/reflection" element={<ReflectionHubPage />} />
+          <Route path="/reflection/daily" element={<DailyReflectionPage />} />
+          <Route path="/reflection/compare" element={<ComparisonPage />} />
+          <Route path="/reflection/timeline" element={<FutureTimelinePage />} />
+          <Route path="/reflection/century" element={<CenturyPage />} />
+          <Route path="/reflection/backcast" element={<BackcastPage />} />
+          <Route
+            path="/reflection/vision"
+            element={<ReflectionVisionBoardPage />}
+          />
+          <Route path="/reflection/closing" element={<ClosingPage />} />
+
+          <Route
+            path="*"
+            element={
+              <PlaceholderPage title="ページが見つかりません" crumb="" />
+            }
+          />
         </Route>
-        <Route path="/habits/:habitId" element={<HabitDetailPage />} />
-
-        <Route path="/streak" element={<StreakPage />}>
-          <Route path="milestone" element={<MilestoneModal />} />
-        </Route>
-
-        <Route path="/journal" element={<JournalPage />} />
-        <Route path="/journal/new" element={<JournalEditorPage />} />
-        <Route path="/journal/:entryId" element={<JournalPage />} />
-
-        <Route path="/gallery" element={<GalleryTimelinePage />} />
-        <Route path="/gallery/grid" element={<GalleryGridPage />}>
-          <Route path=":itemId" element={<LightboxModal />} />
-        </Route>
-
-        <Route path="/future" element={<VisionBoardPage />} />
-        <Route path="/future/:visionId" element={<VisionDetailPage />} />
-
-        <Route path="/insights" element={<InsightsPage />} />
-        <Route path="/insights/monthly" element={<MonthlyReportPage />} />
-
-        <Route path="/friends" element={<FriendsPage />}>
-          <Route path="share" element={<ShareModal />} />
-        </Route>
-
-        <Route path="/notifications" element={<NotificationsPage />} />
-
-        <Route path="/settings" element={<GeneralSettingsPage />} />
-        <Route path="/settings/account" element={<AccountSettingsPage />} />
-        <Route path="/settings/subscription" element={<SubscriptionPage />} />
-        <Route path="/settings/privacy" element={<PrivacySettingsPage />} />
-        <Route path="/settings/data" element={<DataSettingsPage />} />
-        <Route path="/settings/help" element={<HelpSettingsPage />} />
-
-        <Route path="/premium" element={<PremiumPage />} />
-
-        <Route path="/reflection" element={<ReflectionHubPage />} />
-        <Route path="/reflection/daily" element={<DailyReflectionPage />} />
-        <Route path="/reflection/compare" element={<ComparisonPage />} />
-        <Route path="/reflection/timeline" element={<FutureTimelinePage />} />
-        <Route path="/reflection/century" element={<CenturyPage />} />
-        <Route path="/reflection/backcast" element={<BackcastPage />} />
-        <Route
-          path="/reflection/vision"
-          element={<ReflectionVisionBoardPage />}
-        />
-        <Route path="/reflection/closing" element={<ClosingPage />} />
-
-        <Route
-          path="*"
-          element={<PlaceholderPage title="ページが見つかりません" crumb="" />}
-        />
       </Route>
     </Routes>
   );
