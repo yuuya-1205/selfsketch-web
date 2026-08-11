@@ -5,6 +5,7 @@ import { PlaceholderPage } from "@/pages/PlaceholderPage";
 /* 認証（未ログイン） */
 import { LoginPage } from "@/features/auth/LoginPage";
 import { SignUpPage } from "@/features/auth/SignUpPage";
+import { PasswordResetPage } from "@/features/auth/PasswordResetPage";
 import { RequireAuth } from "@/features/auth/RequireAuth";
 import { RequireGuest } from "@/features/auth/RequireGuest";
 
@@ -71,6 +72,7 @@ export function App() {
       <Route element={<RequireGuest />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/password-reset" element={<PasswordResetPage />} />
         <Route path="/welcome" element={<WelcomePage />} />
       </Route>
 
