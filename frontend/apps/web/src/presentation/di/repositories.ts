@@ -7,6 +7,7 @@ import type { InsightsRepository } from "@/domain/repository/insightsRepository"
 import type { HabitsRepository } from "@/domain/repository/habitsRepository";
 import type { JournalRepository } from "@/domain/repository/journalRepository";
 import type { NotificationsRepository } from "@/domain/repository/notificationsRepository";
+import type { ReflectionRepository } from "@/domain/repository/reflectionRepository";
 import type { SettingsRepository } from "@/domain/repository/settingsRepository";
 import type { SocialRepository } from "@/domain/repository/socialRepository";
 import type { StreakRepository } from "@/domain/repository/streakRepository";
@@ -29,6 +30,7 @@ export interface Repositories {
   social: SocialRepository;
   settings: SettingsRepository;
   billing: BillingRepository;
+  reflection: ReflectionRepository;
 }
 
 export const RepositoryContext = createContext<Repositories | null>(null);
