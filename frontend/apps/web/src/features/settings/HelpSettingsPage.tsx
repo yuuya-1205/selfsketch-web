@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Bug, ChevronDown, ChevronRight } from "lucide-react";
 import { Button, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useHelpSettingsQuery } from "@/lib/api/settings";
+import { useHelpSettings } from "@/usecase/settings";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
+import { settingsDateLabel } from "@/presentation/format/settings";
 import {
   SettingsGroup,
   SettingsLayout,
@@ -12,8 +14,16 @@ import {
 
 export function HelpSettingsPage() {
   usePageMeta("その他", "設定 — ヘルプ");
-  const { data: help, isLoading } = useHelpSettingsQuery();
+  const { help, isLoading, error, retry } = useHelpSettings();
   const [openFaq, setOpenFaq] = useState<string | null>(null);
+
+  if (error) {
+    return (
+      <SettingsLayout subtitle="ヘルプ · 使い方と問い合わせ">
+        <QueryErrorView error={error} onRetry={retry} />
+      </SettingsLayout>
+    );
+  }
 
   if (isLoading || !help) {
     return <SettingsPaneSkeleton subtitle="ヘルプ · 使い方と問い合わせ" />;
@@ -56,7 +66,7 @@ export function HelpSettingsPage() {
       <SettingsGroup title="問い合わせ">
         <SettingsRow
           label="フォームから問い合わせる"
-          description={`${help.responseTime}に、登録メールアドレスへ返信します`}
+          description={`平日 ${help.responseBusinessDays}営業日以内に、登録メールアドレスへ返信します`}
           control={
             <Button variant="outline" size="sm">
               フォームを開く
@@ -90,7 +100,7 @@ export function HelpSettingsPage() {
       <SettingsGroup title="アプリ情報">
         {[
           { k: "バージョン", v: help.version },
-          { k: "最終更新", v: help.updatedAt },
+          { k: "最終更新", v: settingsDateLabel(help.updatedAt) },
           { k: "サポート ID", v: help.supportId },
         ].map((row) => (
           <div key={row.k} className="flex items-center gap-3">

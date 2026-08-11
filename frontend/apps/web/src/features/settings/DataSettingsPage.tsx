@@ -1,11 +1,23 @@
 import { Badge, Button, Card, Progress, SelectDisplay } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { useDataSettings } from "@/usecase/settings";
+import { storageRatio, type ExportStatus } from "@/domain/model/settings";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 import {
-  EXPORT_FORMATS,
-  EXPORT_TARGETS,
-  useDataSettingsQuery,
-} from "@/lib/api/settings";
-import type { ExportStatus } from "@/lib/api/types";
+  EXPORT_FORMAT_LABEL,
+  EXPORT_FORMAT_SHORT,
+  EXPORT_STATUS_LABEL,
+  EXPORT_TARGET_LABEL,
+  STORAGE_LABEL,
+} from "@/presentation/constants/settings";
+import {
+  EXPORT_FORMAT_OPTIONS,
+  EXPORT_TARGET_OPTIONS,
+} from "@/presentation/constants/premium";
+import {
+  settingsDateLabel,
+  storageLabel,
+} from "@/presentation/format/settings";
 import {
   SettingsGroup,
   SettingsLayout,
@@ -14,14 +26,22 @@ import {
 } from "./SettingsLayout";
 
 const STATUS_TONE: Record<ExportStatus, "ok" | "warn" | "track"> = {
-  準備完了: "ok",
-  作成中: "warn",
-  期限切れ: "track",
+  ready: "ok",
+  preparing: "warn",
+  expired: "track",
 };
 
 export function DataSettingsPage() {
   usePageMeta("その他", "設定 — データと書き出し");
-  const { data, isLoading } = useDataSettingsQuery();
+  const { data, isLoading, error, retry } = useDataSettings();
+
+  if (error) {
+    return (
+      <SettingsLayout subtitle="データと書き出し · バックアップと削除">
+        <QueryErrorView error={error} onRetry={retry} />
+      </SettingsLayout>
+    );
+  }
 
   if (isLoading || !data) {
     return (
@@ -35,13 +55,19 @@ export function DataSettingsPage() {
         <SettingsRow
           label="書き出す範囲"
           control={
-            <SelectDisplay value={EXPORT_TARGETS[0]} className="h-9.5 w-60" />
+            <SelectDisplay
+              value={EXPORT_TARGET_LABEL[EXPORT_TARGET_OPTIONS[0]]}
+              className="h-9.5 w-60"
+            />
           }
         />
         <SettingsRow
           label="形式"
           control={
-            <SelectDisplay value={EXPORT_FORMATS[0]} className="h-9.5 w-60" />
+            <SelectDisplay
+              value={EXPORT_FORMAT_LABEL[EXPORT_FORMAT_OPTIONS[0]]}
+              className="h-9.5 w-60"
+            />
           }
         />
         <SettingsRow
@@ -49,7 +75,7 @@ export function DataSettingsPage() {
           description={
             data.canRequestExport
               ? "準備ができたらメールでお知らせします。月に1回まで。"
-              : `今月はリクエスト済みです。次に使えるのは ${data.nextExportAvailableAt} から。`
+              : `今月はリクエスト済みです。次に使えるのは ${data.nextExportAvailableAt ? settingsDateLabel(data.nextExportAvailableAt) : "—"} から。`
           }
           control={
             <Button size="sm" disabled={!data.canRequestExport}>
@@ -62,16 +88,18 @@ export function DataSettingsPage() {
       <SettingsGroup title="書き出しの履歴">
         {data.history.map((h) => (
           <div
-            key={h.date}
+            key={h.id}
             className="flex flex-wrap items-center gap-x-3 gap-y-1"
           >
             <span className="w-24 shrink-0 text-xs font-semibold text-brown">
-              {h.date}
+              {settingsDateLabel(h.requestedAt)}
             </span>
             <span className="min-w-40 flex-1 truncate text-[13px] font-medium text-ink">
-              {h.target}
+              {EXPORT_TARGET_LABEL[h.target]} ({EXPORT_FORMAT_SHORT[h.format]})
             </span>
-            <Badge tone={STATUS_TONE[h.status]}>{h.status}</Badge>
+            <Badge tone={STATUS_TONE[h.status]}>
+              {EXPORT_STATUS_LABEL[h.status]}
+            </Badge>
             {h.downloadUrl ? (
               <a
                 href={h.downloadUrl}
@@ -88,14 +116,20 @@ export function DataSettingsPage() {
 
       <SettingsGroup title="保存容量">
         {data.storage.map((s) => (
-          <div key={s.label} className="flex flex-col gap-1.5">
+          <div key={s.kind} className="flex flex-col gap-1.5">
             <div className="flex items-center gap-3">
               <span className="min-w-0 flex-1 text-[13px] font-medium text-ink">
-                {s.label}
+                {STORAGE_LABEL[s.kind]}
               </span>
-              <span className="text-xs font-semibold text-brown">{s.used}</span>
+              <span className="text-xs font-semibold text-brown">
+                {storageLabel(s.usedBytes, s.limitBytes)}
+              </span>
             </div>
-            <Progress value={s.ratio} height={8} label={s.label} />
+            <Progress
+              value={storageRatio(s)}
+              height={8}
+              label={STORAGE_LABEL[s.kind]}
+            />
           </div>
         ))}
       </SettingsGroup>

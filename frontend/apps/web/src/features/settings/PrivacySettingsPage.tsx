@@ -2,8 +2,10 @@ import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { SelectDisplay, Switch } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { usePrivacySettingsQuery } from "@/lib/api/settings";
-import type { PrivacySettings } from "@/lib/api/types";
+import { usePrivacySettings } from "@/usecase/settings";
+import type { PrivacySettings } from "@/domain/model/settings";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
+import { VISIBILITY_LABEL } from "@/presentation/constants/settings";
 import {
   SettingsGroup,
   SettingsLayout,
@@ -23,7 +25,15 @@ type ToggleKey =
 
 export function PrivacySettingsPage() {
   usePageMeta("その他", "設定 — プライバシー");
-  const { data: privacy, isLoading } = usePrivacySettingsQuery();
+  const { privacy, isLoading, error, retry } = usePrivacySettings();
+
+  if (error) {
+    return (
+      <SettingsLayout subtitle={SUBTITLE}>
+        <QueryErrorView error={error} onRetry={retry} />
+      </SettingsLayout>
+    );
+  }
 
   if (isLoading || !privacy) {
     return <SettingsPaneSkeleton subtitle={SUBTITLE} />;
@@ -56,13 +66,19 @@ function PrivacySettingsForm({ privacy }: { privacy: PrivacySettings }) {
         <SettingsRow
           label="プロフィール"
           control={
-            <SelectDisplay value={privacy.profile} className="h-9.5 w-52" />
+            <SelectDisplay
+              value={VISIBILITY_LABEL[privacy.profile]}
+              className="h-9.5 w-52"
+            />
           }
         />
         <SettingsRow
           label="作品ギャラリー"
           control={
-            <SelectDisplay value={privacy.gallery} className="h-9.5 w-52" />
+            <SelectDisplay
+              value={VISIBILITY_LABEL[privacy.gallery]}
+              className="h-9.5 w-52"
+            />
           }
         />
         <SettingsRow
