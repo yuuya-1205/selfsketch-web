@@ -168,6 +168,10 @@ main へは merge commit で入るため、**リバートの粒度 = PR とコ�
 
 ## 未実装（触るときは要相談）
 
-認証、実 API、i18n、画像アセット（`Thumb` が暖色パレットで代替中）。
+実 API、i18n、画像アセット（`Thumb` が暖色パレットで代替中）。
+
+認証は web 側の画面・層・ルートガードまで実装済みだが、**実体はフロント内のモック**
+（`apps/web/src/data/datasource/authDataSource.ts` が localStorage に持つ）。
+backend の `/api/v1/auth/*` は未実装。詳細は `README.md` の「認証」を参照。
 
 API の設計方針と決定待ちの論点は `docs/api-contract.md` に整理してある。
