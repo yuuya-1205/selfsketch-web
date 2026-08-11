@@ -9,7 +9,10 @@ import {
   Switch,
   cn,
 } from "@selfsketch/ui";
-import { SHARE_OPTIONS, SHARE_TEMPLATES } from "@/lib/api/social";
+import {
+  SHARE_OPTIONS,
+  SHARE_TEMPLATES,
+} from "@/presentation/constants/social";
 
 const TEMPLATE_SWATCH: Record<string, string> = {
   ダーク: "bg-ink",

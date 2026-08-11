@@ -149,22 +149,6 @@ export interface MonthlyReport {
 }
 
 /* ---- フレンド ------------------------------------------------------ */
-export interface FriendActivity {
-  id: string;
-  initial: string;
-  name: string;
-  action: string;
-  time: string;
-  extra: string | null;
-  cheers: number;
-}
-
-export interface Friend {
-  initial: string;
-  name: string;
-  streakLabel: string;
-}
-
 /* ---- 通知 ---------------------------------------------------------- */
 /* ---- 設定 ---------------------------------------------------------- */
 
