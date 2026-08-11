@@ -15,13 +15,16 @@ import {
   galleryMonthLabel,
   gallerySummaryLabel,
 } from "@/presentation/format/gallery";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 
 const VIEWS = ["タイムライン", "グリッド"] as const;
 
 export function GalleryTimelinePage() {
   usePageMeta("メイン", "ギャラリー");
   const navigate = useNavigate();
-  const { months, isLoading } = useGalleryTimeline();
+  const { months, isLoading, error, retry } = useGalleryTimeline();
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !months) {
     return <GallerySkeleton label="タイムラインを読み込み中" />;

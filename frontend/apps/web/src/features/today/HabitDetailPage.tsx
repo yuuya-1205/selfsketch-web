@@ -18,12 +18,17 @@ import {
   scheduleLabel,
   shortDateLabel,
 } from "@/presentation/format/today";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 
 export function HabitDetailPage() {
   usePageMeta("メイン / 今日", "習慣の詳細");
   const navigate = useNavigate();
   const { habitId } = useParams();
-  const { habit, isLoading, daysSinceStart } = useHabitDetail(habitId ?? "h1");
+  const { habit, isLoading, error, retry, daysSinceStart } = useHabitDetail(
+    habitId ?? "h1",
+  );
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !habit) {
     return <HabitDetailSkeleton />;

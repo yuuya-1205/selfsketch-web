@@ -15,13 +15,16 @@ import {
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useStreakOverview } from "@/usecase/streak";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 
 const RANGES = ["週", "月", "年"] as const;
 
 export function StreakPage() {
   usePageMeta("分析・つながり", "軌跡");
-  const { streak, isLoading, earnedBadgeCount } = useStreakOverview();
+  const { streak, isLoading, earnedBadgeCount, error, retry } = useStreakOverview();
   const [range, setRange] = useState<(typeof RANGES)[number]>("年");
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !streak) {
     return <StreakSkeleton />;

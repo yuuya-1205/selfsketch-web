@@ -51,7 +51,9 @@ export function QueryBoundary<T>({
   children,
 }: QueryBoundaryProps<T>) {
   if (state.error) {
-    return <QueryError error={state.error} onRetry={onRetry} inline={inline} />;
+    return (
+      <QueryErrorView error={state.error} onRetry={onRetry} inline={inline} />
+    );
   }
 
   // データが無いあいだは読み込み中として扱う（error が無いなら取得途中）
@@ -60,7 +62,14 @@ export function QueryBoundary<T>({
   return <>{children(state.data)}</>;
 }
 
-function QueryError({
+/**
+ * 失敗したときの表示だけを取り出したもの。
+ *
+ * 既に `if (isLoading || !data) return <Skeleton/>` で早期 return している画面は、
+ * その手前に `if (error) return <QueryErrorView .../>` を足すのが最小の差分になる。
+ * これから書く画面は `QueryBoundary` で包むほうが分岐を落としにくい。
+ */
+export function QueryErrorView({
   error,
   onRetry,
   inline,
