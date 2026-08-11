@@ -1,7 +1,8 @@
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@selfsketch/ui";
 import { NAV_GROUPS } from "@/lib/nav";
+import { useAuth } from "@/usecase/auth";
 
 /**
  * デスクトップ用サイドナビ。
@@ -10,6 +11,8 @@ import { NAV_GROUPS } from "@/lib/nav";
  *  - <md         : 非表示（下部タブバーに切り替わる）
  */
 export function Sidebar() {
+  const { user } = useAuth();
+
   return (
     <nav
       aria-label="メインナビゲーション"
@@ -75,19 +78,22 @@ export function Sidebar() {
 
       <div className="flex-1" />
 
-      <button
-        type="button"
+      <Link
+        to="/settings/account"
+        aria-label="アカウント設定"
         className="flex w-full items-center justify-center gap-2.5 rounded-xl p-2.5 text-left transition-colors hover:bg-nav-card xl:justify-start xl:bg-nav-card"
       >
         <span className="grid size-[30px] shrink-0 place-items-center rounded-full bg-line text-xs font-bold text-ink">
-          ゆ
+          {user?.displayName.slice(0, 1) ?? ""}
         </span>
         <span className="hidden flex-1 xl:block">
-          <span className="block text-xs font-semibold text-paper">ゆうき</span>
+          <span className="block text-xs font-semibold text-paper">
+            {user?.displayName ?? ""}
+          </span>
           <span className="block text-[10px] text-nav-icon">Free プラン</span>
         </span>
         <ChevronRight size={14} className="hidden text-nav-icon xl:block" />
-      </button>
+      </Link>
     </nav>
   );
 }
