@@ -27,8 +27,13 @@ export interface Credentials {
   password: string;
 }
 
+/**
+ * 新規登録の入力（.pen の W-Auth 2）。表示名は受け取らず、
+ * サーバがメールアドレスから仮の表示名を作る（あとから設定で変えられる）。
+ */
 export interface SignUpInput extends Credentials {
-  displayName: string;
+  /** 利用規約とプライバシーポリシーへの同意 */
+  termsAccepted: boolean;
 }
 
 /** オンボーディング（なりたい自分 〜 最初の習慣）を終えているか */
@@ -51,7 +56,7 @@ export type CredentialIssue =
   | "password_required"
   | "password_too_short"
   | "password_mismatch"
-  | "display_name_required";
+  | "terms_required";
 
 export const PASSWORD_MIN_LENGTH = 8;
 
@@ -71,6 +76,15 @@ export function passwordIssue(password: string): CredentialIssue | null {
   return null;
 }
 
-export function displayNameIssue(displayName: string): CredentialIssue | null {
-  return displayName.trim() ? null : "display_name_required";
+export function termsIssue(accepted: boolean): CredentialIssue | null {
+  return accepted ? null : "terms_required";
+}
+
+/**
+ * 表示名を持たないアカウントの仮の呼び名。
+ * 本来はサーバが決めるが、`docs/api-contract.md` の契約が固まるまでは
+ * この規則をフロント側でも共有しておく。
+ */
+export function fallbackDisplayName(email: string): string {
+  return email.trim().split("@")[0] || "user";
 }

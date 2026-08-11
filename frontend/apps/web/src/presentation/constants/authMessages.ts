@@ -12,7 +12,7 @@ export const AUTH_FAILURE_MESSAGES: Record<AuthFailureCode, string> = {
   password_required: "パスワードを入力してください。",
   password_too_short: `パスワードは${PASSWORD_MIN_LENGTH}文字以上にしてください。`,
   password_mismatch: "確認用のパスワードが一致しません。",
-  display_name_required: "表示名を入力してください。",
+  terms_required: "利用規約とプライバシーポリシーへの同意が必要です。",
   email_taken: "このメールアドレスはすでに登録されています。",
   invalid_credentials: "メールアドレスまたはパスワードが違います。",
   network: "通信に失敗しました。接続を確かめてもう一度お試しください。",

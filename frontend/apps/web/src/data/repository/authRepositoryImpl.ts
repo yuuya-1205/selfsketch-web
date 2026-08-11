@@ -43,11 +43,8 @@ export const authRepository: AuthRepository = {
     return async (input) =>
       toSession(
         await withDomainError(
-          signUp({
-            email: input.email,
-            password: input.password,
-            displayName: input.displayName,
-          }).unwrap(),
+          // 同意の記録は実 API では別リソースになる見込みなので送らない
+          signUp({ email: input.email, password: input.password }).unwrap(),
         ),
       );
   },
