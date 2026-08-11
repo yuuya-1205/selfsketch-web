@@ -11,17 +11,48 @@ import {
   Thumb,
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { useFriendFeedQuery, useFriendsQuery } from "@/lib/api/social";
+import { useCheer, useFriendFeed, useFriends } from "@/usecase/social";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
+import {
+  nameInitial,
+  relativeTimeLabel,
+  sharedWorkLabel,
+  streakLabel,
+} from "@/presentation/format/social";
 
 export function FriendsPage() {
   usePageMeta("分析・つながり", "フレンド");
   const navigate = useNavigate();
-  const { data: feed, isLoading: feedLoading } = useFriendFeedQuery();
-  const { data: friends, isLoading: friendsLoading } = useFriendsQuery();
+  const {
+    activities,
+    isLoading: feedLoading,
+    error: feedError,
+    retry: retryFeed,
+  } = useFriendFeed();
+  const {
+    friends,
+    friendCount,
+    isLoading: friendsLoading,
+    error: friendsError,
+    retry: retryFriends,
+  } = useFriends();
+  const cheer = useCheer();
 
-  if (feedLoading || friendsLoading || !feed || !friends) {
+  const error = feedError ?? friendsError;
+  if (error) {
+    return (
+      <QueryErrorView
+        error={error}
+        onRetry={feedError ? retryFeed : retryFriends}
+      />
+    );
+  }
+
+  if (feedLoading || friendsLoading || !activities || !friends) {
     return <FriendsSkeleton />;
   }
+
+  const now = new Date();
 
   return (
     <>
@@ -50,26 +81,32 @@ export function FriendsPage() {
             フレンドのうごき
           </SectionHeading>
 
-          {feed.map((f) => (
-            <Card key={f.id} className="flex gap-3.5 border-line p-4">
+          {activities.map((a) => {
+            const shared = sharedWorkLabel(a.sharedWorkCount);
+            return (
+            <Card key={a.id} className="flex gap-3.5 border-line p-4">
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-line text-sm font-bold text-ink">
-                {f.initial}
+                {nameInitial(a.friend.name)}
               </span>
 
               <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                 <span className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-ink">{f.name}</span>
-                  <span className="text-[11px] text-muted">{f.time}</span>
+                  <span className="text-sm font-bold text-ink">
+                    {a.friend.name}
+                  </span>
+                  <span className="text-[11px] text-muted">
+                    {relativeTimeLabel(a.occurredAt, now)}
+                  </span>
                 </span>
                 <span className="text-[13px] font-medium text-brown">
-                  {f.action}
+                  {a.message}
                 </span>
 
-                {f.extra && (
+                {shared && (
                   <div className="flex items-center gap-2.5 rounded-[11px] bg-surface px-3 py-2.5">
-                    <Thumb seed={f.cheers} className="h-8.5 w-11 rounded-[7px]" />
+                    <Thumb seed={a.cheers} className="h-8.5 w-11 rounded-[7px]" />
                     <span className="text-xs font-semibold text-ink">
-                      {f.extra}
+                      {shared}
                     </span>
                   </div>
                 )}
@@ -77,10 +114,11 @@ export function FriendsPage() {
                 <div className="flex items-center gap-3.5 pt-0.5">
                   <button
                     type="button"
+                    onClick={() => void cheer(a.id)}
                     className="flex items-center gap-1.5 text-[11px] font-semibold text-muted transition-colors hover:text-ink"
                   >
                     <Heart size={13} />
-                    はげます {f.cheers}
+                    はげます {a.cheers}
                   </button>
                   <button
                     type="button"
@@ -92,23 +130,24 @@ export function FriendsPage() {
                 </div>
               </div>
             </Card>
-          ))}
+            );
+          })}
         </section>
 
         <aside className="flex w-full shrink-0 flex-col gap-3 xl:w-[320px]">
           <Card tone="surface" className="flex flex-col gap-2.5 p-4.5">
-            <CardLabel>フレンド {friends.length * 2} 人</CardLabel>
+            <CardLabel>フレンド {friendCount} 人</CardLabel>
             {friends.map((f) => (
-              <div key={f.name} className="flex items-center gap-2.5">
+              <div key={f.id} className="flex items-center gap-2.5">
                 <span className="grid size-8 shrink-0 place-items-center rounded-full bg-line text-xs font-bold text-ink">
-                  {f.initial}
+                  {nameInitial(f.name)}
                 </span>
                 <span className="flex flex-1 flex-col">
                   <span className="text-[13px] font-semibold text-ink">
                     {f.name}
                   </span>
                   <span className="text-[10px] text-muted">
-                    {f.streakLabel}
+                    {streakLabel(f.currentStreak)}
                   </span>
                 </span>
                 <Flame size={14} className="text-line-strong" />
