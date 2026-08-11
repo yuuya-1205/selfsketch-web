@@ -166,20 +166,6 @@ export interface Friend {
 }
 
 /* ---- 通知 ---------------------------------------------------------- */
-export interface NotificationItem {
-  id: string;
-  icon: "bell" | "flame" | "heart" | "sparkles" | "users" | "moon";
-  title: string;
-  category: string;
-  time: string;
-  unread: boolean;
-}
-
-export interface NotificationGroup {
-  label: string;
-  items: NotificationItem[];
-}
-
 /* ---- 設定 ---------------------------------------------------------- */
 
 /** 公開範囲を選ぶ設定の選択肢。`.pen` W-Set 4 のセレクトと 1:1 */

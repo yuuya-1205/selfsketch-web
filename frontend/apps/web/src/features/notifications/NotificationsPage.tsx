@@ -1,19 +1,12 @@
 import { useState } from "react";
-import {
-  Bell,
-  Flame,
-  Heart,
-  Moon,
-  Sparkles,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { BellOff } from "lucide-react";
 import {
   Badge,
   Button,
   Card,
   CardLabel,
   Chip,
+  EmptyState,
   PageHeader,
   Switch,
   cn,
@@ -22,105 +15,135 @@ import {
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
 import {
+  useMarkAllNotificationsRead,
+  useNotifications,
+  type NotificationFilter,
+} from "@/usecase/notifications";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
+import {
+  BUCKET_LABEL,
+  CATEGORY_ICON,
+  CATEGORY_LABEL,
   NOTIFICATION_CHANNELS,
   NOTIFICATION_FILTERS,
-  useNotificationsQuery,
-} from "@/lib/api/notifications";
-
-const ICONS: Record<string, LucideIcon> = {
-  bell: Bell,
-  flame: Flame,
-  heart: Heart,
-  sparkles: Sparkles,
-  users: Users,
-  moon: Moon,
-};
+} from "@/presentation/constants/notifications";
+import { notificationTimeLabel } from "@/presentation/format/notification";
 
 export function NotificationsPage() {
   usePageMeta("その他", "通知");
-  const { data: groups, isLoading } = useNotificationsQuery();
-  const [filter, setFilter] = useState<string>(NOTIFICATION_FILTERS[0]);
+
+  const [filter, setFilter] = useState<NotificationFilter>(null);
+  const { groups, unreadCount, isLoading, error, retry } =
+    useNotifications(filter);
+  const markAllRead = useMarkAllNotificationsRead();
   const [channels, setChannels] = useState(NOTIFICATION_CHANNELS);
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !groups) {
     return <NotificationsSkeleton />;
   }
 
-  const unread = groups
-    .flatMap((g) => g.items)
-    .filter((i) => i.unread).length;
+  const now = new Date();
 
   return (
     <>
       <PageHeader
         title="通知"
-        badge={<Badge tone="solid">未読 {unread}</Badge>}
+        badge={<Badge tone="solid">未読 {unreadCount}</Badge>}
         actions={
           <>
             <div className="flex flex-wrap gap-1.5">
               {NOTIFICATION_FILTERS.map((f) => (
-                <Chip key={f} active={f === filter} onClick={() => setFilter(f)}>
-                  {f}
+                <Chip
+                  key={f.label}
+                  active={f.value === filter}
+                  onClick={() => setFilter(f.value)}
+                >
+                  {f.label}
                 </Chip>
               ))}
             </div>
-            <Button variant="outline">すべて既読にする</Button>
+            <Button
+              variant="outline"
+              onClick={() => void markAllRead()}
+              disabled={unreadCount === 0}
+            >
+              すべて既読にする
+            </Button>
           </>
         }
       />
 
       <div className="flex w-full flex-1 flex-col gap-4.5 xl:flex-row">
         <div className="flex min-w-0 flex-1 flex-col gap-2.5">
-          {groups.map((g) => (
-            <section key={g.label} className="flex flex-col gap-2.5">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold tracking-[1.3px] text-muted">
-                  {g.label}
-                </span>
-                <span className="h-px flex-1 bg-line" />
-              </div>
+          {groups.length === 0 ? (
+            <EmptyState
+              icon={<BellOff size={20} />}
+              title="この条件では見つかりません"
+              body="絞り込みを外すと、ほかのお知らせが見つかるかもしれません。"
+              actions={
+                filter && (
+                  <Button size="sm" onClick={() => setFilter(null)}>
+                    絞り込みを解除
+                  </Button>
+                )
+              }
+            />
+          ) : (
+            groups.map((g) => (
+              <section key={g.bucket} className="flex flex-col gap-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-bold tracking-[1.3px] text-muted">
+                    {BUCKET_LABEL[g.bucket]}
+                  </span>
+                  <span className="h-px flex-1 bg-line" />
+                </div>
 
-              {g.items.map((n) => {
-                const Icon = ICONS[n.icon] ?? Bell;
-                return (
-                  <div
-                    key={n.id}
-                    className={cn(
-                      "flex items-center gap-3 rounded-xl px-4 py-3.5",
-                      n.unread
-                        ? "border border-line-strong bg-surface"
-                        : "border border-line bg-paper",
-                    )}
-                  >
-                    <span
+                {g.items.map((n) => {
+                  const Icon = CATEGORY_ICON[n.category];
+                  const unread = !n.read;
+                  return (
+                    <div
+                      key={n.id}
                       className={cn(
-                        "grid size-8 shrink-0 place-items-center rounded-[10px]",
-                        n.unread ? "bg-ink text-paper" : "bg-track text-brown",
+                        "flex items-center gap-3 rounded-xl px-4 py-3.5",
+                        unread
+                          ? "border border-line-strong bg-surface"
+                          : "border border-line bg-paper",
                       )}
                     >
-                      <Icon size={15} />
-                    </span>
-                    <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <span
                         className={cn(
-                          "text-[13px] text-ink",
-                          n.unread ? "font-bold" : "font-medium",
+                          "grid size-8 shrink-0 place-items-center rounded-[10px]",
+                          unread ? "bg-ink text-paper" : "bg-track text-brown",
                         )}
                       >
-                        {n.title}
+                        <Icon size={15} />
                       </span>
-                      <span className="text-[11px] text-muted">
-                        {n.category} · {n.time}
+                      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                        <span
+                          className={cn(
+                            "text-[13px] text-ink",
+                            unread ? "font-bold" : "font-medium",
+                          )}
+                        >
+                          {n.title}
+                        </span>
+                        <span className="text-[11px] text-muted">
+                          {CATEGORY_LABEL[n.category]} ·{" "}
+                          {notificationTimeLabel(n.receivedAt, now)}
+                        </span>
                       </span>
-                    </span>
-                    {n.unread && (
-                      <span className="size-2 shrink-0 rounded-full bg-ink" />
-                    )}
-                  </div>
-                );
-              })}
-            </section>
-          ))}
+                      {unread && (
+                        <span className="size-2 shrink-0 rounded-full bg-ink" />
+                      )}
+                    </div>
+                  );
+                })}
+              </section>
+            ))
+          )}
         </div>
 
         <aside className="flex w-full shrink-0 flex-col gap-3 xl:w-[320px]">

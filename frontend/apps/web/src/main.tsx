@@ -13,6 +13,7 @@ import { journalRepository } from "@/data/repository/journalRepositoryImpl";
 import { galleryRepository } from "@/data/repository/galleryRepositoryImpl";
 import { futureRepository } from "@/data/repository/futureRepositoryImpl";
 import { insightsRepository } from "@/data/repository/insightsRepositoryImpl";
+import { notificationsRepository } from "@/data/repository/notificationsRepositoryImpl";
 import "./app.css";
 
 /** 依存の配線はここだけ。画面は useRepositories() 越しにしか触らない */
@@ -25,6 +26,7 @@ const repositories = {
   gallery: galleryRepository,
   future: futureRepository,
   insights: insightsRepository,
+  notifications: notificationsRepository,
 };
 
 /*

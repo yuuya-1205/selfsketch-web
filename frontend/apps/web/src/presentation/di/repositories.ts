@@ -5,6 +5,7 @@ import type { GalleryRepository } from "@/domain/repository/galleryRepository";
 import type { InsightsRepository } from "@/domain/repository/insightsRepository";
 import type { HabitsRepository } from "@/domain/repository/habitsRepository";
 import type { JournalRepository } from "@/domain/repository/journalRepository";
+import type { NotificationsRepository } from "@/domain/repository/notificationsRepository";
 import type { StreakRepository } from "@/domain/repository/streakRepository";
 import type { TodayRepository } from "@/domain/repository/todayRepository";
 
@@ -21,6 +22,7 @@ export interface Repositories {
   gallery: GalleryRepository;
   future: FutureRepository;
   insights: InsightsRepository;
+  notifications: NotificationsRepository;
 }
 
 export const RepositoryContext = createContext<Repositories | null>(null);
