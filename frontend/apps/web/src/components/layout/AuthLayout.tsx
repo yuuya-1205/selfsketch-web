@@ -48,8 +48,9 @@ export function AuthLayout({
         </div>
 
         {step === undefined ? (
-          // 3 つ目の要素を残して justify-between の配置を変えない
-          <div aria-hidden />
+          // lg 以上では 3 つ目の要素を残して justify-between の配置を保つ。
+          // バナーに畳まれる幅では余白になるだけなので出さない
+          <div aria-hidden className="hidden lg:block" />
         ) : (
           <div className="flex flex-col gap-3">
             <div className="flex gap-2">
