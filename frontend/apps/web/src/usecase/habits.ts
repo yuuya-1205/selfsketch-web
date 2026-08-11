@@ -3,12 +3,14 @@ import { useRepositories } from "@/presentation/di/repositories";
 
 /** 習慣詳細の読み取り。開始からの経過日数もここで出す */
 export function useHabitDetail(id: string) {
-  const { data, isLoading, error } = useRepositories().habits.useDetail(id);
+  const { data, isLoading, error, retry } =
+    useRepositories().habits.useDetail(id);
 
   return {
     habit: data,
     isLoading,
     error,
+    retry,
     daysSinceStart: data ? daysSinceStart(data, new Date()) : 0,
   };
 }
