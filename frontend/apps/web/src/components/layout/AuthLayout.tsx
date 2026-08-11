@@ -2,9 +2,9 @@ import { useEffect, type ReactNode } from "react";
 import { cn } from "@selfsketch/ui";
 
 export interface AuthLayoutProps {
-  /** 1–4 */
-  step: number;
-  stepLabel: string;
+  /** 1–4。オンボーディングの途中でない画面（ログインなど）では省く */
+  step?: number;
+  stepLabel?: string;
   title: string;
   children: ReactNode;
 }
@@ -13,6 +13,8 @@ export interface AuthLayoutProps {
  * 未ログイン時のレイアウト。
  * lg 以上: 520px のブランドパネル + 中央 520px のフォーム
  * lg 未満: ブランドパネルを上部バナーに折り返す
+ *
+ * step を渡さないとステッパーは出ない（ログイン・新規登録は 4 ステップの外）。
  */
 export function AuthLayout({
   step,
@@ -45,22 +47,27 @@ export function AuthLayout({
           </p>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <div className="flex gap-2">
-            {[1, 2, 3, 4].map((i) => (
-              <span
-                key={i}
-                className={cn(
-                  "h-1 w-11 rounded-full",
-                  i <= step ? "bg-paper" : "bg-nav-active",
-                )}
-              />
-            ))}
+        {step === undefined ? (
+          // 3 つ目の要素を残して justify-between の配置を変えない
+          <div aria-hidden />
+        ) : (
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-2">
+              {[1, 2, 3, 4].map((i) => (
+                <span
+                  key={i}
+                  className={cn(
+                    "h-1 w-11 rounded-full",
+                    i <= step ? "bg-paper" : "bg-nav-active",
+                  )}
+                />
+              ))}
+            </div>
+            <span className="text-[11px] font-semibold tracking-[1.2px] text-nav-label">
+              {stepLabel}
+            </span>
           </div>
-          <span className="text-[11px] font-semibold tracking-[1.2px] text-nav-label">
-            {stepLabel}
-          </span>
-        </div>
+        )}
       </aside>
 
       <main className="flex flex-1 items-center justify-center px-6 py-10 lg:px-20">
