@@ -82,8 +82,25 @@ export function LoginPage() {
           <FieldError failure={failure} field="email" />
         </Field>
 
-        <Field label="パスワード">
+        {/* ラベル行に再設定への導線を置くので Field は使わない
+            （Field は label 要素で包むため、中のリンクが入力欄にフォーカスを奪われる） */}
+        <div className="flex w-full flex-col gap-1.5">
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="login-password"
+              className="flex-1 text-[11px] font-bold tracking-[1.2px] text-muted"
+            >
+              パスワード
+            </label>
+            <Link
+              to="/password-reset"
+              className="text-[11px] font-semibold text-brown hover:text-ink"
+            >
+              パスワードを忘れた方
+            </Link>
+          </div>
           <Input
+            id="login-password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -91,7 +108,7 @@ export function LoginPage() {
             autoComplete="current-password"
           />
           <FieldError failure={failure} field="password" />
-        </Field>
+        </div>
 
         <Button
           type="submit"

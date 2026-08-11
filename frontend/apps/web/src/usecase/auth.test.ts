@@ -6,7 +6,7 @@ import type { AuthRepository } from "@/domain/repository/authRepository";
 import type { Repositories } from "@/presentation/di/repositories";
 import { RepositoryContext } from "@/presentation/di/repositories";
 import { createElement, type ReactNode } from "react";
-import { useAuth, useLogin, useSignUp } from "./auth";
+import { useAuth, useLogin, useRequestPasswordReset, useSignUp } from "./auth";
 
 const SESSION: Session = {
   user: {
@@ -33,6 +33,7 @@ function fakeAuth(overrides: Partial<AuthRepository> = {}): AuthRepository {
     useLogin: () => async () => SESSION,
     useLogout: () => async () => {},
     useCompleteOnboarding: () => async () => SESSION,
+    useRequestPasswordReset: () => async () => {},
     ...overrides,
   };
 }
@@ -137,6 +138,68 @@ describe("useSignUp", () => {
     expect(await result.current(VALID_SIGN_UP)).toEqual({
       ok: true,
       session: SESSION,
+    });
+  });
+});
+
+describe("useRequestPasswordReset", () => {
+  it("メールの形式が不正なら送信しない", async () => {
+    let called = false;
+    const { result } = renderHook(() => useRequestPasswordReset(), {
+      wrapper: wrapperFor(
+        fakeAuth({
+          useRequestPasswordReset: () => async () => {
+            called = true;
+          },
+        }),
+      ),
+    });
+
+    expect(await result.current("not-an-email")).toEqual({
+      field: "email",
+      code: "email_invalid",
+    });
+    expect(called).toBe(false);
+  });
+
+  it("成功したら不備なしとして null を返す", async () => {
+    const { result } = renderHook(() => useRequestPasswordReset(), {
+      wrapper: wrapperFor(fakeAuth()),
+    });
+    expect(await result.current("yuki@example.com")).toBeNull();
+  });
+
+  it("登録が無いメールでも結果を変えない（存在を漏らさない）", async () => {
+    const seen: string[] = [];
+    const { result } = renderHook(() => useRequestPasswordReset(), {
+      wrapper: wrapperFor(
+        fakeAuth({
+          useRequestPasswordReset: () => async (email) => {
+            seen.push(email);
+          },
+        }),
+      ),
+    });
+
+    expect(await result.current("nobody@example.com")).toBeNull();
+    expect(await result.current("yuki@example.com")).toBeNull();
+    expect(seen).toEqual(["nobody@example.com", "yuki@example.com"]);
+  });
+
+  it("通信不良はフォーム全体のエラーにする", async () => {
+    const { result } = renderHook(() => useRequestPasswordReset(), {
+      wrapper: wrapperFor(
+        fakeAuth({
+          useRequestPasswordReset: () => async () => {
+            throw new DomainErrorException(domainError("network", "offline"));
+          },
+        }),
+      ),
+    });
+
+    expect(await result.current("yuki@example.com")).toEqual({
+      field: "form",
+      code: "network",
     });
   });
 });

@@ -120,6 +120,30 @@ export function useLogin() {
   };
 }
 
+/**
+ * 再設定リンクの送信を頼む。
+ * 送れたかどうかは返さない（登録の有無を漏らさないため、画面は常に同じ結果を出す）。
+ */
+export function useRequestPasswordReset() {
+  const request = useRepositories().auth.useRequestPasswordReset();
+
+  return async (email: string): Promise<AuthFailure | null> => {
+    const issue = emailIssue(email);
+    if (issue) return { field: "email", code: issue };
+
+    try {
+      await request(email.trim());
+      return null;
+    } catch (e) {
+      const { code } = asDomainError(e);
+      return {
+        field: "form",
+        code: code === "network" ? "network" : "unknown",
+      };
+    }
+  };
+}
+
 export function useLogout() {
   return useRepositories().auth.useLogout();
 }
