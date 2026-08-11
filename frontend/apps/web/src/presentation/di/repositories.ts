@@ -1,11 +1,13 @@
 import { createContext, use } from "react";
 import type { AuthRepository } from "@/domain/repository/authRepository";
+import type { BillingRepository } from "@/domain/repository/billingRepository";
 import type { FutureRepository } from "@/domain/repository/futureRepository";
 import type { GalleryRepository } from "@/domain/repository/galleryRepository";
 import type { InsightsRepository } from "@/domain/repository/insightsRepository";
 import type { HabitsRepository } from "@/domain/repository/habitsRepository";
 import type { JournalRepository } from "@/domain/repository/journalRepository";
 import type { NotificationsRepository } from "@/domain/repository/notificationsRepository";
+import type { SettingsRepository } from "@/domain/repository/settingsRepository";
 import type { SocialRepository } from "@/domain/repository/socialRepository";
 import type { StreakRepository } from "@/domain/repository/streakRepository";
 import type { TodayRepository } from "@/domain/repository/todayRepository";
@@ -25,6 +27,8 @@ export interface Repositories {
   insights: InsightsRepository;
   notifications: NotificationsRepository;
   social: SocialRepository;
+  settings: SettingsRepository;
+  billing: BillingRepository;
 }
 
 export const RepositoryContext = createContext<Repositories | null>(null);
