@@ -22,6 +22,7 @@ export const baseApi = createApi({
   baseQuery: fakeBaseQuery<FetchBaseQueryError>(),
   // 再取得の単位。invalidatesTags / providesTags で使う
   tagTypes: [
+    "Auth",
     "Today",
     "Habit",
     "Streak",
