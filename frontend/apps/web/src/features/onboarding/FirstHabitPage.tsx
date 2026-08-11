@@ -7,6 +7,7 @@ import {
   AuthLayout,
   AuthTitle,
 } from "@/components/layout/AuthLayout";
+import { useCompleteOnboarding } from "@/usecase/auth";
 
 const CANDIDATES = [
   { id: "c1", title: "5分スケッチ", meta: "毎朝 7:00 · 5分" },
@@ -17,7 +18,17 @@ const CANDIDATES = [
 
 export function FirstHabitPage() {
   const navigate = useNavigate();
+  const completeOnboarding = useCompleteOnboarding();
   const [selected, setSelected] = useState("c1");
+  const [isStarting, setIsStarting] = useState(false);
+
+  // 完了を記録してから「今日」へ。次回のログインはオンボーディングを飛ばす
+  async function handleStart() {
+    if (isStarting) return;
+    setIsStarting(true);
+    await completeOnboarding();
+    navigate("/today", { replace: true });
+  }
 
   return (
     <AuthLayout
@@ -56,8 +67,8 @@ export function FirstHabitPage() {
         })}
       </div>
 
-      <Button size="lg" block onClick={() => navigate("/today")}>
-        はじめる
+      <Button size="lg" block onClick={handleStart} disabled={isStarting}>
+        {isStarting ? "準備中…" : "はじめる"}
       </Button>
     </AuthLayout>
   );
