@@ -1,17 +1,16 @@
 import { useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { Lock, Mail, User as UserIcon } from "lucide-react";
-import { Button, Field, Input } from "@selfsketch/ui";
+import { Button, Checkbox, Field, Input } from "@selfsketch/ui";
 import {
-  AuthBody,
-  AuthKicker,
+  AuthHeading,
   AuthLayout,
-  AuthTitle,
+  AuthSubtext,
 } from "@/components/layout/AuthLayout";
 import { PASSWORD_MIN_LENGTH } from "@/domain/model/auth";
 import { useSignUp, type AuthFailure } from "@/usecase/auth";
 import { AuthAlert, FieldError } from "@/features/auth/components/AuthFeedback";
 
+/** .pen: W-Auth 2 - サインアップ */
 export function SignUpPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,10 +19,10 @@ export function SignUpPage() {
   /** ようこそ画面で入れたメールを引き継ぐ */
   const handedOverEmail = (location.state as { email?: string } | null)?.email;
 
-  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState(handedOverEmail ?? "");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [failure, setFailure] = useState<AuthFailure | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,10 +33,10 @@ export function SignUpPage() {
     setFailure(null);
     setIsSubmitting(true);
     const result = await signUp({
-      displayName,
       email,
       password,
       passwordConfirmation,
+      termsAccepted,
     });
     setIsSubmitting(false);
 
@@ -51,103 +50,84 @@ export function SignUpPage() {
 
   return (
     <AuthLayout
-      step={1}
-      stepLabel="STEP 1 / 4 — アカウント作成"
+      stepLabel="ACCOUNT — 新規登録"
+      quoteSub="毎日の小さなスケッチを積み重ねて、なりたい自分に近づいていく。まずはアカウントを作るところから。"
       title="新規登録"
     >
-      <AuthKicker>SIGN UP</AuthKicker>
-      <AuthTitle>アカウントをつくる</AuthTitle>
-      <AuthBody>
-        記録はこのアカウントに紐づいて保存されます。あとから設定でいつでも変更できます。
-      </AuthBody>
+      <AuthHeading>アカウントを作る</AuthHeading>
+      <AuthSubtext>メールアドレスがあれば1分で始められます。</AuthSubtext>
 
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <form
+        className="flex flex-col gap-3.5"
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <AuthAlert failure={failure} />
 
-        <Field label="表示名">
-          <span className="relative block">
-            <UserIcon
-              size={16}
-              className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted"
-            />
-            <Input
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="ゆうき"
-              className="h-12 pl-10"
-              autoComplete="nickname"
-              autoFocus
-            />
-          </span>
-          <FieldError failure={failure} field="displayName" />
-        </Field>
-
         <Field label="メールアドレス">
-          <span className="relative block">
-            <Mail
-              size={16}
-              className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted"
-            />
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="h-12 pl-10"
-              autoComplete="email"
-            />
-          </span>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            autoComplete="email"
+            autoFocus
+          />
           <FieldError failure={failure} field="email" />
         </Field>
 
         <Field label="パスワード">
-          <span className="relative block">
-            <Lock
-              size={16}
-              className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted"
-            />
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={`${PASSWORD_MIN_LENGTH}文字以上`}
-              className="h-12 pl-10"
-              autoComplete="new-password"
-            />
-          </span>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={`${PASSWORD_MIN_LENGTH}文字以上`}
+            autoComplete="new-password"
+          />
           <FieldError failure={failure} field="password" />
         </Field>
 
         <Field label="パスワード（確認）">
-          <span className="relative block">
-            <Lock
-              size={16}
-              className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted"
-            />
-            <Input
-              type="password"
-              value={passwordConfirmation}
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
-              placeholder="もう一度入力"
-              className="h-12 pl-10"
-              autoComplete="new-password"
-            />
-          </span>
+          <Input
+            type="password"
+            value={passwordConfirmation}
+            onChange={(e) => setPasswordConfirmation(e.target.value)}
+            placeholder="もう一度入力"
+            autoComplete="new-password"
+          />
           <FieldError failure={failure} field="passwordConfirmation" />
         </Field>
 
-        <Button type="submit" size="lg" block disabled={isSubmitting}>
-          {isSubmitting ? "登録中…" : "登録して続ける"}
+        <div className="flex flex-col gap-1.5">
+          <label className="flex items-center gap-2.5">
+            <Checkbox
+              checked={termsAccepted}
+              onChange={setTermsAccepted}
+              aria-label="利用規約とプライバシーポリシーに同意する"
+            />
+            <span className="text-xs font-medium text-brown">
+              利用規約とプライバシーポリシーに同意する
+            </span>
+          </label>
+          <FieldError failure={failure} field="terms" />
+        </div>
+
+        <Button
+          type="submit"
+          size="lg"
+          block
+          disabled={isSubmitting}
+          className="h-[46px]"
+        >
+          {isSubmitting ? "作成中…" : "アカウントを作る"}
         </Button>
       </form>
 
-      <p className="text-center text-xs leading-[1.9] font-medium text-muted">
-        登録すると利用規約とプライバシーポリシーに同意したものとみなされます。
-      </p>
-
-      <p className="text-center text-xs font-medium text-muted">
-        すでにアカウントをお持ちですか？{" "}
-        <Link to="/login" className="font-semibold text-ink underline">
+      <p className="flex justify-center gap-1.5 text-xs">
+        <span className="font-medium text-brown">
+          すでにアカウントをお持ちの方は
+        </span>
+        <Link to="/login" className="font-bold text-ink underline">
           ログイン
         </Link>
       </p>
