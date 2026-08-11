@@ -14,6 +14,7 @@ import { galleryRepository } from "@/data/repository/galleryRepositoryImpl";
 import { futureRepository } from "@/data/repository/futureRepositoryImpl";
 import { insightsRepository } from "@/data/repository/insightsRepositoryImpl";
 import { notificationsRepository } from "@/data/repository/notificationsRepositoryImpl";
+import { socialRepository } from "@/data/repository/socialRepositoryImpl";
 import "./app.css";
 
 /** 依存の配線はここだけ。画面は useRepositories() 越しにしか触らない */
@@ -27,6 +28,7 @@ const repositories = {
   future: futureRepository,
   insights: insightsRepository,
   notifications: notificationsRepository,
+  social: socialRepository,
 };
 
 /*
