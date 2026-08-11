@@ -2,6 +2,9 @@ import { Navigate, Route, Routes } from "react-router";
 import { AppShell } from "@/components/layout/AppShell";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 
+/* 認証（未ログイン） */
+import { LoginPage } from "@/features/auth/LoginPage";
+
 /* オンボーディング（未ログイン） */
 import { WelcomePage } from "@/features/onboarding/WelcomePage";
 import { GoalPage } from "@/features/onboarding/GoalPage";
@@ -62,6 +65,7 @@ export function App() {
   return (
     <Routes>
       {/* ---- 未ログイン（サイドナビなし） ---- */}
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/welcome" element={<WelcomePage />} />
       <Route path="/onboarding/goal" element={<GoalPage />} />
       <Route path="/onboarding/future" element={<FutureSelfPage />} />
