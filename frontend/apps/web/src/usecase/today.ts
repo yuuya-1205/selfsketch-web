@@ -10,12 +10,14 @@ import { useRepositories } from "@/presentation/di/repositories";
  * 画面が必要とする値をここで揃えるので、画面側で計算しない。
  */
 export function useTodayDashboard() {
-  const { data, isLoading, error } = useRepositories().today.useDashboard();
+  const { data, isLoading, error, retry } =
+    useRepositories().today.useDashboard();
 
   return {
     dashboard: data,
     isLoading,
     error,
+    retry,
     completedCount: data ? completedCount(data) : 0,
     totalCount: data ? totalCount(data) : 0,
     completionRate: data ? completionRate(data) : 0,

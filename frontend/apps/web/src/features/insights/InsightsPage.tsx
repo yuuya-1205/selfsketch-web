@@ -25,11 +25,14 @@ import {
   kpiUnitLabel,
   monthShortLabel,
 } from "@/presentation/format/insights";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 
 export function InsightsPage() {
   usePageMeta("分析・つながり", "インサイト");
   const navigate = useNavigate();
-  const { insights: data, isLoading } = useInsights();
+  const { insights: data, isLoading, error, retry } = useInsights();
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !data) {
     return <InsightsSkeleton />;

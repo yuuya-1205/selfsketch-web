@@ -10,13 +10,16 @@ import {
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useGalleryGrid } from "@/usecase/gallery";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 
 const VIEWS = ["タイムライン", "グリッド"] as const;
 
 export function GalleryGridPage() {
   usePageMeta("メイン", "ギャラリー");
   const navigate = useNavigate();
-  const { items, isLoading } = useGalleryGrid();
+  const { items, isLoading, error, retry } = useGalleryGrid();
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !items) {
     return <GalleryGridSkeleton />;

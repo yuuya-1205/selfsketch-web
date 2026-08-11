@@ -12,6 +12,7 @@ const loaded: RepositoryResult<string> = {
   data: "本文",
   isLoading: false,
   error: null,
+  retry: () => {},
 };
 
 describe("QueryBoundary", () => {
@@ -27,7 +28,12 @@ describe("QueryBoundary", () => {
   it("読み込み中はプレースホルダを出す", () => {
     wrap(
       <QueryBoundary
-        state={{ data: undefined, isLoading: true, error: null }}
+        state={{
+          data: undefined,
+          isLoading: true,
+          error: null,
+          retry: () => {},
+        }}
         skeleton={<p>読み込み中</p>}
       >
         {() => <p>本文</p>}
@@ -39,7 +45,12 @@ describe("QueryBoundary", () => {
   it("isLoading が false でもデータが無ければ待つ", () => {
     wrap(
       <QueryBoundary
-        state={{ data: undefined, isLoading: false, error: null }}
+        state={{
+          data: undefined,
+          isLoading: false,
+          error: null,
+          retry: () => {},
+        }}
         skeleton={<p>読み込み中</p>}
       >
         {() => <p>本文</p>}
@@ -55,6 +66,7 @@ describe("QueryBoundary", () => {
           data: undefined,
           isLoading: false,
           error: domainError("network", "FETCH_ERROR at /api/v1/today"),
+          retry: () => {},
         }}
         skeleton={<p>読み込み中</p>}
       >
@@ -74,6 +86,7 @@ describe("QueryBoundary", () => {
           data: undefined,
           isLoading: false,
           error: domainError("unknown", "boom"),
+          retry: () => {},
         }}
         skeleton={<p>読み込み中</p>}
         onRetry={onRetry}
@@ -94,6 +107,7 @@ describe("QueryBoundary", () => {
           data: undefined,
           isLoading: false,
           error: domainError("unauthorized", "401"),
+          retry: () => {},
         }}
         skeleton={<p>読み込み中</p>}
         onRetry={() => {}}
@@ -113,6 +127,7 @@ describe("QueryBoundary", () => {
           data: undefined,
           isLoading: false,
           error: domainError("network", "offline"),
+          retry: () => {},
         }}
         skeleton={<p>読み込み中</p>}
         inline

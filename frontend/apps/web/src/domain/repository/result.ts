@@ -11,4 +11,9 @@ export interface RepositoryResult<T> {
   data: T | undefined;
   isLoading: boolean;
   error: DomainError | null;
+  /**
+   * 取り直す。失敗したときの「再試行」がこれを呼ぶ（.pen の W-State 1）。
+   * 再試行の口が無いと、エラー画面がただの行き止まりになる。
+   */
+  retry: () => void;
 }

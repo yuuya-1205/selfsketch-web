@@ -5,21 +5,24 @@ import { toInsights, toMonthlyReport } from "@/data/mapper/insights";
 
 export const insightsRepository: InsightsRepository = {
   useInsights() {
-    const { data, isLoading, error } = insightsDataSource.useInsightsQuery();
+    const { data, isLoading, error, refetch } =
+      insightsDataSource.useInsightsQuery();
     return {
       data: data && toInsights(data),
       isLoading,
       error: toDomainError(error),
+      retry: refetch,
     };
   },
 
   useMonthlyReport() {
-    const { data, isLoading, error } =
+    const { data, isLoading, error, refetch } =
       insightsDataSource.useMonthlyReportQuery();
     return {
       data: data && toMonthlyReport(data),
       isLoading,
       error: toDomainError(error),
+      retry: refetch,
     };
   },
 };

@@ -22,12 +22,15 @@ import {
   milestoneMonthLabel,
   visionTargetLabel,
 } from "@/presentation/format/vision";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 
 export function VisionBoardPage() {
   usePageMeta("メイン", "未来の自分");
   const navigate = useNavigate();
-  const { vision, isLoading } = useVision();
+  const { vision, isLoading, error, retry } = useVision();
   const [horizon, setHorizon] = useState<Horizon>("1_year");
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !vision) {
     return <VisionSkeleton label="ビジョンボードを読み込み中" />;

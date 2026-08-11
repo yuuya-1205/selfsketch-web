@@ -10,6 +10,7 @@ import {
 } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { useTodayDashboard, useToggleHabit } from "@/usecase/today";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 import { dateLabel } from "@/presentation/format/today";
 import { HabitRow } from "./components/HabitRow";
 import { QuickSketchCard } from "./components/QuickSketchCard";
@@ -22,9 +23,18 @@ export function TodayPage() {
   usePageMeta("メイン", "今日の自分");
   const navigate = useNavigate();
 
-  const { dashboard, isLoading, completedCount, totalCount, completionRate } =
-    useTodayDashboard();
+  const {
+    dashboard,
+    isLoading,
+    error,
+    retry,
+    completedCount,
+    totalCount,
+    completionRate,
+  } = useTodayDashboard();
   const toggleHabit = useToggleHabit();
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !dashboard) {
     return <TodaySkeleton />;

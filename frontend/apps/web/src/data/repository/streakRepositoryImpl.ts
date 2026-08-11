@@ -5,12 +5,13 @@ import { toStreakOverview } from "@/data/mapper/streak";
 
 export const streakRepository: StreakRepository = {
   useOverview() {
-    const { data, isLoading, error } =
+    const { data, isLoading, error, refetch } =
       streakDataSource.useStreakOverviewQuery();
     return {
       data: data && toStreakOverview(data),
       isLoading,
       error: toDomainError(error),
+      retry: refetch,
     };
   },
 };

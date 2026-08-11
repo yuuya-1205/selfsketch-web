@@ -5,12 +5,13 @@ import { toJournalEntry } from "@/data/mapper/journal";
 
 export const journalRepository: JournalRepository = {
   useEntries() {
-    const { data, isLoading, error } =
+    const { data, isLoading, error, refetch } =
       journalDataSource.useJournalEntriesQuery();
     return {
       data: data?.map(toJournalEntry),
       isLoading,
       error: toDomainError(error),
+      retry: refetch,
     };
   },
 };

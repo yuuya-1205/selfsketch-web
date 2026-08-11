@@ -18,11 +18,14 @@ import {
   reportTitle,
 } from "@/presentation/format/insights";
 import { galleryDayLabel } from "@/presentation/format/gallery";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 
 export function MonthlyReportPage() {
   usePageMeta("分析・つながり", "月次レポート");
   const navigate = useNavigate();
-  const { report: r, isLoading } = useMonthlyReport();
+  const { report: r, isLoading, error, retry } = useMonthlyReport();
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !r) {
     return <MonthlyReportSkeleton />;

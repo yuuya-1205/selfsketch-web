@@ -15,11 +15,13 @@ import { toTodayDashboard } from "@/data/mapper/today";
  */
 export const todayRepository: TodayRepository = {
   useDashboard() {
-    const { data, isLoading, error } = todayDataSource.useTodayDashboardQuery();
+    const { data, isLoading, error, refetch } =
+      todayDataSource.useTodayDashboardQuery();
     return {
       data: data && toTodayDashboard(data),
       isLoading,
       error: toDomainError(error),
+      retry: refetch,
     };
   },
 

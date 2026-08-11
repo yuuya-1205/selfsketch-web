@@ -10,12 +10,14 @@ function daysUntil(target: Date, now: Date): number {
 
 /** id 未指定は「いま表示中のビジョン」 */
 export function useVision(id?: string) {
-  const { data, isLoading, error } = useRepositories().future.useVision(id);
+  const { data, isLoading, error, retry } =
+    useRepositories().future.useVision(id);
 
   return {
     vision: data,
     isLoading,
     error,
+    retry,
     // 残り日数は焼き込まず targetDate から出す
     remainingDays: data ? daysUntil(data.targetDate, new Date()) : 0,
   };

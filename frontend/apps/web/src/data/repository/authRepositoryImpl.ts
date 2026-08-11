@@ -29,12 +29,14 @@ async function withDomainError(
 
 export const authRepository: AuthRepository = {
   useSession() {
-    const { data, isLoading, error } = authDataSource.useSessionQuery();
+    const { data, isLoading, error, refetch } =
+      authDataSource.useSessionQuery();
     return {
       // data が undefined なら「まだ判らない」、null なら「未ログイン」
       data: data && toSession(data),
       isLoading,
       error: toDomainError(error),
+      retry: refetch,
     };
   },
 

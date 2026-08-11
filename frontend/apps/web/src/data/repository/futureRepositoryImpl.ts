@@ -5,11 +5,13 @@ import { toVision } from "@/data/mapper/vision";
 
 export const futureRepository: FutureRepository = {
   useVision(id) {
-    const { data, isLoading, error } = futureDataSource.useVisionQuery(id);
+    const { data, isLoading, error, refetch } =
+      futureDataSource.useVisionQuery(id);
     return {
       data: data && toVision(data),
       isLoading,
       error: toDomainError(error),
+      retry: refetch,
     };
   },
 };

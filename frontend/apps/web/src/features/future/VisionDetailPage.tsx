@@ -17,12 +17,15 @@ import {
   stepWhenLabel,
   visionTargetLabel,
 } from "@/presentation/format/vision";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 
 export function VisionDetailPage() {
   usePageMeta("メイン / 未来の自分", "1年後の自分");
   const navigate = useNavigate();
   const { visionId } = useParams();
-  const { vision, isLoading, remainingDays } = useVision(visionId);
+  const { vision, isLoading, error, retry, remainingDays } = useVision(visionId);
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !vision) {
     return <VisionDetailSkeleton />;

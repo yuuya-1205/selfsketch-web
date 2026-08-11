@@ -24,13 +24,16 @@ import {
   journalStatLabels,
   journalTimestampLabel,
 } from "@/presentation/format/journal";
+import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 
 export function JournalPage() {
   usePageMeta("メイン", "ジャーナル");
   const navigate = useNavigate();
   const { entryId } = useParams();
-  const { entries, entry, isLoading } = useJournal(entryId);
+  const { entries, entry, isLoading, error, retry } = useJournal(entryId);
   const [filter, setFilter] = useState<string>(JOURNAL_FILTERS[0]);
+
+  if (error) return <QueryErrorView error={error} onRetry={retry} />;
 
   if (isLoading || !entries || !entry) {
     return <JournalSkeleton />;
