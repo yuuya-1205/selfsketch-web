@@ -1,11 +1,10 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { ChevronRight } from "lucide-react";
 import { Button, Card, Field, Input } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import {
-  SettingsGroup,
-  SettingsLayout,
-  SettingsRow,
-} from "./SettingsLayout";
+import { useAuth, useLogout } from "@/usecase/auth";
+import { SettingsGroup, SettingsLayout, SettingsRow } from "./SettingsLayout";
 
 const LINKED = [
   { name: "Google", status: "yuki@gmail.com で連携中", connected: true },
@@ -18,20 +17,41 @@ const SECURITY = [
   { label: "ログイン中の端末", description: "3台 (Chrome, iPhone, iPad)" },
 ];
 
+const SINCE = new Intl.DateTimeFormat("ja-JP", {
+  year: "numeric",
+  month: "long",
+});
+
 export function AccountSettingsPage() {
   usePageMeta("その他", "設定 — アカウント");
+
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const logout = useLogout();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    await logout();
+    navigate("/login", { replace: true });
+  }
 
   return (
     <SettingsLayout subtitle="アカウント · プロフィールと連携">
       <SettingsGroup title="プロフィール">
         <div className="flex items-center gap-4">
           <span className="grid size-14 shrink-0 place-items-center rounded-full bg-line text-xl font-bold text-ink">
-            ゆ
+            {user?.displayName.slice(0, 1) ?? ""}
           </span>
           <span className="flex flex-1 flex-col gap-1">
-            <span className="text-base font-bold text-ink">ゆうき</span>
+            <span className="text-base font-bold text-ink">
+              {user?.displayName ?? ""}
+            </span>
             <span className="text-[11px] text-muted">
-              yuki@example.com · 2025年11月から利用中
+              {user
+                ? `${user.email} · ${SINCE.format(user.createdAt)}から利用中`
+                : ""}
             </span>
           </span>
           <Button variant="outline" size="sm">
@@ -39,12 +59,18 @@ export function AccountSettingsPage() {
           </Button>
         </div>
 
+        {/* key を付けてセッション取得後の値で作り直す（非制御のため） */}
         <Field label="表示名">
-          <Input defaultValue="ゆうき" className="h-10" />
+          <Input
+            key={`name-${user?.id}`}
+            defaultValue={user?.displayName ?? ""}
+            className="h-10"
+          />
         </Field>
         <Field label="メールアドレス">
           <Input
-            defaultValue="yuki@example.com"
+            key={`email-${user?.id}`}
+            defaultValue={user?.email ?? ""}
             type="email"
             className="h-10"
           />
@@ -82,6 +108,23 @@ export function AccountSettingsPage() {
             control={<ChevronRight size={16} className="text-muted" />}
           />
         ))}
+      </SettingsGroup>
+
+      <SettingsGroup title="このデバイス">
+        <SettingsRow
+          label="ログアウト"
+          description="記録は消えません。次回また同じアカウントで入れます"
+          control={
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+            >
+              {isLoggingOut ? "処理中…" : "ログアウト"}
+            </Button>
+          }
+        />
       </SettingsGroup>
 
       <Card className="flex items-center gap-3 border-danger p-3.5">

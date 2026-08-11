@@ -1,4 +1,5 @@
 import { baseApi, mockDelay } from "@/lib/api/baseApi";
+import { fallbackDisplayName } from "@/domain/model/auth";
 import type { SessionDto, UserDto } from "@/data/dto/auth";
 
 /* ------------------------------------------------------------------ *
@@ -174,7 +175,6 @@ async function fetchSession(): Promise<SessionDto | null> {
 export interface SignUpRequest {
   email: string;
   password: string;
-  displayName: string;
 }
 
 export interface LoginRequest {
@@ -195,7 +195,8 @@ async function signUp(input: SignUpRequest): Promise<MockResult<SessionDto>> {
   const user: StoredUser = {
     id: `u_${crypto.randomUUID()}`,
     email,
-    displayName: input.displayName.trim(),
+    // 表示名は登録時に訊かない。設定画面であとから変えられる
+    displayName: fallbackDisplayName(email),
     emailVerified: false,
     createdAt: now.toISOString(),
     onboardingCompletedAt: null,

@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  displayNameIssue,
   emailIssue,
+  fallbackDisplayName,
   hasCompletedOnboarding,
   isSessionExpired,
   passwordIssue,
+  termsIssue,
   type Session,
   type User,
 } from "./auth";
@@ -82,12 +83,26 @@ describe("passwordIssue", () => {
   });
 });
 
-describe("displayNameIssue", () => {
-  it("空白だけはエラー", () => {
-    expect(displayNameIssue("  ")).toBe("display_name_required");
+describe("termsIssue", () => {
+  it("未同意はエラー", () => {
+    expect(termsIssue(false)).toBe("terms_required");
   });
 
-  it("文字があれば通す", () => {
-    expect(displayNameIssue("ゆうき")).toBeNull();
+  it("同意済みは通す", () => {
+    expect(termsIssue(true)).toBeNull();
+  });
+});
+
+describe("fallbackDisplayName", () => {
+  it("メールのローカル部を使う", () => {
+    expect(fallbackDisplayName("taro@example.com")).toBe("taro");
+  });
+
+  it("前後の空白は無視する", () => {
+    expect(fallbackDisplayName(" yuki@example.com ")).toBe("yuki");
+  });
+
+  it("ローカル部が空でも空文字にしない", () => {
+    expect(fallbackDisplayName("@example.com")).toBe("user");
   });
 });

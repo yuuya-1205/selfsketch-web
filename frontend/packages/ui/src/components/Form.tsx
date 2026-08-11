@@ -3,7 +3,7 @@ import type {
   ReactNode,
   TextareaHTMLAttributes,
 } from "react";
-import { ChevronDown } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { cn } from "../lib/cn";
 
 export function FieldLabel({
@@ -108,6 +108,38 @@ export function Switch({
     >
       <span className="size-4 rounded-full bg-paper" />
     </button>
+  );
+}
+
+/**
+ * 同意チェックなどで使う角丸チェックボックス（.pen の cb ノード相当）。
+ * ラベルは呼び出し側が置く（`<label>` で包むか htmlFor で結びつける）。
+ */
+export function Checkbox({
+  checked,
+  onChange,
+  className,
+  ...props
+}: Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "onChange"> & {
+  checked: boolean;
+  onChange?: (v: boolean) => void;
+}) {
+  return (
+    <span className={cn("relative grid size-[18px] shrink-0", className)}>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange?.(e.target.checked)}
+        className="peer size-full cursor-pointer appearance-none rounded-[5px] border border-line-strong bg-surface checked:border-ink checked:bg-ink focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:outline-none"
+        {...props}
+      />
+      <Check
+        size={11}
+        strokeWidth={3}
+        aria-hidden
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-paper opacity-0 peer-checked:opacity-100"
+      />
+    </span>
   );
 }
 

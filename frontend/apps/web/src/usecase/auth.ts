@@ -1,9 +1,9 @@
 import { asDomainError } from "@/domain/error";
 import {
-  displayNameIssue,
   emailIssue,
   hasCompletedOnboarding,
   passwordIssue,
+  termsIssue,
   type CredentialIssue,
   type Credentials,
   type Session,
@@ -21,7 +21,7 @@ export type AuthFailureCode =
   | "unknown";
 
 export type AuthField =
-  "email" | "password" | "passwordConfirmation" | "displayName" | "form";
+  "email" | "password" | "passwordConfirmation" | "terms" | "form";
 
 export interface AuthFailure {
   /** 文言を出す場所。form はフォーム全体のエラー欄 */
@@ -66,9 +66,6 @@ export function useSignUp() {
   const signUp = useRepositories().auth.useSignUp();
 
   return async (input: SignUpFormInput): Promise<AuthResult> => {
-    const name = displayNameIssue(input.displayName);
-    if (name) return fail("displayName", name);
-
     const email = emailIssue(input.email);
     if (email) return fail("email", email);
 
@@ -79,11 +76,14 @@ export function useSignUp() {
       return fail("passwordConfirmation", "password_mismatch");
     }
 
+    const terms = termsIssue(input.termsAccepted);
+    if (terms) return fail("terms", terms);
+
     try {
       const session = await signUp({
         email: input.email.trim(),
         password: input.password,
-        displayName: input.displayName.trim(),
+        termsAccepted: input.termsAccepted,
       });
       return { ok: true, session };
     } catch (e) {

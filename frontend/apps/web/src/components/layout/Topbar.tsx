@@ -2,9 +2,11 @@ import { Bell, Menu, Search } from "lucide-react";
 import { Avatar, IconButton } from "@selfsketch/ui";
 import { useAppSelector } from "@/lib/store/hooks";
 import { selectPageMeta } from "@/lib/store/uiSlice";
+import { useAuth } from "@/usecase/auth";
 
 export function Topbar() {
   const { crumb, title } = useAppSelector(selectPageMeta);
+  const { user } = useAuth();
 
   return (
     <header className="flex h-16 w-full shrink-0 items-center gap-4 border-b border-line bg-paper px-4 md:px-7">
@@ -35,7 +37,7 @@ export function Topbar() {
       <IconButton label="通知" size={34}>
         <Bell size={16} />
       </IconButton>
-      <Avatar initial="ゆ" size={32} />
+      <Avatar initial={user?.displayName.slice(0, 1) ?? ""} size={32} />
     </header>
   );
 }

@@ -42,7 +42,7 @@ const VALID_SIGN_UP = {
   email: "new@example.com",
   password: "selfsketch",
   passwordConfirmation: "selfsketch",
-  displayName: "あたらしい人",
+  termsAccepted: true,
 };
 
 describe("useAuth", () => {
@@ -89,7 +89,6 @@ describe("useAuth", () => {
 
 describe("useSignUp", () => {
   it.each([
-    [{ displayName: " " }, "displayName", "display_name_required"],
     [{ email: "not-an-email" }, "email", "email_invalid"],
     [{ password: "short" }, "password", "password_too_short"],
     [
@@ -97,6 +96,7 @@ describe("useSignUp", () => {
       "passwordConfirmation",
       "password_mismatch",
     ],
+    [{ termsAccepted: false }, "terms", "terms_required"],
   ])("入力の不備を送信前に返す (%o)", async (patch, field, code) => {
     const { result } = renderHook(() => useSignUp(), {
       wrapper: wrapperFor(fakeAuth()),
