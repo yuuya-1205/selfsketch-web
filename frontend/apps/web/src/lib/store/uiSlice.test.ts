@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { createStore } from "./index";
-import { pageMetaSet, selectPageMeta } from "./uiSlice";
+import {
+  drawerClosed,
+  drawerOpened,
+  pageMetaSet,
+  selectDrawerOpen,
+  selectPageMeta,
+} from "./uiSlice";
 
 describe("uiSlice", () => {
   it("初期状態では空のページメタを返す", () => {
@@ -15,6 +21,25 @@ describe("uiSlice", () => {
       crumb: "その他",
       title: "設定 — 一般",
     });
+  });
+
+  it("ドロワーは初期状態で閉じている", () => {
+    const store = createStore();
+    expect(selectDrawerOpen(store.getState())).toBe(false);
+  });
+
+  it("ドロワーを開いて閉じられる", () => {
+    const store = createStore();
+    store.dispatch(drawerOpened());
+    expect(selectDrawerOpen(store.getState())).toBe(true);
+    store.dispatch(drawerClosed());
+    expect(selectDrawerOpen(store.getState())).toBe(false);
+  });
+
+  it("閉じているところに drawerClosed を投げても壊れない", () => {
+    const store = createStore();
+    store.dispatch(drawerClosed());
+    expect(selectDrawerOpen(store.getState())).toBe(false);
   });
 
   it("createStore はストアごとに独立している", () => {

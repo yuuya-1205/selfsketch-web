@@ -8,10 +8,13 @@ export interface PageMeta {
 
 export interface UiState {
   pageMeta: PageMeta;
+  /** モバイルのナビゲーションドロワーが開いているか（.pen の Mobile Web 390 - ドロワー） */
+  drawerOpen: boolean;
 }
 
 const initialState: UiState = {
   pageMeta: { crumb: "", title: "" },
+  drawerOpen: false,
 };
 
 /**
@@ -25,12 +28,19 @@ const uiSlice = createSlice({
     pageMetaSet(state, action: PayloadAction<PageMeta>) {
       state.pageMeta = action.payload;
     },
+    drawerOpened(state) {
+      state.drawerOpen = true;
+    },
+    drawerClosed(state) {
+      state.drawerOpen = false;
+    },
   },
   selectors: {
     selectPageMeta: (state) => state.pageMeta,
+    selectDrawerOpen: (state) => state.drawerOpen,
   },
 });
 
-export const { pageMetaSet } = uiSlice.actions;
-export const { selectPageMeta } = uiSlice.selectors;
+export const { pageMetaSet, drawerOpened, drawerClosed } = uiSlice.actions;
+export const { selectPageMeta, selectDrawerOpen } = uiSlice.selectors;
 export const uiReducer = uiSlice.reducer;
