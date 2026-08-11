@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { Button } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { CLOSING } from "@/lib/api/reflection";
+import { CLOSING } from "@/presentation/constants/reflectionContent";
 
 export function ClosingPage() {
   usePageMeta("分析・つながり", "今日はここまで");

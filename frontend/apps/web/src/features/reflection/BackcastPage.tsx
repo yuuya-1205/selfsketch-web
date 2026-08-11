@@ -1,7 +1,10 @@
 import { Check, ChevronRight, Circle, Sparkles } from "lucide-react";
 import { Button, Card, CardLabel, PageHeader, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { BACKCAST_STEPS, WEEK_TASKS } from "@/lib/api/reflection";
+import {
+  BACKCAST_STEPS,
+  WEEK_TASKS,
+} from "@/presentation/constants/reflectionContent";
 
 export function BackcastPage() {
   usePageMeta("分析・つながり", "逆算プラン");

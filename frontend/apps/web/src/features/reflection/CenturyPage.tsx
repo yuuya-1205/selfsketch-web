@@ -1,6 +1,6 @@
 import { Button, Card, CardLabel, PageHeader, cn } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
-import { CENTURY } from "@/lib/api/reflection";
+import { CENTURY } from "@/presentation/constants/reflectionContent";
 
 const LEGEND = [
   { label: "すごした年", cls: "bg-ink" },
