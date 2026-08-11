@@ -80,12 +80,13 @@ main へは merge commit で入るので、**リバートできる粒度 = PR �
 
 詳細は `.claude/skills/split-work/SKILL.md` と `AGENTS.md` を参照。
 
-## 実装済みの画面（Web版 37画面）
+## 実装済みの画面（Web版 38画面）
 
 | ルート | 画面 | .pen 上のノード |
 | --- | --- | --- |
 | `/login` | ログイン | W-Auth 1 |
 | `/signup` | 新規登録 | W-Auth 2 |
+| `/password-reset` | パスワード再設定 | W-Auth 3 |
 | `/welcome` | ようこそ | W-Onb 1 |
 | `/onboarding/goal` | なりたい自分 | W-Onb 2 |
 | `/onboarding/future` | AI 未来の自分 | W-Onb 3 |
@@ -204,6 +205,7 @@ main へは merge commit で入るので、**リバートできる粒度 = PR �
 - 登録直後はオンボーディング（`/onboarding/*`）へ入り、完了するとアカウントに記録される
 - 新規登録で訊くのはメール・パスワード・規約同意だけ（`.pen` の W-Auth 2 に合わせた）。
   表示名はメールのローカル部から作られ、`/settings/account` で変えられる
+- 再設定リンクの送信は、登録の有無で結果を変えない（変えるとアカウントの存在が分かってしまう）
 - デモ用のアカウント: `yuki@example.com` / `selfsketch`
 - 実 API に差し替えるのは `apps/web/src/data/datasource/authDataSource.ts` だけ。
   対応するエンドポイントは同ファイル冒頭のコメントに書いてある
@@ -211,5 +213,4 @@ main へは merge commit で入るので、**リバートできる粒度 = PR �
 ## 未実装
 
 - 認証のバックエンド（現状はフロント内モック。上記参照）、実 API、i18n
-- パスワード再設定（`.pen` の W-Auth 3。ログイン画面の「パスワードを忘れた方」も未設置）
 - 画像アセット（作品サムネイルは `Thumb` が暖色パレットで代替中）
