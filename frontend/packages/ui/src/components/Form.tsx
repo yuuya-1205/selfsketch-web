@@ -62,7 +62,64 @@ export function Textarea({
   );
 }
 
-/** 実装は後でネイティブ select / combobox に置き換える表示用ダミー */
+export interface SelectOption<T extends string> {
+  value: T;
+  label: string;
+}
+
+/**
+ * 選択できるセレクト。見た目は SelectDisplay と同じで、実体は
+ * ネイティブの `<select>`。キーボード操作・モバイルのピッカー・
+ * スクリーンリーダー対応を自前で作らずに済む。
+ *
+ * まだ選択肢が決まっていない箇所は SelectDisplay（表示専用）のまま。
+ */
+export function Select<T extends string>({
+  value,
+  options,
+  onChange,
+  label,
+  className,
+}: {
+  value: T;
+  options: readonly SelectOption<T>[];
+  onChange: (value: T) => void;
+  /** スクリーンリーダー用。見出しが別にあるので視覚的には出さない */
+  label: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "relative flex h-11 w-full items-center rounded-[11px] border border-line-strong bg-surface",
+        "focus-within:border-ink transition-colors",
+        className,
+      )}
+    >
+      <select
+        value={value}
+        aria-label={label}
+        onChange={(e) => onChange(e.target.value as T)}
+        className="h-full w-full cursor-pointer appearance-none bg-transparent pr-9 pl-3.5 text-sm font-semibold text-ink focus:outline-none"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        size={14}
+        className="pointer-events-none absolute right-3.5 shrink-0 text-muted"
+      />
+    </div>
+  );
+}
+
+/**
+ * 表示専用のセレクト。選択肢がまだ決まっていない設定で使う。
+ * 選択肢が決まったら Select に置き換える。
+ */
 export function SelectDisplay({
   value,
   className,
