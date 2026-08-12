@@ -30,10 +30,12 @@ export {
   FieldLabel,
   Input,
   Textarea,
+  Select,
   SelectDisplay,
   Switch,
   Checkbox,
   RadioDot,
+  type SelectOption,
 } from "./components/Form";
 export {
   BarChart,

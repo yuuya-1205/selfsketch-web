@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
-import { SelectDisplay, Switch } from "@selfsketch/ui";
+import { Select, Switch, type SelectOption } from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { usePrivacySettings } from "@/usecase/settings";
-import type { PrivacySettings } from "@/domain/model/settings";
+import type { PrivacySettings, Visibility } from "@/domain/model/settings";
 import { QueryErrorView } from "@/presentation/components/QueryBoundary";
-import { VISIBILITY_LABEL } from "@/presentation/constants/settings";
+import {
+  VISIBILITY_LABEL,
+  VISIBILITY_OPTIONS,
+} from "@/presentation/constants/settings";
 import {
   SettingsGroup,
   SettingsLayout,
@@ -43,7 +46,16 @@ export function PrivacySettingsPage() {
   return <PrivacySettingsForm privacy={privacy} />;
 }
 
+const VISIBILITY_SELECT: SelectOption<Visibility>[] = VISIBILITY_OPTIONS.map(
+  (v) => ({ value: v, label: VISIBILITY_LABEL[v] }),
+);
+
 function PrivacySettingsForm({ privacy }: { privacy: PrivacySettings }) {
+  // 公開範囲はサーバー値を初期値にした画面固有の下書き（保存はまだ API が無い）
+  const [visibility, setVisibility] = useState({
+    profile: privacy.profile,
+    gallery: privacy.gallery,
+  });
   const [flags, setFlags] = useState({
     shareStreak: privacy.shareStreak,
     shareJournal: privacy.shareJournal,
@@ -66,8 +78,11 @@ function PrivacySettingsForm({ privacy }: { privacy: PrivacySettings }) {
         <SettingsRow
           label="プロフィール"
           control={
-            <SelectDisplay
-              value={VISIBILITY_LABEL[privacy.profile]}
+            <Select
+              label="プロフィールの公開範囲"
+              value={visibility.profile}
+              options={VISIBILITY_SELECT}
+              onChange={(v) => setVisibility((s) => ({ ...s, profile: v }))}
               className="h-9.5 w-52"
             />
           }
@@ -75,8 +90,11 @@ function PrivacySettingsForm({ privacy }: { privacy: PrivacySettings }) {
         <SettingsRow
           label="作品ギャラリー"
           control={
-            <SelectDisplay
-              value={VISIBILITY_LABEL[privacy.gallery]}
+            <Select
+              label="作品ギャラリーの公開範囲"
+              value={visibility.gallery}
+              options={VISIBILITY_SELECT}
+              onChange={(v) => setVisibility((s) => ({ ...s, gallery: v }))}
               className="h-9.5 w-52"
             />
           }

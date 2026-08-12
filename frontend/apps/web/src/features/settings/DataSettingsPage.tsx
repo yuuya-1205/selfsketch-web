@@ -1,7 +1,20 @@
-import { Badge, Button, Card, Progress, SelectDisplay } from "@selfsketch/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  Progress,
+  Select,
+  type SelectOption,
+} from "@selfsketch/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { useState } from "react";
 import { useDataSettings } from "@/usecase/settings";
-import { storageRatio, type ExportStatus } from "@/domain/model/settings";
+import {
+  storageRatio,
+  type ExportFormat,
+  type ExportStatus,
+  type ExportTarget,
+} from "@/domain/model/settings";
 import { QueryErrorView } from "@/presentation/components/QueryBoundary";
 import {
   EXPORT_FORMAT_LABEL,
@@ -31,8 +44,19 @@ const STATUS_TONE: Record<ExportStatus, "ok" | "warn" | "track"> = {
   expired: "track",
 };
 
+const TARGET_SELECT: SelectOption<ExportTarget>[] = EXPORT_TARGET_OPTIONS.map(
+  (v) => ({ value: v, label: EXPORT_TARGET_LABEL[v] }),
+);
+
+const FORMAT_SELECT: SelectOption<ExportFormat>[] = EXPORT_FORMAT_OPTIONS.map(
+  (v) => ({ value: v, label: EXPORT_FORMAT_LABEL[v] }),
+);
+
 export function DataSettingsPage() {
   usePageMeta("その他", "設定 — データと書き出し");
+  // 書き出しの条件は送信するまでサーバーに残らない画面固有の状態
+  const [target, setTarget] = useState<ExportTarget>("all");
+  const [format, setFormat] = useState<ExportFormat>("json");
   const { data, isLoading, error, retry } = useDataSettings();
 
   if (error) {
@@ -55,8 +79,11 @@ export function DataSettingsPage() {
         <SettingsRow
           label="書き出す範囲"
           control={
-            <SelectDisplay
-              value={EXPORT_TARGET_LABEL[EXPORT_TARGET_OPTIONS[0]]}
+            <Select
+              label="書き出す範囲"
+              value={target}
+              options={TARGET_SELECT}
+              onChange={setTarget}
               className="h-9.5 w-60"
             />
           }
@@ -64,8 +91,11 @@ export function DataSettingsPage() {
         <SettingsRow
           label="形式"
           control={
-            <SelectDisplay
-              value={EXPORT_FORMAT_LABEL[EXPORT_FORMAT_OPTIONS[0]]}
+            <Select
+              label="書き出しの形式"
+              value={format}
+              options={FORMAT_SELECT}
+              onChange={setFormat}
               className="h-9.5 w-60"
             />
           }
