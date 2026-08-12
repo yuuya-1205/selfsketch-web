@@ -7,6 +7,7 @@ import {
   Card,
   CardLabel,
   Chip,
+  EmptyState,
   IconButton,
   PageHeader,
   Skeleton,
@@ -68,6 +69,19 @@ export function JournalPage() {
               </Chip>
             ))}
           </div>
+
+          {entries.length === 0 && (
+            <EmptyState
+              icon={<PenLine size={20} />}
+              title="今日の最初の一筆を。"
+              body="書いた言葉は、半年後の自分が読み返します。ひとことでも残ります。"
+              actions={
+                <Button size="sm" onClick={() => navigate("/journal/new")}>
+                  書いてみる
+                </Button>
+              }
+            />
+          )}
 
           {entries.map((e) => {
             const active = e.id === entry.id;

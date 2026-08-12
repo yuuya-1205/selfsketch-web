@@ -1,8 +1,9 @@
 import { Outlet, useNavigate } from "react-router";
-import { Plus } from "lucide-react";
+import { Plus, Sun } from "lucide-react";
 import {
   Badge,
   Button,
+  EmptyState,
   Progress,
   SectionHeading,
   Skeleton,
@@ -85,13 +86,26 @@ export function TodayPage() {
             今日の習慣
           </SectionHeading>
 
-          {dashboard.habits.map((habit) => (
-            <HabitRow
-              key={habit.id}
-              habit={habit}
-              onToggle={(done) => void toggleHabit(habit.id, done)}
+          {dashboard.habits.length === 0 ? (
+            <EmptyState
+              icon={<Sun size={20} />}
+              title="今日はここから"
+              body="習慣をひとつ決めると、明日から「やった / やらない」が残ります。5分で終わるものがちょうどいい。"
+              actions={
+                <Button size="sm" onClick={() => navigate("/today/new")}>
+                  最初の習慣をつくる
+                </Button>
+              }
             />
-          ))}
+          ) : (
+            dashboard.habits.map((habit) => (
+              <HabitRow
+                key={habit.id}
+                habit={habit}
+                onToggle={(done) => void toggleHabit(habit.id, done)}
+              />
+            ))
+          )}
 
           <QuickSketchCard logged={dashboard.sketchLogged} />
         </section>

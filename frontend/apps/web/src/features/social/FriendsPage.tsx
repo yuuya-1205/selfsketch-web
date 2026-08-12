@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardLabel,
+  EmptyState,
   PageHeader,
   SectionHeading,
   Skeleton,
@@ -80,6 +81,19 @@ export function FriendsPage() {
           >
             フレンドのうごき
           </SectionHeading>
+
+          {activities.length === 0 && (
+            <EmptyState
+              icon={<UserPlus size={20} />}
+              title="ひとりでも、はじまっています。"
+              body="フレンドを招くと、おたがいの「記録した」だけが見えます。中身は共有されません。"
+              actions={
+                <Button size="sm" onClick={() => navigate("/friends/share")}>
+                  リンクで招待する
+                </Button>
+              }
+            />
+          )}
 
           {activities.map((a) => {
             const shared = sharedWorkLabel(a.sharedWorkCount);
