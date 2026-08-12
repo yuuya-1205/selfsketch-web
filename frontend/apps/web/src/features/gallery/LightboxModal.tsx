@@ -28,6 +28,8 @@ export function LightboxModal() {
     >
       <div className="flex h-full flex-col md:flex-row">
         <Thumb
+          src={item.imageUrl}
+          alt={item.title}
           seed={item.seed}
           className="min-h-60 flex-1 rounded-none border-0"
         />

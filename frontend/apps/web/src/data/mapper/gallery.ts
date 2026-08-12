@@ -6,6 +6,7 @@ export function toGalleryItem(dto: GalleryItemDto): GalleryItem {
     id: dto.id,
     createdAt: new Date(dto.createdAt),
     title: dto.title,
+    imageUrl: dto.imageUrl,
     seed: dto.seed,
   };
 }
