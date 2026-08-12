@@ -65,6 +65,8 @@ export function GalleryTimelinePage() {
               {m.items.map((item) => (
                 <li key={item.id}>
                   <Thumb
+                    src={item.imageUrl}
+                    alt={item.title}
                     seed={item.seed}
                     className="flex h-37 items-end p-2.5 transition-transform hover:scale-[1.02]"
                   >

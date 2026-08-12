@@ -16,6 +16,7 @@ const month = (
     id: `${month.slice(0, 7)}-${day}`,
     createdAt: `${day}T00:00:00Z`,
     title: "5分スケッチ",
+    imageUrl: null,
     seed: i + seedOffset,
   })),
 });
@@ -48,6 +49,7 @@ const GRID: GalleryItemDto[] = Array.from({ length: 24 }, (_, i) => ({
   id: `g-${i}`,
   createdAt: `2026-04-${String(22 - i).padStart(2, "0")}T00:00:00Z`,
   title: i === 0 ? "線が迷わなくなってきた" : "5分スケッチ",
+  imageUrl: null,
   seed: i * 3 + 3,
 }));
 

@@ -46,6 +46,8 @@ export function GalleryGridPage() {
           <li key={item.id}>
             <Link to={`/gallery/grid/${item.id}`}>
               <Thumb
+                src={item.imageUrl}
+                alt={item.title}
                 seed={item.seed}
                 className="h-32 transition-transform hover:scale-[1.02]"
               />

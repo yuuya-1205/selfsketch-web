@@ -4,6 +4,8 @@ export interface GalleryItemDto {
   /** RFC 3339 / UTC */
   createdAt: string;
   title: string;
+  /** 画像の URL。まだ無ければ null */
+  imageUrl: string | null;
   seed: number;
 }
 

@@ -3,7 +3,9 @@ export interface GalleryItem {
   /** 作品を記録した日 */
   createdAt: Date;
   title: string;
-  /** サムネイルの色を決める種。画像アセットが入ったら消す */
+  /** 作品の画像。まだ生成・アップロードされていなければ null */
+  imageUrl: string | null;
+  /** 画像が無いときの下地の色を決める種 */
   seed: number;
 }
 
