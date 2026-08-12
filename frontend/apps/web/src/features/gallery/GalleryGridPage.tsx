@@ -1,7 +1,8 @@
 import { Link, Outlet, useNavigate } from "react-router";
-import { Upload } from "lucide-react";
+import { Image as ImageIcon, Upload } from "lucide-react";
 import {
   Button,
+  EmptyState,
   PageHeader,
   Segmented,
   Skeleton,
@@ -40,6 +41,15 @@ export function GalleryGridPage() {
           </>
         }
       />
+
+      {items.length === 0 && (
+        <EmptyState
+          icon={<ImageIcon size={20} />}
+          title="ここはまだ余白"
+          body="描いた一枚を残すと、ここに並んでいきます。写真に撮るだけでも大丈夫。"
+          actions={<Button size="sm">作品をアップロード</Button>}
+        />
+      )}
 
       <ul className="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {items.map((item) => (

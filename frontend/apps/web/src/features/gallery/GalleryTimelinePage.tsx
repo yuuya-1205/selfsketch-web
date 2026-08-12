@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router";
-import { Upload } from "lucide-react";
+import { Image as ImageIcon, Upload } from "lucide-react";
 import {
   Button,
+  EmptyState,
   PageHeader,
   Segmented,
   Skeleton,
@@ -47,6 +48,14 @@ export function GalleryTimelinePage() {
       />
 
       <div className="flex flex-col gap-4.5">
+        {months.length === 0 && (
+          <EmptyState
+            icon={<ImageIcon size={20} />}
+            title="ここはまだ余白"
+            body="描いた一枚を残すと、月ごとに並んでいきます。写真に撮るだけでも大丈夫。"
+          />
+        )}
+
         {months.map((m) => (
           <section
             key={m.month.toISOString()}
