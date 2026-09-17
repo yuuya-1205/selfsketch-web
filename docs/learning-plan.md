@@ -26,7 +26,8 @@
 Next.js（画面） → API 契約（OpenAPI） → Go（API） → PostgreSQL
         └── Docker Compose でローカル起動
         └── AWS に配置
-        └── たまった実データを Python で分析
+        └── たまった実データ（イベント）を Python で分析
+        └── 振り返りは LLM API に問い合わせる（フェーズ 5）
 ```
 
 ## 開発の仕方
