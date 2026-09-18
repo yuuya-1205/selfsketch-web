@@ -3,11 +3,11 @@ import { render, screen } from "@testing-library/react";
 import Home from "./page";
 
 describe("トップページ", () => {
-  it("レベル 1 の見出しが 1 つあり、始め方を案内している", () => {
+  it("SelfSketch のレベル 1 の見出しが 1 つ表示される", () => {
     render(<Home />);
 
     const heading = screen.getByRole("heading", { level: 1 });
 
-    expect(heading.textContent).toMatch(/To get started/);
+    expect(heading.textContent).toMatch(/SelfSketch/);
   });
 });
