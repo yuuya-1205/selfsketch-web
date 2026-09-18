@@ -7,6 +7,6 @@ test.describe("トップページ", () => {
     const heading = page.getByRole("heading", { level: 1 });
 
     await expect(heading).toBeVisible();
-    await expect(heading).toContainText("To get started");
+    await expect(heading).toContainText("SelfSketch");
   });
 });
