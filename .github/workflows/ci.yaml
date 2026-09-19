@@ -1,8 +1,6 @@
 # npmテストとe2eテストが実行されるワークフローです。
 name: check-tests
 
-# プッシュする度にワークフローが実行されます。
-# プルリクエストが作成されたときにもワークフローが実行されます。
 on:
   pull_request:
     branches:
@@ -11,8 +9,6 @@ on:
 
 jobs:
   test:
-    # テストジョブの定義
-    # Ubuntu環境がはいった仮想マシン上でジョブが実行される。
     runs-on: ubuntu-latest
     steps:
       - name: ソースコードを取得
