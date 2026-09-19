@@ -18,11 +18,11 @@ jobs:
       - name: ソースコードを取得
         uses: actions/checkout@v4
 
-      # - name: Node.jsをセットアップ
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 22
-      #     cache: npm
+      - name: Node.jsをセットアップ
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: npm
 
       # - name: 依存関係をインストール
       #   run: npm ci
