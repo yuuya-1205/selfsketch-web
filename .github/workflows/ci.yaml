@@ -1,28 +1,27 @@
 # npmテストとe2eテストが実行されるワークフローです。
 name: check-tests
 
-# プッシュする度にワークフローが実行されます。
-# プルリクエストが作成されたときにもワークフローが実行されます。
 on:
-  pull_request: branches:[main]
-  push: branches:[main]
+  pull_request:
+    branches:
+      - main
+  push:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      # - name: ソースコードを取得
-      #   uses: actions/checkout@v4
+      - name: ソースコードを取得
+        uses: actions/checkout@v4
 
-      # - name: Node.jsをセットアップ
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 22
-      #     cache: npm
+      - name: Node.jsをセットアップ
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: npm
 
-      # - name: 依存関係をインストール
-      #   run: npm ci
+      - name: 依存関係をインストール
+        run: npm ci
 
       - name: テストを実行
         run: npm test
