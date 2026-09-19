@@ -4,8 +4,12 @@ name: check-tests
 # プッシュする度にワークフローが実行されます。
 # プルリクエストが作成されたときにもワークフローが実行されます。
 on:
-  pull_request: branches:[main]
-  push: branches:[main]
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 jobs:
   test:
