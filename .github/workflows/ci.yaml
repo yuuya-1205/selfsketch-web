@@ -11,11 +11,12 @@ on:
 
 jobs:
   test:
+    # テストジョブの定義
+    # Ubuntu環境がはいった仮想マシン上でジョブが実行される。
     runs-on: ubuntu-latest
-
     steps:
-      # - name: ソースコードを取得
-      #   uses: actions/checkout@v4
+      - name: ソースコードを取得
+        uses: actions/checkout@v4
 
       # - name: Node.jsをセットアップ
       #   uses: actions/setup-node@v3
