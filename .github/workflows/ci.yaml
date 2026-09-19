@@ -24,8 +24,8 @@ jobs:
           node-version: 22
           cache: npm
 
-      # - name: 依存関係をインストール
-      #   run: npm ci
+      - name: 依存関係をインストール
+        run: npm ci
 
       - name: テストを実行
         run: npm test
