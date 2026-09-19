@@ -30,7 +30,10 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: e2eテストを実行
-        run: npm run e2e
+        run: npm run test:e2e
+
+      - name: e2eテスト結果をアップロード
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: e2eテスト結果
