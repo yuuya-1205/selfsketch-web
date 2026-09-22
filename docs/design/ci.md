@@ -21,7 +21,7 @@ flowchart TD
   D --> E[完了]
 ```
 
-## 処理するタイミング
+## 処理の流れ
 
 ```mermaid
 sequenceDiagram
