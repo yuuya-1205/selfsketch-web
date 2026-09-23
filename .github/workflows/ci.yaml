@@ -22,6 +22,9 @@ jobs:
       - name: 依存関係をインストール
         run: npm ci
 
+      - name: lint check
+        run: npm run lint
+
       - name: テストを実行
         run: npm test
 
