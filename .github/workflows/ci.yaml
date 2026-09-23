@@ -22,9 +22,6 @@ jobs:
       - name: 依存関係をインストール
         run: npm ci
 
-      - name: 型定義を生成
-        run: next typegen
-
       - name: 型チェック
         run: npm run typecheck
 
