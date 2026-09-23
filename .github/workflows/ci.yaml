@@ -1,4 +1,4 @@
-# npmテストとe2eテストが実行されるワークフローです。
+# lintとnpmテストとe2eテストが実行されるワークフローです。
 name: check-tests
 
 on:

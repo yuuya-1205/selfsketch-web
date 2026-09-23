@@ -10,8 +10,9 @@
 
 ## 実行するテスト
 
-1. `npm test`
-2. E2Eテスト
+1. lint
+2. `npm test`
+3. E2Eテスト
 
 ```mermaid
 flowchart TD
