@@ -10,17 +10,19 @@
 
 ## 実行するテスト
 
-1. lint
-2. `npm test`
-3. E2Eテスト
+1. 型チェック
+2. lint
+3. `npm test`
+4. E2Eテスト
 
 ```mermaid
 flowchart TD
   A[PRへpush] --> B[CIを開始]
-  B --> C[lint]
-  C --> D[npm test]
-  D --> E[e2e test]
-  E --> F[完了]
+  B --> C[型チェック]
+  C --> D[lint]
+  D --> E[npm test]
+  E --> F[e2e test]
+  F --> G[完了]
 ```
 
 ## 処理の流れ
@@ -33,6 +35,7 @@ sequenceDiagram
 
    開発者->>GitHub: PRへpush
    GitHub->>CI: CIを開始
+   CI->>CI: 型チェックを実行
    CI->>CI: Lintを実行
    CI->>CI: npmテストを実行
    CI->>CI: E2Eテストを実行
