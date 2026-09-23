@@ -23,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: 型チェック
-        run: npm run type
+        run: npm run typecheck
 
       - name: lint check
         run: npm run lint
