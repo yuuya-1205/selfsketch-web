@@ -92,4 +92,13 @@ sequenceDiagram
 
 ## 各画面の設計書
 
-- [ログイン画面](./login.md)
+作る画面の一覧は [learning-plan.md](../../learning-plan.md) のフェーズ 1 が元。
+
+| 画面                         | ファイル               | IDの接頭辞 | .penのノード | 進み具合           |
+| ---------------------------- | ---------------------- | ---------- | ------------ | ------------------ |
+| W-Auth 1 ログイン            | [login.md](./login.md) | LOGIN      | ES2YF        | 表示のみ（書き中） |
+| W-Auth 2 サインアップ        | signup.md              | SIGNUP     | wM8qs        | 未着手             |
+| W-Auth 3 パスワード再設定    | password-reset.md      | RESET      | b8yrP        | 未着手             |
+| W-Home 1 今日ダッシュボード  | today.md               | TODAY      | fUv9W        | 未着手             |
+| W-Home 2 習慣を作成（Modal） | habit-create.md        | HABITNEW   | KOgk7        | 未着手             |
+| W-Home 3 習慣詳細            | habit-detail.md        | HABIT      | QMnku        | 未着手             |
