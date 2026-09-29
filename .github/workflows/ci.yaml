@@ -22,7 +22,7 @@ jobs:
       - name: 依存関係をインストール
         run: npm ci
 
-      - name: 脆弱性をチェック
+      - name: 脆弱性チェック
         run: npm audit --audit-level=high
 
       - name: 型チェック
