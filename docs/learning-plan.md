@@ -248,7 +248,7 @@ Testing Library の「ユーザーが見えるものでクエリする」思想�
 ### 0. 土台と習慣づくり（新しいもの: TDD と AI 駆動の手順）
 
 - Next.js の雛形に Vitest、Testing Library、Playwright を入れる
-- AGENTS.md に TDD の手順と規約を書く。CI で lint、型チェック、テストを回し、ブランチ保護で必須にする
+- AGENTS.md を最小限で書き、AI が間違えたら足していく。CI で lint、型チェック、テストを回し、ブランチ保護で必須にする
 - 依存パッケージの脆弱性チェックを CI に足す
 - 学習リズム（週 30 時間、週 2〜3 PR）を決める。学習ログは `docs/log/` に週 1 ファイル（決定済み）
 - `docs/design/` の雛形（テスト設計書、画面仕様）を 1 枚ずつ作り、Mermaid が GitHub で描画されることを確認する
