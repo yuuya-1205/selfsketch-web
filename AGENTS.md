@@ -44,8 +44,8 @@
 
 ## 資料の場所
 
-- docs/phase1-tasks.md:
-- docs/learning-plan.md:
+- docs/phase1-tasks.md: フェーズ1にどんなことを行うのか記載している
+- docs/learning-plan.md: このプロジェクトを通して学びたいことを記載している
 
 <!-- BEGIN:nextjs-agent-rules -->
 
